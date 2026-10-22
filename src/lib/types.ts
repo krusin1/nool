@@ -2,7 +2,8 @@ export type StageId = 'spark' | 'research' | 'experiments' | 'build' | 'outcome'
 
 export type EntryType = 'text' | 'image' | 'link' | 'voice';
 
-export type SourceId = 'met' | 'cooperhewitt' | 'semanticscholar' | 'arxiv' | 'github';
+// 'web' covers precedents a maker adds by hand (sites, products, archives).
+export type SourceId = 'met' | 'cooperhewitt' | 'semanticscholar' | 'arxiv' | 'github' | 'web';
 
 export interface Project {
 	id: string;

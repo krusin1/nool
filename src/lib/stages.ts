@@ -19,7 +19,8 @@ export const SOURCE_LABELS: Record<SourceId, string> = {
 	cooperhewitt: 'Cooper Hewitt',
 	semanticscholar: 'Semantic Scholar',
 	arxiv: 'arXiv',
-	github: 'GitHub'
+	github: 'GitHub',
+	web: 'Web'
 };
 
 export function stageLabel(id: StageId): string {

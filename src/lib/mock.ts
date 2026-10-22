@@ -2,10 +2,11 @@
 // Precedents are real works and papers; URLs point to source searches until the
 // live fetchers (Phase 4) supply canonical links.
 import type { Entry, Precedent, Project } from './types.ts';
+import * as caseStudy from './mock-case-study.ts';
 
 const PID = 'tidal';
 
-export const projects: Project[] = [
+const tidalProjects: Project[] = [
 	{
 		id: PID,
 		title: 'Tidal',
@@ -15,7 +16,7 @@ export const projects: Project[] = [
 	}
 ];
 
-export const entries: Entry[] = [
+const tidalEntries: Entry[] = [
 	// Spark
 	{
 		id: 'e1',
@@ -139,7 +140,7 @@ export const entries: Entry[] = [
 	}
 ];
 
-export const precedents: Precedent[] = [
+const tidalPrecedents: Precedent[] = [
 	// Spark
 	{
 		id: 'p1',
@@ -272,6 +273,10 @@ export const precedents: Precedent[] = [
 		note: ''
 	}
 ];
+
+export const projects: Project[] = [...caseStudy.projects, ...tidalProjects];
+export const entries: Entry[] = [...caseStudy.entries, ...tidalEntries];
+export const precedents: Precedent[] = [...caseStudy.precedents, ...tidalPrecedents];
 
 export function getProject(id: string) {
 	const project = projects.find((p) => p.id === id);

@@ -2,6 +2,7 @@
 	import Frame from '@lucide/svelte/icons/frame';
 	import BookOpen from '@lucide/svelte/icons/book-open';
 	import CodeXml from '@lucide/svelte/icons/code-xml';
+	import Globe from '@lucide/svelte/icons/globe';
 	import type { SourceId } from '#lib/types.ts';
 
 	let { source, image_url, alt }: { source: SourceId; image_url: string | null; alt: string } = $props();
@@ -11,7 +12,8 @@
 		cooperhewitt: Frame,
 		semanticscholar: BookOpen,
 		arxiv: BookOpen,
-		github: CodeXml
+		github: CodeXml,
+		web: Globe
 	};
 	const Icon = $derived(icons[source]);
 </script>
