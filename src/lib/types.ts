@@ -1,4 +1,4 @@
-export type StageId = 'spark' | 'research' | 'experiments' | 'build' | 'outcome';
+export type StageId = 'spark' | 'moodboard' | 'research' | 'experiments' | 'build' | 'outcome';
 
 export type EntryType = 'text' | 'image' | 'link' | 'voice';
 
@@ -40,3 +40,23 @@ export interface Precedent {
 }
 
 export type Tab = 'entries' | 'precedents';
+
+// Moodboard: items collaged on a two-page book spread. Positions are percentages
+// of the spread (x, y from top-left; w of spread width) so it scales to any size.
+export type BoardKind = 'image' | 'note' | 'quote' | 'swatch' | 'label';
+
+export interface BoardItem {
+	id: string;
+	project_id: string;
+	kind: BoardKind;
+	content: string; // text, image path, or comma-separated hex colors for swatches
+	caption: string;
+	x: number;
+	y: number;
+	w: number;
+	rotate: number;
+	z: number;
+	tape: boolean;
+}
+
+export type HomeView = 'stamps' | 'list';

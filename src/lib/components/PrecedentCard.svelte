@@ -58,7 +58,7 @@
 			<button class="btn" onclick={saveNote}>Save</button>
 		</div>
 	{:else if precedent.kept && precedent.note}
-		<button class="note serif" onclick={() => ((draft = precedent.note), (noting = true))}>
+		<button class="note" onclick={() => ((draft = precedent.note), (noting = true))}>
 			{precedent.note}
 		</button>
 	{/if}

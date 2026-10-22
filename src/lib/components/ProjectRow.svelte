@@ -13,7 +13,7 @@
 
 <article class="row">
 	<a class="main" href="/p/{project.id}">
-		<h2 class="title serif">{project.title}</h2>
+		<h2 class="title display">{project.title}</h2>
 		<p class="desc">{project.description}</p>
 	</a>
 	<div class="meta">

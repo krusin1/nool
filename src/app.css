@@ -10,8 +10,12 @@
 	--accent-soft: #eef1ff;
 	--on-accent: #ffffff;
 
-	--font-ui: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-	--font-serif: 'Newsreader', 'Source Serif 4', Georgia, serif;
+	--font-ui: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--font-display: 'Space Grotesk', 'Hanken Grotesk', system-ui, sans-serif;
+
+	/* Paper and stamp palette */
+	--paper: #f3efe6;
+	--paper-line: #ddd6c6;
 
 	--fs-xs: 13px;
 	--fs-sm: 15px;
@@ -48,6 +52,8 @@
 		--accent: #7b8fff;
 		--accent-soft: #1d2140;
 		--on-accent: #0d0d0c;
+		--paper: #26241f;
+		--paper-line: #3a372f;
 		color-scheme: dark;
 	}
 }
@@ -114,8 +120,9 @@ button {
 	outline-offset: 2px;
 }
 
-.serif {
-	font-family: var(--font-serif);
+.display {
+	font-family: var(--font-display);
+	letter-spacing: -0.02em;
 }
 
 .muted {

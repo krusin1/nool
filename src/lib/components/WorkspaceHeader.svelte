@@ -10,7 +10,7 @@
 	<div class="left">
 		<a class="back" href="/" aria-label="All projects"><ArrowLeft size={16} strokeWidth={1.5} /></a>
 		<div class="titles">
-			<h1 class="serif">{project.title}</h1>
+			<h1 class="display">{project.title}</h1>
 			<p class="desc">{project.description}</p>
 		</div>
 	</div>

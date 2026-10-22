@@ -6,12 +6,12 @@
 </script>
 
 <li class="item" id="ref-{ref}">
-	<span class="ref serif">{ref}</span>
+	<span class="ref display">{ref}</span>
 	<div class="work">
 		<a class="title" href={precedent.url} target="_blank" rel="noreferrer">{precedent.title}</a>
 		<span class="by">{precedent.creator}, {precedent.year}</span>
 		{#if precedent.note}
-			<p class="note serif">{precedent.note}</p>
+			<p class="note">{precedent.note}</p>
 		{/if}
 	</div>
 	<div class="meta label">

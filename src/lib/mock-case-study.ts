@@ -1,7 +1,7 @@
 // The app's own case study, documented in the app. Mock data until Phase 2.
 // Research entries cite real, checked sources. Nothing here reports user testing
 // that has not happened yet; the Outcome stage lists it as the next step.
-import type { Entry, Precedent, Project } from './types.ts';
+import type { BoardItem, Entry, Precedent, Project } from './types.ts';
 
 const PID = 'marginalia';
 
@@ -11,7 +11,7 @@ const at = (day: number, hh: number, mm = 0) =>
 export const projects: Project[] = [
 	{
 		id: PID,
-		title: 'Marginalia',
+		title: 'Nool',
 		description:
 			'A process log for makers that finds what their work builds on, while they are still making it.',
 		created_at: at(21, 13),
@@ -124,8 +124,8 @@ export const entries: Entry[] = [
 		'experiments',
 		'text',
 		at(22, 16, 25),
-		'Working name Marginalia is too long to say out loud. Shortlisting one and two syllable names, including names from Indian languages. Not decided.',
-		'Marginalia is a working name and too long to say. A shorter name is still open.'
+		'Working name Marginalia was too long to say out loud. Shortlisted one and two syllable names, including names from Indian languages. Going with Nool for now: Tamil for thread, and also for book.',
+		'Marginalia was too long to say. Renamed Nool for now, Tamil for both thread and book: the thread of a process that becomes a record.'
 	),
 
 	// Build: prototype
@@ -161,6 +161,14 @@ export const entries: Entry[] = [
 	),
 
 	// Outcome: position and next steps
+	entry(
+		'outcome',
+		'image',
+		at(22, 17, 50),
+		'Identity: a perforated stamp with one thread that writes an n. Every project on the home page becomes its own stamp.',
+		'The Nool mark is one thread writing an n inside a stamp. Every project becomes a stamp: mint while in progress, postmarked when published.',
+		'/mock/case/nool-cover.svg'
+	),
 	entry(
 		'outcome',
 		'text',
@@ -232,7 +240,7 @@ export const precedents: Precedent[] = [
 		'The original lineage machine. Trails, not folders.'
 	),
 	precedent(
-		'spark',
+		'moodboard',
 		'web',
 		'Mnemosyne Atlas',
 		'Aby Warburg',
@@ -391,4 +399,35 @@ export const precedents: Precedent[] = [
 		'Frames the process of making as a form of research.',
 		'The argument for schools and labs.'
 	)
+];
+
+let b = 0;
+const item = (kind: BoardItem['kind'], content: string, x: number, y: number, w: number, rotate = 0, extra: Partial<BoardItem> = {}): BoardItem => ({
+	id: `cs-b${++b}`,
+	project_id: PID,
+	kind,
+	content,
+	caption: '',
+	x,
+	y,
+	w,
+	rotate,
+	z: b,
+	tape: false,
+	...extra
+});
+
+// One spread: left page is identity and feel, right page is reading and layout.
+export const board: BoardItem[] = [
+	item('label', 'Moodboard · Identity', 4, 5, 22),
+	item('image', '/mock/case/board/stamp-study.svg', 4, 13, 30, -2, { tape: true, caption: 'Every project is a stamp' }),
+	item('quote', 'Nool: Tamil for thread, and also for book.', 6, 66, 24, 0),
+	item('swatch', '#2B4BFF,#F3EFE6,#111111,#D2462B', 31, 72, 16, 2),
+	item('image', '/mock/case/board/thread.svg', 36, 10, 12, 4, { tape: true }),
+	item('note', 'Mint while you work. Postmarked when you publish.', 36, 42, 11, -3),
+	item('label', 'Reading · Layout', 54, 5, 20),
+	item('image', '/mock/case/board/layout-sketch.svg', 54, 12, 26, 1, { caption: 'Margin notes carry the lineage' }),
+	item('image', '/mock/case/board/postmark.svg', 76, 50, 20, -6, { tape: true }),
+	item('note', 'All grotesk. Space Grotesk for titles, Hanken Grotesk to read.', 56, 64, 15, 2),
+	item('quote', 'AI connects and documents. People make.', 81, 14, 17, 0)
 ];

@@ -5,23 +5,27 @@
 	import EntryCard from '#lib/components/EntryCard.svelte';
 	import PrecedentPanel from '#lib/components/PrecedentPanel.svelte';
 	import WorkspaceTabs from '#lib/components/WorkspaceTabs.svelte';
+	import MoodboardEditor from '#lib/components/MoodboardEditor.svelte';
 	import { STAGES } from '#lib/stages.ts';
-	import type { Entry, EntryType, Precedent, StageId, Tab } from '#lib/types.ts';
+	import type { BoardItem, Entry, EntryType, Precedent, StageId, Tab } from '#lib/types.ts';
 	import { untrack } from 'svelte';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 
 	// Local copies so Phase 1 interactions (add, edit, keep, dismiss) work without persistence.
-	const initial = untrack(() => structuredClone({ entries: data.entries, precedents: data.precedents }));
+	const initial = untrack(() => structuredClone({ entries: data.entries, precedents: data.precedents, board: data.board }));
 	let entries = $state<Entry[]>(initial.entries.sort((a, b) => b.created_at.localeCompare(a.created_at)));
 	let precedents = $state<Precedent[]>(initial.precedents);
+	let board = $state<BoardItem[]>(initial.board);
 
 	let stage = $state<StageId>('spark');
 	let tab = $state<Tab>('entries');
 
 	const current = $derived(STAGES.find((s) => s.id === stage)!);
-	const stageEntryCount = $derived(entries.filter((e) => e.stage === stage).length);
+	const stageEntryCount = $derived(
+		stage === 'moodboard' ? board.length : entries.filter((e) => e.stage === stage).length
+	);
 	const stagePrecedentCount = $derived(precedents.filter((p) => p.stage === stage).length);
 
 	function addEntry(input: { type: EntryType; raw_content: string; file_path: string | null }) {
@@ -37,7 +41,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.project.title} · Marginalia</title>
+	<title>{data.project.title} · Nool</title>
 </svelte:head>
 
 <div class="workspace">
@@ -45,7 +49,7 @@
 
 	<div class="cols">
 		<aside class="rail-col">
-			<StageRail {entries} current={stage} onselect={(id) => (stage = id)} />
+			<StageRail {entries} boardCount={board.length} current={stage} onselect={(id) => (stage = id)} />
 		</aside>
 
 		<WorkspaceTabs
@@ -56,12 +60,15 @@
 		/>
 
 		<main class="center" class:hidden-sm={tab !== 'entries'}>
-			<div class="center-inner">
+			<div class="center-inner" class:wide={stage === 'moodboard'}>
 				<div class="stage-head">
-					<h2 class="serif">{current.label}</h2>
+					<h2 class="display">{current.label}</h2>
 					<p class="muted">{current.hint}</p>
 				</div>
 
+				{#if stage === 'moodboard'}
+					<MoodboardEditor bind:items={board} projectId={data.project.id} />
+				{:else}
 				<DropZone stageLabel={current.label} onadd={addEntry} />
 
 				<div class="entries">
@@ -74,6 +81,7 @@
 						<p class="empty label">Nothing in {current.label} yet. Add a note, link or image above.</p>
 					{/if}
 				</div>
+				{/if}
 			</div>
 		</main>
 
@@ -116,6 +124,10 @@
 		max-width: 680px;
 		margin: 0 auto;
 		padding: var(--s4) var(--s4) var(--s8);
+	}
+
+	.center-inner.wide {
+		max-width: 1040px;
 	}
 
 	.stage-head {

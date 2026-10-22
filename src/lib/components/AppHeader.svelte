@@ -1,11 +1,12 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import Logo from './Logo.svelte';
 
 	let { children }: { children?: Snippet } = $props();
 </script>
 
 <header class="app-header">
-	<a class="wordmark serif" href="/">Marginalia</a>
+	<a class="wordmark" href="/" aria-label="Nool home"><Logo size={28} /><span class="display">nool</span></a>
 	{#if children}
 		<div class="actions">{@render children()}</div>
 	{/if}
@@ -24,10 +25,13 @@
 	}
 
 	.wordmark {
-		font-size: var(--fs-md);
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		font-size: var(--fs-lg);
 		font-weight: var(--fw-bold);
 		text-decoration: none;
-		letter-spacing: -0.01em;
+		line-height: 1;
 	}
 
 	.actions {

@@ -4,12 +4,15 @@
 
 	let {
 		entries,
+		boardCount = 0,
 		current,
 		onselect
-	}: { entries: Entry[]; current: StageId; onselect: (id: StageId) => void } = $props();
+	}: { entries: Entry[]; boardCount?: number; current: StageId; onselect: (id: StageId) => void } = $props();
 
 	const counts = $derived(
-		Object.fromEntries(STAGES.map((s) => [s.id, entries.filter((e) => e.stage === s.id).length]))
+		Object.fromEntries(
+			STAGES.map((s) => [s.id, s.id === 'moodboard' ? boardCount : entries.filter((e) => e.stage === s.id).length])
+		)
 	);
 </script>
 

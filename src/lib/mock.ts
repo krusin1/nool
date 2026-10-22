@@ -1,7 +1,7 @@
 // Phase 1 mock data. Replaced by SQLite + live sources in later phases.
 // Precedents are real works and papers; URLs point to source searches until the
 // live fetchers (Phase 4) supply canonical links.
-import type { Entry, Precedent, Project } from './types.ts';
+import type { BoardItem, Entry, Precedent, Project } from './types.ts';
 import * as caseStudy from './mock-case-study.ts';
 
 const PID = 'tidal';
@@ -274,8 +274,32 @@ const tidalPrecedents: Precedent[] = [
 	}
 ];
 
-export const projects: Project[] = [...caseStudy.projects, ...tidalProjects];
-export const entries: Entry[] = [...caseStudy.entries, ...tidalEntries];
+// A project with no images yet, to show the default stamp.
+const softProjects: Project[] = [
+	{
+		id: 'soft-machines',
+		title: 'Soft Machines',
+		description: 'Knitted sensors that notice how they are being held.',
+		created_at: '2026-10-19T12:00:00Z',
+		published: false
+	}
+];
+const softEntries: Entry[] = [
+	{
+		id: 'sm1',
+		project_id: 'soft-machines',
+		stage: 'spark',
+		type: 'text',
+		raw_content: 'Conductive yarn changes resistance when stretched. What if a scarf could tell a hug from a tug?',
+		file_path: null,
+		ai_summary: 'Conductive yarn changes resistance when stretched, so a knitted piece might tell a hug from a tug.',
+		created_at: '2026-10-19T12:10:00Z'
+	}
+];
+
+export const projects: Project[] = [...caseStudy.projects, ...tidalProjects, ...softProjects];
+export const entries: Entry[] = [...caseStudy.entries, ...tidalEntries, ...softEntries];
+export const board: BoardItem[] = [...caseStudy.board];
 export const precedents: Precedent[] = [...caseStudy.precedents, ...tidalPrecedents];
 
 export function getProject(id: string) {
@@ -284,6 +308,7 @@ export function getProject(id: string) {
 	return {
 		project,
 		entries: entries.filter((e) => e.project_id === id),
+		board: board.filter((b) => b.project_id === id),
 		precedents: precedents.filter((p) => p.project_id === id)
 	};
 }

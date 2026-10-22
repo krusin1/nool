@@ -8,6 +8,7 @@ export interface Stage {
 
 export const STAGES: Stage[] = [
 	{ id: 'spark', label: 'Spark', hint: 'The idea, the itch, the first image.' },
+	{ id: 'moodboard', label: 'Moodboard', hint: 'Collage the feel: images, inspiration, words, quotes.' },
 	{ id: 'research', label: 'Research', hint: 'Reading, references, theory.' },
 	{ id: 'experiments', label: 'Experiments', hint: 'Tests, prototypes, dead ends.' },
 	{ id: 'build', label: 'Build', hint: 'Making the real thing.' },

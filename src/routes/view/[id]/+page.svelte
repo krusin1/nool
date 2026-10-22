@@ -3,6 +3,7 @@
 	import CaseMasthead from '#lib/components/CaseMasthead.svelte';
 	import StageSection from '#lib/components/StageSection.svelte';
 	import LineageItem from '#lib/components/LineageItem.svelte';
+	import Logo from '#lib/components/Logo.svelte';
 	import { STAGES, formatDate } from '#lib/stages.ts';
 	import type { PageProps } from './$types';
 
@@ -17,8 +18,9 @@
 			entries: data.entries
 				.filter((e) => e.stage === stage.id)
 				.sort((a, b) => a.created_at.localeCompare(b.created_at)),
+			board: stage.id === 'moodboard' ? data.board : [],
 			notes: data.precedents.filter((p) => p.kept && p.stage === stage.id)
-		})).filter((s) => s.entries.length)
+		})).filter((s) => s.entries.length || s.board.length)
 	);
 
 	// Kept precedents, numbered in stage order, shared by margin notes and the lineage list.
@@ -50,7 +52,7 @@
 
 <div class="bar">
 	<a class="back label" href="/p/{data.project.id}"><ArrowLeft size={14} strokeWidth={1.5} /> Back to workspace</a>
-	<span class="label serif mark">Marginalia</span>
+	<a class="mark" href="/" aria-label="Nool home"><Logo size={22} /><span class="display">nool</span></a>
 	<span class="label">{data.project.published ? 'Published' : 'Preview'}</span>
 </div>
 
@@ -68,6 +70,7 @@
 			stage={section.stage}
 			index={section.index}
 			entries={section.entries}
+			board={section.board}
 			notes={section.notes}
 			{figures}
 			{refs}
@@ -77,7 +80,7 @@
 	<section class="lineage" id="lineage">
 		<div class="lin-head">
 			<span class="label kicker">Lineage</span>
-			<h2 class="serif">What this work builds on</h2>
+			<h2 class="display">What this work builds on</h2>
 			<p class="muted">Chosen and annotated by the maker. Numbers match the notes in the margin.</p>
 		</div>
 		{#if kept.length}
@@ -92,7 +95,7 @@
 	</section>
 
 	<footer class="colophon label">
-		Documented on Marginalia. The maker wrote every entry; AI summarized and found precedents, and the maker chose what to keep.
+		Documented on Nool. The maker wrote every entry; AI summarized and found precedents, and the maker chose what to keep.
 	</footer>
 </article>
 
@@ -115,10 +118,13 @@
 	}
 
 	.mark {
-		font-size: var(--fs-sm);
-		color: var(--text);
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		font-size: var(--fs-md);
 		font-weight: var(--fw-bold);
-		letter-spacing: 0;
+		text-decoration: none;
+		line-height: 1;
 	}
 
 	.back {

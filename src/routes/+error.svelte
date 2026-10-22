@@ -6,7 +6,7 @@
 <AppHeader />
 <main class="err">
 	<span class="label">{page.status}</span>
-	<h1 class="serif">{page.error?.message ?? 'Something went wrong'}</h1>
+	<h1 class="display">{page.error?.message ?? 'Something went wrong'}</h1>
 	<a class="btn" href="/">Back to projects</a>
 </main>
 

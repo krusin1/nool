@@ -1,12 +1,14 @@
 <script lang="ts">
 	import MarginNote from './MarginNote.svelte';
-	import type { Stage } from '#lib/stages.ts';
-	import type { Entry, Precedent } from '#lib/types.ts';
+	import BookSpread from './BookSpread.svelte';
+	import { STAGES, type Stage } from '#lib/stages.ts';
+	import type { BoardItem, Entry, Precedent } from '#lib/types.ts';
 
 	let {
 		stage,
 		index,
 		entries,
+		board = [],
 		notes,
 		figures,
 		refs
@@ -14,6 +16,7 @@
 		stage: Stage;
 		index: number;
 		entries: Entry[];
+		board?: BoardItem[];
 		notes: Precedent[];
 		figures: Map<string, number>;
 		refs: Map<string, number>;
@@ -23,14 +26,21 @@
 	const firstText = $derived(entries.find((e) => e.type !== 'image')?.id);
 </script>
 
-<section class="stage" id={stage.id}>
-	<div class="num serif" aria-hidden="true">{String(index + 1).padStart(2, '0')}</div>
+<section class="stage" class:spread-stage={board.length > 0} id={stage.id}>
+	<div class="num display" aria-hidden="true">{String(index + 1).padStart(2, '0')}</div>
 
 	<div class="body">
 		<header>
-			<span class="label kicker">Stage {index + 1} of 5</span>
-			<h2 class="serif">{stage.label}</h2>
+			<span class="label kicker">Stage {index + 1} of {STAGES.length}</span>
+			<h2 class="display">{stage.label}</h2>
 		</header>
+
+		{#if board.length}
+			<figure class="board">
+				<BookSpread items={board} />
+				<figcaption><span class="fig">Spread</span>Collaged by the maker. Images, notes, colors and lines that set the feel.</figcaption>
+			</figure>
+		{/if}
 
 		{#each entries as entry (entry.id)}
 			{#if entry.type === 'image' && entry.file_path}
@@ -42,7 +52,7 @@
 					</figcaption>
 				</figure>
 			{:else}
-				<p class="para serif" class:lede={entry.id === firstText}>
+				<p class="para" class:lede={entry.id === firstText}>
 					{entry.ai_summary || entry.raw_content}
 					{#if entry.type === 'link'}
 						<a class="src" href={entry.raw_content} target="_blank" rel="noreferrer">{host(entry.raw_content)}</a>
@@ -95,6 +105,7 @@
 	}
 
 	.body {
+		min-width: 0;
 		display: grid;
 		gap: var(--s3);
 		align-content: start;
@@ -146,6 +157,25 @@
 		font-weight: var(--fw-bold);
 	}
 
+	.spread-stage .body {
+		grid-column: 2 / 4;
+	}
+
+	.spread-stage .margin {
+		grid-column: 2 / 4;
+		grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+		column-gap: var(--s4);
+	}
+
+	.spread-stage .margin > .label {
+		grid-column: 1 / -1;
+	}
+
+	.board {
+		margin: 0;
+		min-width: 0;
+	}
+
 	.margin {
 		display: grid;
 		align-content: start;
@@ -160,6 +190,11 @@
 	}
 
 	@media (max-width: 1100px) {
+		.spread-stage .body,
+		.spread-stage .margin {
+			grid-column: 1;
+		}
+
 		.stage {
 			grid-template-columns: minmax(0, 1fr);
 			gap: var(--s3);

@@ -1,5 +1,7 @@
 <script lang="ts">
-	import type { Stage } from '#lib/stages.ts';
+	import { STAGES, type Stage } from '#lib/stages.ts';
+
+	const total = STAGES.length;
 	import type { Project } from '#lib/types.ts';
 
 	let {
@@ -14,13 +16,13 @@
 <header class="masthead">
 	<div class="inner">
 		<span class="label kicker">Case study</span>
-		<h1 class="serif">{project.title}</h1>
-		<p class="dek serif">{project.description}</p>
+		<h1 class="display">{project.title}</h1>
+		<p class="dek">{project.description}</p>
 
 		<dl class="facts">
 			<div><dt class="label">Documented</dt><dd>{span}</dd></div>
 			<div><dt class="label">Entries</dt><dd>{entryCount}</dd></div>
-			<div><dt class="label">Stages</dt><dd>{stages.length} of 5</dd></div>
+			<div><dt class="label">Stages</dt><dd>{stages.length} of {total}</dd></div>
 			<div><dt class="label">Lineage</dt><dd>{keptCount} works</dd></div>
 		</dl>
 
@@ -62,7 +64,6 @@
 	.dek {
 		max-width: 30ch;
 		font-size: var(--fs-lg);
-		font-style: italic;
 		line-height: 1.35;
 		color: var(--muted);
 	}

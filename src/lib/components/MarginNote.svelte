@@ -10,7 +10,7 @@
 		<span class="title">{precedent.title}</span>
 		<span class="by">{precedent.creator}</span>
 		{#if precedent.note}
-			<span class="why serif">{precedent.note}</span>
+			<span class="why">{precedent.note}</span>
 		{/if}
 	</span>
 </a>

@@ -1,10 +1,11 @@
 <script lang="ts">
-	import '@fontsource-variable/inter/wght.css';
-	import '@fontsource/newsreader/400.css';
-	import '@fontsource/newsreader/400-italic.css';
-	import '@fontsource/newsreader/600.css';
+	import '@fontsource/hanken-grotesk/400.css';
+	import '@fontsource/hanken-grotesk/400-italic.css';
+	import '@fontsource/hanken-grotesk/600.css';
+	import '@fontsource/space-grotesk/400.css';
+	import '@fontsource/space-grotesk/600.css';
 	import '../app.css';
-	import favicon from '#lib/assets/favicon.svg';
+	import favicon from '#lib/assets/nool-favicon.svg';
 	import type { LayoutProps } from './$types';
 
 	let { children }: LayoutProps = $props();
@@ -12,7 +13,7 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	<title>Marginalia</title>
+	<title>Nool</title>
 </svelte:head>
 
 {@render children()}

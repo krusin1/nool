@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"><rect width="520" height="360" fill="#ffffff"/>
+<g fill="none" stroke="#111" stroke-width="1.5"><rect x="20" y="20" width="235" height="320"/><rect x="265" y="20" width="235" height="320"/></g>
+<g fill="#111"><text x="36" y="58" font-family="Helvetica, Arial, sans-serif" font-size="26" font-weight="700">01</text></g>
+<g stroke="#111" stroke-width="6" stroke-linecap="round"><path d="M80 52 H200"/></g>
+<g stroke="#bbb" stroke-width="4" stroke-linecap="round"><path d="M80 90 H210 M80 106 H215 M80 122 H190 M80 150 H212 M80 166 H200 M80 182 H215 M80 198 H170"/></g>
+<rect x="80" y="220" width="135" height="90" fill="#e8e4da"/>
+<g stroke="#bbb" stroke-width="4" stroke-linecap="round"><path d="M281 60 H420 M281 76 H430 M281 92 H400 M281 120 H425 M281 136 H410"/></g>
+<g stroke="#2b4bff" stroke-width="3" stroke-linecap="round"><path d="M445 60 H485 M445 72 H480 M445 104 H485 M445 116 H475"/></g>
+<g fill="#2b4bff" font-family="Helvetica, Arial, sans-serif" font-size="11"><text x="445" y="50">margin</text></g>
+<g font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#666"><text x="281" y="320">numbers in the margin = lineage</text></g></svg>

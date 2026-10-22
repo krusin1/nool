@@ -36,7 +36,7 @@
 			<button class="btn" onclick={save}>Save</button>
 		</div>
 	{:else if summary}
-		<p class="text serif">{summary}</p>
+		<p class="text">{summary}</p>
 	{:else}
 		<p class="text pending label">Summary appears once AI is connected (Phase 3).</p>
 	{/if}
@@ -103,7 +103,7 @@
 		border: var(--border);
 		border-radius: var(--radius);
 		background: var(--bg);
-		font-family: var(--font-serif);
+		font-family: var(--font-ui);
 		font-size: var(--fs-md);
 		line-height: 1.45;
 		resize: vertical;
