@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420"><rect width="800" height="420" fill="#ffffff"/>
+<g stroke="#e3e3df" stroke-width="1"><path d="M60 60 H760 M60 140 H760 M60 220 H760 M60 300 H760 M60 380 H760"/></g>
+<path d="M60 220 C90 120 120 120 150 220 S210 320 240 220 S300 110 330 220 S390 330 420 220 S500 140 540 220 S620 300 660 220 S720 170 760 220" fill="none" stroke="#2b4bff" stroke-width="2.5"/>
+<path d="M60 230 C95 170 130 160 160 230 S230 290 260 225 S320 170 350 225 S420 280 450 225 S520 185 560 225 S640 255 680 222 S730 205 760 222" fill="none" stroke="#111" stroke-width="1.5" stroke-dasharray="5 5"/>
+<g font-family="Inter, sans-serif" font-size="14" fill="#6b6b6b"><text x="60" y="40">chest strap (blue) vs. mmWave radar (dashed), 60s window</text><text x="60" y="405">0s</text><text x="730" y="405">60s</text></g></svg>

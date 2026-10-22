@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520"><rect width="800" height="520" fill="#f1efe9"/>
+<g fill="none" stroke="#2a2a28" stroke-width="2" stroke-linecap="round">
+<path d="M120 80 L680 80 L680 400 L120 400 Z" stroke-dasharray="2 0"/>
+<g stroke-width="1.5" opacity=".8">
+<path d="M140 240 C220 180 300 300 380 240 S540 180 660 240"/>
+<path d="M140 270 C220 210 300 330 380 270 S540 210 660 270" opacity=".6"/>
+<path d="M140 210 C220 150 300 270 380 210 S540 150 660 210" opacity=".6"/>
+<path d="M140 300 C220 240 300 360 380 300 S540 240 660 300" opacity=".35"/>
+<path d="M140 180 C220 120 300 240 380 180 S540 120 660 180" opacity=".35"/>
+</g>
+<circle cx="250" cy="470" r="14"/><path d="M250 484 L250 510"/>
+<circle cx="520" cy="465" r="14"/><path d="M520 479 L520 510"/>
+<path d="M262 458 Q300 430 330 410" stroke-dasharray="4 6"/>
+<path d="M508 452 Q480 430 460 410" stroke-dasharray="4 6"/>
+</g>
+<g font-family="Georgia, serif" font-style="italic" font-size="20" fill="#2a2a28">
+<text x="130" y="60">light wall, ~3m</text><text x="560" y="60">slows when you slow</text>
+</g></svg>

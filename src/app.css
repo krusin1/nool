@@ -1,0 +1,184 @@
+/* Marginalia design tokens */
+
+:root {
+	--bg: #fafaf8;
+	--surface: #ffffff;
+	--text: #111111;
+	--muted: #6b6b6b;
+	--line: #e6e6e3;
+	--accent: #2b4bff;
+	--accent-soft: #eef1ff;
+	--on-accent: #ffffff;
+
+	--font-ui: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--font-serif: 'Newsreader', 'Source Serif 4', Georgia, serif;
+
+	--fs-xs: 13px;
+	--fs-sm: 15px;
+	--fs-md: 18px;
+	--fs-lg: 24px;
+	--fs-xl: 36px;
+
+	--fw-regular: 400;
+	--fw-bold: 600;
+
+	--s1: 8px;
+	--s2: 16px;
+	--s3: 24px;
+	--s4: 32px;
+	--s5: 40px;
+	--s6: 48px;
+	--s8: 64px;
+	--s10: 80px;
+
+	--radius: 4px;
+	--border: 1px solid var(--line);
+	--ease: 150ms ease;
+
+	color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #121211;
+		--surface: #1a1a19;
+		--text: #ededea;
+		--muted: #9a9a96;
+		--line: #2c2c2a;
+		--accent: #7b8fff;
+		--accent-soft: #1d2140;
+		--on-accent: #0d0d0c;
+		color-scheme: dark;
+	}
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: var(--bg);
+	color: var(--text);
+	font-family: var(--font-ui);
+	font-size: var(--fs-sm);
+	font-weight: var(--fw-regular);
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+	margin: 0;
+}
+
+h1,
+h2,
+h3 {
+	font-weight: var(--fw-bold);
+}
+
+a {
+	color: inherit;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+}
+
+button,
+input,
+textarea {
+	font: inherit;
+	color: inherit;
+}
+
+button {
+	cursor: pointer;
+}
+
+:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+}
+
+.serif {
+	font-family: var(--font-serif);
+}
+
+.muted {
+	color: var(--muted);
+}
+
+.label {
+	font-size: var(--fs-xs);
+	color: var(--muted);
+	letter-spacing: 0.02em;
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+/* Buttons */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--s1);
+	height: 32px;
+	padding: 0 12px;
+	border: var(--border);
+	border-radius: var(--radius);
+	background: var(--surface);
+	font-size: var(--fs-xs);
+	font-weight: var(--fw-bold);
+	text-decoration: none;
+	white-space: nowrap;
+	transition:
+		background var(--ease),
+		border-color var(--ease),
+		color var(--ease);
+}
+
+.btn:hover {
+	border-color: var(--muted);
+}
+
+.btn-primary {
+	background: var(--accent);
+	border-color: var(--accent);
+	color: var(--on-accent);
+}
+
+.btn-primary:hover {
+	border-color: var(--accent);
+	opacity: 0.9;
+}
+
+.btn-ghost {
+	border-color: transparent;
+	background: transparent;
+	color: var(--muted);
+}
+
+.btn-ghost:hover {
+	border-color: transparent;
+	color: var(--text);
+}
