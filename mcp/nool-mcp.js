@@ -43,7 +43,7 @@ const where = {
 	source: z.string().optional().describe('The app this came from, shown on the block, e.g. "Figma" or "Blender".')
 };
 
-const server = new McpServer({ name: 'nool', version: '0.1.0' });
+const server = new McpServer({ name: 'nool', version: '0.1.1' });
 
 server.registerTool(
 	'list_projects',
@@ -109,6 +109,91 @@ server.registerTool(
 		form.append('file', file);
 		const { src } = await nool('/api/inbox/uploads', { method: 'POST', body: form });
 		return done(await send(project, stage, 'image', { src, caption: caption ?? '' }, source));
+	}
+);
+
+const json = (path, data) => nool(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(data) });
+const at = { project: where.project, stage: z.string().optional().describe('Stage name or id') };
+
+server.registerTool(
+	'read_stage',
+	{
+		title: 'Read a stage',
+		description:
+			"Read the maker's notes for one stage of a project, and the precedents they already kept. Use before summarizing a stage or finding precedents for it.",
+		inputSchema: at
+	},
+	async ({ project, stage }) => {
+		const q = new URLSearchParams({ project, ...(stage ? { stage } : {}) });
+		const r = await nool(`/api/inbox/stage?${q}`);
+		const text = [
+			`Project: ${r.project}${r.description ? ` (${r.description})` : ''}`,
+			`Stage: ${r.stage}`,
+			'',
+			'Notes:',
+			r.notes || '(no notes yet)',
+			'',
+			`Already kept: ${r.kept.length ? r.kept.join('; ') : 'none'}`
+		].join('\n');
+		return { content: [{ type: 'text', text }] };
+	}
+);
+
+server.registerTool(
+	'add_summary',
+	{
+		title: 'Add a stage summary',
+		description:
+			"Add a summary of a stage as a note. Write it only from that stage's notes (call read_stage first). Never add facts, names, results or numbers that are not in the notes. 3 to 5 plain sentences, past tense, no hype, no em dashes. Show the summary to the maker in the chat too.",
+		inputSchema: { ...at, text: z.string() }
+	},
+	async ({ project, stage, text }) => done(await send(project, stage, 'note', { text }, 'Claude summary'))
+);
+
+server.registerTool(
+	'search_precedents',
+	{
+		title: 'Search for precedents',
+		description:
+			'Search The Met, Cooper Hewitt, Semantic Scholar, arXiv and GitHub for precedents (artworks, design objects, papers, code). Write 3 to 5 short queries (2 to 5 words) specific to the stage: one for museum collections, one or two for papers, one for code. Results already kept on the stage are left out.',
+		inputSchema: { ...at, queries: z.array(z.string()).min(1).max(6) }
+	},
+	async ({ project, stage, queries }) => {
+		const r = await json('/api/inbox/search', { project, stage, queries });
+		const text = r.results.length
+			? r.results.map((c, i) => `${i + 1}. [${c.source}] ${c.title} | ${c.creator} | ${c.year} | ${c.url}${c.image_url ? ` | image: ${c.image_url}` : ''}\n   ${c.snippet}`).join('\n')
+			: 'No results.';
+		return { content: [{ type: 'text', text: text + (r.failed.length ? `\n\nCould not reach: ${r.failed.join(', ')}` : '') }] };
+	}
+);
+
+server.registerTool(
+	'suggest_precedents',
+	{
+		title: 'Suggest precedents',
+		description:
+			"Put up to 8 precedents on a stage's precedent panel for the maker to keep or dismiss. They replace earlier suggestions; kept ones stay. Use results from search_precedents (copy title, creator, year, url, image_url and source exactly) or real works you know, with a real link. For each, write why: one short line on how it relates to this stage, based only on the work's own description and the maker's notes. Never invent works or links.",
+		inputSchema: {
+			...at,
+			items: z
+				.array(
+					z.object({
+						title: z.string(),
+						url: z.string().url(),
+						creator: z.string().optional(),
+						year: z.string().optional(),
+						image_url: z.string().optional(),
+						source: z.enum(['met', 'cooperhewitt', 'semanticscholar', 'arxiv', 'github', 'web']).optional(),
+						why: z.string()
+					})
+				)
+				.min(1)
+				.max(8)
+		}
+	},
+	async ({ project, stage, items }) => {
+		const r = await json('/api/inbox/precedents', { project, stage, items });
+		return { content: [{ type: 'text', text: `Added ${r.added} precedents to ${r.project} → ${r.stage}. The maker can keep or dismiss them in Nool: ${r.desk}` }] };
 	}
 );
 

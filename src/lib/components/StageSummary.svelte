@@ -1,13 +1,16 @@
 <script lang="ts">
 	import Sparkles from '@lucide/svelte/icons/sparkles';
+	import AskClaude from './AskClaude.svelte';
 	import { api } from '#lib/api.ts';
 
 	let {
 		stageId,
+		projectTitle,
+		stageName,
 		ai,
 		empty,
 		onadd
-	}: { stageId: string; ai: boolean; empty: boolean; onadd: (text: string) => void } = $props();
+	}: { stageId: string; projectTitle: string; stageName: string; ai: boolean; empty: boolean; onadd: (text: string) => void } = $props();
 
 	let busy = $state(false);
 	let text = $state('');
@@ -52,10 +55,12 @@
 {#if open}
 	<div class="summary">
 		{#if !ai}
-			<p class="label">
-				Summaries use an AI model of your choice. <a href="/connections#ai">Connect one in Connections</a>; it takes a
-				minute.
-			</p>
+			<p class="label">Have Claude Desktop write it, using your Claude plan. No key needed.</p>
+			<AskClaude
+				prompt={`Read the "${stageName}" stage of my Nool project "${projectTitle}" and add a short summary of it to that stage. Use only what's in my notes.`}
+				label="Summarize with Claude Desktop"
+			/>
+			<p class="label">Or <a href="/connections#ai">connect an AI key</a> to summarize right here.</p>
 			<div class="row"><button class="btn btn-ghost" onclick={() => (open = false)}>Close</button></div>
 		{:else if busy}
 			<p class="label">Reading this stage…</p>

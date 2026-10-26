@@ -33,7 +33,7 @@ function blockText(b: Block): string {
 	}
 }
 
-function context(stageId: string) {
+export function context(stageId: string) {
 	const stage = getStage(stageId);
 	if (!stage) throw new Error('Stage not found');
 	const project = getProject(stage.project_id)!;
@@ -106,6 +106,30 @@ export async function findPrecedents(stageId: string): Promise<FindResult> {
 	}
 	if (!queries.length) throw new Error('Add a title or a few notes first, so there is something to search for.');
 
+	const { pool, failed } = await searchSources(queries, stage.id);
+
+	let picks: { c: Candidate; why: string }[] = [];
+	if (usedAi && pool.length) {
+		const list = pool.slice(0, 40).map((c, i) => `${i}. [${c.source}] ${c.title} (${c.creator}, ${c.year}): ${c.snippet.slice(0, 200)}`).join('\n');
+		const ranked = parseJson<{ i: number; why: string }[]>(await complete(RANK_PROMPT, `${brief}\n\nResults:\n${list}`, 1200));
+		if (Array.isArray(ranked))
+			picks = ranked.filter((r) => pool[r.i]).slice(0, 8).map((r) => ({ c: pool[r.i], why: String(r.why ?? '').slice(0, 300) }));
+	}
+	if (!picks.length) {
+		// No AI (or it gave nothing usable): take turns between sources so one doesn't crowd out the rest.
+		const lanes = [...new Set(pool.map((c) => c.source))].map((s) => pool.filter((c) => c.source === s));
+		for (let i = 0; picks.length < 8 && lanes.some((l) => l[i]); i++)
+			for (const l of lanes) if (l[i] && picks.length < 8) picks.push({ c: l[i], why: l[i].snippet });
+	}
+
+	savePicks(stage, picks);
+	return { precedents: listPrecedents(project.id), failed: [...failed], queries, usedAi };
+}
+
+/** Search every source for every query, dropping duplicates and anything already kept on the stage. */
+export async function searchSources(queries: string[], stageId: string) {
+	const stage = getStage(stageId)!;
+	const project = { id: stage.project_id };
 	// Every source for every query, in parallel. A source that fails is skipped and reported.
 	const failed = new Set<string>();
 	const runs = await Promise.all(
@@ -131,28 +155,16 @@ export async function findPrecedents(stageId: string): Promise<FindResult> {
 		pool.push(c);
 	}
 
-	let picks: { c: Candidate; why: string }[] = [];
-	if (usedAi && pool.length) {
-		const list = pool.slice(0, 40).map((c, i) => `${i}. [${c.source}] ${c.title} (${c.creator}, ${c.year}): ${c.snippet.slice(0, 200)}`).join('\n');
-		const ranked = parseJson<{ i: number; why: string }[]>(await complete(RANK_PROMPT, `${brief}\n\nResults:\n${list}`, 1200));
-		if (Array.isArray(ranked))
-			picks = ranked.filter((r) => pool[r.i]).slice(0, 8).map((r) => ({ c: pool[r.i], why: String(r.why ?? '').slice(0, 300) }));
-	}
-	if (!picks.length) {
-		// No AI (or it gave nothing usable): take turns between sources so one doesn't crowd out the rest.
-		const lanes = [...new Set(pool.map((c) => c.source))].map((s) => pool.filter((c) => c.source === s));
-		for (let i = 0; picks.length < 8 && lanes.some((l) => l[i]); i++)
-			for (const l of lanes) if (l[i] && picks.length < 8) picks.push({ c: l[i], why: l[i].snippet });
-	}
+	return { pool, failed };
+}
 
-	// Replace this stage's earlier suggestions. Kept precedents and ones added by hand stay.
+/** Replace this stage's earlier suggestions. Kept precedents and ones added by hand stay. */
+export function savePicks(stage: Stage, picks: { c: Candidate; why: string }[]) {
 	const created = now();
-	db.prepare("DELETE FROM precedents WHERE stage_id = ? AND kept = 0 AND source != 'web'").run(stage.id);
+	db.prepare("DELETE FROM precedents WHERE stage_id = ? AND kept = 0").run(stage.id);
 	const insert = db.prepare(
 		`INSERT INTO precedents (id, project_id, stage_id, source, title, creator, year, url, image_url, snippet, kept, note, created_at)
 		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, '', ?)`
 	);
-	for (const { c, why } of picks) insert.run(uid(), project.id, stage.id, c.source, c.title, c.creator, c.year, c.url, c.image_url, why, created);
-
-	return { precedents: listPrecedents(project.id), failed: [...failed], queries, usedAi };
+	for (const { c, why } of picks) insert.run(uid(), stage.project_id, stage.id, c.source, c.title, c.creator, c.year, c.url, c.image_url, why, created);
 }

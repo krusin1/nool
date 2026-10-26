@@ -3,6 +3,7 @@
 	import Search from '@lucide/svelte/icons/search';
 	import PrecedentCard from './PrecedentCard.svelte';
 	import PrecedentForm from './PrecedentForm.svelte';
+	import AskClaude from './AskClaude.svelte';
 	import { api } from '#lib/api.ts';
 	import { autosave } from '#lib/autosave.svelte.ts';
 	import { SOURCE_LABELS } from '#lib/format.ts';
@@ -12,8 +13,9 @@
 		precedents = $bindable(),
 		stageId,
 		stageName,
+		projectTitle,
 		ai
-	}: { precedents: Precedent[]; stageId: string; stageName: string; ai: boolean } = $props();
+	}: { precedents: Precedent[]; stageId: string; stageName: string; projectTitle: string; ai: boolean } = $props();
 
 	let adding = $state(false);
 	let finding = $state(false);
@@ -80,9 +82,16 @@
 			{#if ai}
 				Searches museums, papers and code, then your AI picks the closest.
 			{:else}
-				Searches museums, papers and code by keyword. <a href="/connections#ai">Connect an AI</a> for sharper picks.
+				Searches museums, papers and code by keyword. For sharper picks, ask Claude Desktop or
+				<a href="/connections#ai">connect an AI key</a>.
 			{/if}
 		</span>
+		{#if !ai}
+			<AskClaude
+				prompt={`Find precedents for the "${stageName}" stage of my Nool project "${projectTitle}" and suggest the best ones in Nool.`}
+				label="Find with Claude Desktop"
+			/>
+		{/if}
 	</div>
 	{#if failed}<p class="label err">{failed}</p>{/if}
 	{#if note}<p class="label">{note}</p>{/if}

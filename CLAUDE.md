@@ -50,7 +50,8 @@ Documentation should feel like part of making, not an extra step: capture is one
 - Desk API under `/api/` (projects, stages, blocks, precedents, uploads). Same-origin only for writes (enforced in `hooks.server.ts`).
 - Inbox API under `/api/inbox/` for other apps, `Authorization: Bearer <token>`: `GET /api/inbox`, `POST /api/inbox/blocks` `{project, stage?, type, data, source?}` (names or ids; no stage = last-used stage), `POST /api/inbox/uploads` (multipart `file`).
 - AI and setup: `PUT/DELETE /api/settings/ai`, `POST /api/stages/[id]/summary`, `POST /api/stages/[id]/find`, `GET/POST/DELETE /api/mcp`, `PUT /api/settings/sources`.
-- MCP tools: list_projects, add_note, add_link, add_quote, add_image (local path or URL).
+- MCP tools: list_projects, add_note, add_link, add_quote, add_image (local path or URL), read_stage, add_summary, search_precedents, suggest_precedents. Inbox also has `GET /api/inbox/stage`, `POST /api/inbox/search`, `POST /api/inbox/precedents`.
+- Without an AI key, Summarize and Find precedents offer "with Claude Desktop": copy a request, open `claude://`, Claude does the work through the MCP tools on the user's own Claude plan. The desk refreshes blocks and precedents on window focus.
 
 ## Design system
 

@@ -155,6 +155,16 @@
 		await autosave.now(() => api.deleteBlock(b.id));
 	}
 
+	// Coming back from Claude or another app: pick up blocks and precedents it added.
+	async function refresh() {
+		if (autosave.pending || dragId) return;
+		const res = await fetch(`/api/projects/${project.id}`);
+		if (!res.ok || autosave.pending) return;
+		const fresh = await res.json();
+		blocks = fresh.blocks;
+		precedents = fresh.precedents;
+	}
+
 	function closeOverlay() {
 		posting = false;
 		invalidateAll();
@@ -165,7 +175,7 @@
 	<title>{project.title} · Nool</title>
 </svelte:head>
 
-<svelte:window onbeforeunload={() => autosave.flush()} />
+<svelte:window onbeforeunload={() => autosave.flush()} onfocus={refresh} />
 
 <div class="desk">
 	<DeskHeader bind:project onedit={editProject} onpost={post} onrecall={recall} ondelete={remove} />
@@ -204,6 +214,8 @@
 						/>
 						<StageSummary
 							stageId={stage.id}
+							projectTitle={project.title}
+							stageName={stage.name}
 							ai={data.ai}
 							empty={!stageBlocks.length}
 							onadd={(text) => addBlock('note', { text })}
@@ -246,7 +258,7 @@
 			</main>
 
 			<aside class="precedent-col" class:hidden-sm={tab !== 'precedents'}>
-				<PrecedentPanel bind:precedents stageId={stage.id} stageName={stage.name} ai={data.ai} />
+				<PrecedentPanel bind:precedents stageId={stage.id} stageName={stage.name} projectTitle={project.title} ai={data.ai} />
 			</aside>
 		{/if}
 	</div>
