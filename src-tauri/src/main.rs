@@ -7,12 +7,29 @@ use std::net::TcpStream;
 use std::sync::Mutex;
 use std::time::Duration;
 use tauri::{Manager, RunEvent, Url, WebviewUrl, WebviewWindowBuilder};
+use tauri_plugin_deep_link::DeepLinkExt;
 use tauri_plugin_shell::{process::CommandChild, ShellExt};
 
 /// Fixed so the Figma plugin and MCP config keep working between launches.
 const PORT: u16 = 5173;
 
 struct Server(Mutex<Option<CommandChild>>);
+
+/// nool://open or nool://p/<id> from the website or another app: bring the window forward
+/// and go to that page. Only paths inside Nool are followed.
+fn open_link(app: &tauri::AppHandle, link: &str) {
+    let Some(w) = app.get_webview_window("main") else { return };
+    let _ = w.unminimize();
+    let _ = w.show();
+    let _ = w.set_focus();
+    let rest = link.trim_start_matches("nool://").trim_start_matches("open").trim_matches('/');
+    let ok = rest.chars().all(|c| c.is_ascii_alphanumeric() || "-/".contains(c));
+    if ok && !rest.is_empty() && nool_running() {
+        if let Ok(url) = Url::parse(&format!("http://localhost:{PORT}/{rest}")) {
+            let _ = w.navigate(url);
+        }
+    }
+}
 
 fn connect() -> Option<TcpStream> {
     TcpStream::connect_timeout(&([127, 0, 0, 1], PORT).into(), Duration::from_millis(300)).ok()
@@ -62,14 +79,22 @@ fn start_server(app: &tauri::App) -> Result<CommandChild, Box<dyn std::error::Er
 
 fn main() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
-            if let Some(w) = app.get_webview_window("main") {
-                let _ = w.unminimize();
-                let _ = w.set_focus();
-            }
+        .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
+            let link = args.iter().find(|a| a.starts_with("nool://")).cloned().unwrap_or_default();
+            open_link(app, &link);
         }))
+        .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_shell::init())
         .setup(|app| {
+            // Installers register nool:// themselves; this covers running a dev build on Windows and Linux.
+            #[cfg(any(windows, target_os = "linux"))]
+            let _ = app.deep_link().register_all();
+            let handle = app.handle().clone();
+            app.deep_link().on_open_url(move |e| {
+                if let Some(u) = e.urls().first() {
+                    open_link(&handle, u.as_str());
+                }
+            });
             let window = WebviewWindowBuilder::new(app, "main", WebviewUrl::App("index.html".into()))
                 .title("Nool")
                 .inner_size(1280.0, 840.0)

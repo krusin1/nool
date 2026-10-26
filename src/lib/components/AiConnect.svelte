@@ -14,7 +14,11 @@
 	}
 	type Status = { connected: false } | { connected: true; provider: string; name: string; model: string; url: string; keyEnd: string };
 
-	let { providers, status: initial }: { providers: Provider[]; status: Status } = $props();
+	let {
+		providers,
+		status: initial,
+		onconnected
+	}: { providers: Provider[]; status: Status; onconnected?: () => void } = $props();
 
 	let status = $state<Status>(untrack(() => initial));
 	let editing = $state(untrack(() => !initial.connected));
@@ -59,6 +63,7 @@
 			status = j;
 			editing = false;
 			key = '';
+			onconnected?.();
 		} catch (err) {
 			failed = (err as Error).message;
 		} finally {

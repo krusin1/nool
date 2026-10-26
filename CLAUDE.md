@@ -23,7 +23,7 @@ Documentation should feel like part of making, not an extra step: capture is one
 - `mcp/`: standalone MCP server with its own package.json, so the app stays light. Bundled to one file (`mcp/dist`) for the desktop app.
 - `figma-plugin/`: Send to Nool plugin (plain JS).
 - `src-tauri/`: desktop shell (Tauri 2). Starts the bundled Node runtime (`nool-node` sidecar) running the adapter-node server on 127.0.0.1:5173 with data in the OS app-data folder, then shows it in a window. Links open in the system browser via `/api/open`.
-- `site/`: static download page, deployed on Vercel. Links to the latest GitHub Release.
+- `site/`: static download page, deployed on Vercel. Links to the latest GitHub Release. "Open in app" uses the `nool://` link the desktop app registers (tauri-plugin-deep-link; `nool://p/<id>` opens a project).
 - `.github/workflows/release.yml`: builds macOS (Apple Silicon), Windows and Linux installers on tag `v*`.
 
 ## Data model
@@ -41,6 +41,7 @@ Documentation should feel like part of making, not an extra step: capture is one
 1. **Album** (`/`): stamps view (default) and list view. Stamp picture is the project's last image; with none, a generated motif and the title. Palette, tilt and motif come from a hash of the id. Value = block count. Posted stamps carry a postmark. "New stamp" form with live stamp preview and template choice.
 2. **Desk** (`/p/[id]`): stage rail (edit mode for stages), blocks for the selected stage with inline editing and autosave, composer at the foot (Enter = note, URL = link, paste/drop images, one-click block types), precedent panel (manual add, keep, note, dismiss). Header: editable title and description, save status, Letter, Post/Recall, delete. Posting plays the stamp-on-envelope animation. Under 900px: single column with Blocks / Precedents tabs.
 3. **Letter** (`/view/[id]`): editorial case study. Masthead, stages as numbered sections, empty blocks hidden, figures numbered, kept precedents as margin notes keyed to the Lineage list.
+0. **Welcome** (`/welcome`): first launch only (settings `welcomed`). Three steps: what Nool is, connect an AI (optional, skippable), ready.
 4. **Connections** (`/connections`): inbox token, Figma plugin, MCP config, Blender and curl examples, API reference.
 5. **Backups** (`/backups`): save/restore a `.nool` backup file (gzipped JSON: database snapshot + images); Google Drive backup with `drive.file` scope, manual or daily, last 10 kept. Restoring replaces projects and saves a safety copy first.
 

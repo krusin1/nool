@@ -42,6 +42,11 @@
 			.mark { display: inline-flex; align-items: center; gap: 10px; font: 600 24px/1 var(--display); letter-spacing: -0.02em; text-decoration: none; }
 			.bar nav a { font-size: 13px; color: var(--muted); text-decoration: none; margin-left: 24px; }
 			.bar nav a:hover { color: var(--text); }
+			header.bar { position: relative; }
+			.bar nav a.open-app { display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); font-weight: 600; }
+			.bar nav a.open-app:hover { background: var(--accent); color: var(--on-accent); }
+			.open-hint { position: absolute; right: 0; top: 60px; margin: 0; padding: 8px 12px; font-size: 13px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; z-index: 2; }
+			.open-hint a { color: var(--accent); }
 
 			.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 64px; align-items: center; padding: 96px 0 80px; }
 			.kicker { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
@@ -103,7 +108,9 @@
 					<a href="#how">How it works</a>
 					<a href="#private">Private by design</a>
 					<a href="https://github.com/krusin1/nool">Source</a>
+					<a class="open-app" id="open-app" href="nool://open">Open in app</a>
 				</nav>
+				<p class="open-hint" id="open-hint" role="status" hidden>Nool isn't installed yet. <a href="#download">Download it</a>, then this button opens it.</p>
 			</header>
 
 			<main>
@@ -182,6 +189,18 @@
 		</div>
 
 		<script>
+			// Open in app: nool:// is registered by the desktop app. If nothing takes the link, offer the download.
+			(() => {
+				const btn = document.getElementById('open-app'), hint = document.getElementById('open-hint');
+				btn.addEventListener('click', () => {
+					let left = false;
+					const away = () => (left = true);
+					window.addEventListener('blur', away, { once: true });
+					document.addEventListener('visibilitychange', away, { once: true });
+					setTimeout(() => { if (!left) hint.hidden = false; }, 1500);
+				});
+			})();
+
 			// Stamps: same perforation and palettes as the app.
 			(() => {
 				const W = 200, H = 250, r = 5.5, step = 12.5;
