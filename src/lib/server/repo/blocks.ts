@@ -1,4 +1,4 @@
-import { db, now, reorder, uid } from '../db.ts';
+import { db, now, reorder, tx, uid } from '../db.ts';
 import { touchProject } from './projects.ts';
 import type { Block, BlockDataMap, BlockType } from '#lib/types.ts';
 
@@ -67,7 +67,7 @@ export function deleteBlock(id: string) {
 /** Set the full order of a stage's blocks (also used to move a block into a stage). */
 export function reorderBlocks(stageId: string, ids: string[]) {
 	const move = db.prepare('UPDATE blocks SET stage_id = ? WHERE id = ?');
-	db.transaction(() => ids.forEach((id) => move.run(stageId, id)))();
+	tx(() => ids.forEach((id) => move.run(stageId, id)));
 	reorder('blocks', ids);
 }
 

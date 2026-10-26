@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { db } from './db.ts';
+import { all, db } from './db.ts';
 import { checkToken } from './repo/settings.ts';
 import { listStages } from './repo/stages.ts';
 import type { Project, Stage } from '#lib/types.ts';
@@ -15,9 +15,9 @@ const norm = (s: string) => s.trim().toLowerCase();
 
 /** Find a project by id or title (case-insensitive). */
 export function resolveProject(ref: string): Project {
-	const all = db.prepare('SELECT * FROM projects ORDER BY updated_at DESC').all() as Project[];
-	const p = all.find((x) => x.id === ref) ?? all.find((x) => norm(x.title) === norm(ref));
-	if (!p) error(404, `No project matches "${ref}". Projects: ${all.map((x) => x.title).join(', ')}`);
+	const projects = all<Project>('SELECT * FROM projects ORDER BY updated_at DESC');
+	const p = projects.find((x) => x.id === ref) ?? projects.find((x) => norm(x.title) === norm(ref));
+	if (!p) error(404, `No project matches "${ref}". Projects: ${projects.map((x) => x.title).join(', ')}`);
 	return p;
 }
 

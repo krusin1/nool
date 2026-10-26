@@ -27,3 +27,10 @@ vite.config.ts.timestamp-*
 
 # Local database and uploads
 /data
+
+# Desktop build outputs
+/src-tauri/target
+/src-tauri/gen
+/src-tauri/binaries
+/mcp/dist
+/mcp/node_modules

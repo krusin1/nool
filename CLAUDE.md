@@ -17,9 +17,14 @@ Documentation should feel like part of making, not an extra step: capture is one
 
 - SvelteKit 3 (TypeScript), Svelte 5 runes, adapter-node. Imports use `#lib/...` with file extensions (`#lib/types.ts`).
 - Plain CSS with custom properties. No component library.
-- SQLite via better-sqlite3, file at `data/nool.db` (override with `NOOL_DATA_DIR`). Uploads in `data/uploads`, served from `/uploads/[name]`.
+- SQLite via Node's built-in `node:sqlite` (Node 22.13+; no native modules), file at `data/nool.db` (override with `NOOL_DATA_DIR`). Uploads in `data/uploads`, served from `/uploads/[name]`.
+- No hosted backend, no accounts. Each person's data lives on their own computer. Optional backup to a file or to their own Google Drive.
 - Lucide icons, Space Grotesk and Hanken Grotesk via Fontsource.
-- `mcp/`: standalone MCP server with its own package.json, so the app stays light.
+- `mcp/`: standalone MCP server with its own package.json, so the app stays light. Bundled to one file (`mcp/dist`) for the desktop app.
+- `figma-plugin/`: Send to Nool plugin (plain JS).
+- `src-tauri/`: desktop shell (Tauri 2). Starts the bundled Node runtime (`nool-node` sidecar) running the adapter-node server on 127.0.0.1:5173 with data in the OS app-data folder, then shows it in a window. Links open in the system browser via `/api/open`.
+- `site/`: static download page, deployed on Vercel. Links to the latest GitHub Release.
+- `.github/workflows/release.yml`: builds macOS (Apple Silicon), Windows and Linux installers on tag `v*`.
 
 ## Data model
 
@@ -36,7 +41,8 @@ Documentation should feel like part of making, not an extra step: capture is one
 1. **Album** (`/`): stamps view (default) and list view. Stamp picture is the project's last image; with none, a generated motif and the title. Palette, tilt and motif come from a hash of the id. Value = block count. Posted stamps carry a postmark. "New stamp" form with live stamp preview and template choice.
 2. **Desk** (`/p/[id]`): stage rail (edit mode for stages), blocks for the selected stage with inline editing and autosave, composer at the foot (Enter = note, URL = link, paste/drop images, one-click block types), precedent panel (manual add, keep, note, dismiss). Header: editable title and description, save status, Letter, Post/Recall, delete. Posting plays the stamp-on-envelope animation. Under 900px: single column with Blocks / Precedents tabs.
 3. **Letter** (`/view/[id]`): editorial case study. Masthead, stages as numbered sections, empty blocks hidden, figures numbered, kept precedents as margin notes keyed to the Lineage list.
-4. **Connections** (`/connections`): inbox token, MCP config, Blender and curl examples, API reference.
+4. **Connections** (`/connections`): inbox token, Figma plugin, MCP config, Blender and curl examples, API reference.
+5. **Backups** (`/backups`): save/restore a `.nool` backup file (gzipped JSON: database snapshot + images); Google Drive backup with `drive.file` scope, manual or daily, last 10 kept. Restoring replaces projects and saves a safety copy first.
 
 ## API
 
@@ -56,9 +62,13 @@ Clean, minimal, editorial. A well-set print journal, not a SaaS dashboard.
 - Icons: Lucide, stroke 1.5, 16px.
 - Logo: perforated stamp with one thread writing an "n" (`Logo.svelte`).
 
+## Secrets
+
+Never commit keys or tokens. `.env` and `.env.*` are git-ignored. `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` (Google OAuth Desktop client) come from a local `.env` in development and from GitHub Actions secrets in release builds, where they are compiled into the app.
+
 ## Roadmap
 
-Done: scaffold, persistence, customizable stages, blocks, posting, letter, connections (inbox API + MCP).
+Done: scaffold, persistence, customizable stages, blocks, posting, letter, connections (inbox API, MCP, Figma plugin), backups, desktop app, download site.
 
 Next:
 1. AI summaries on blocks (Anthropic API, server-side, key in `.env` as `ANTHROPIC_API_KEY`). Never invent facts.

@@ -1,12 +1,14 @@
 <script lang="ts">
 	import Plug from '@lucide/svelte/icons/plug';
+	import Archive from '@lucide/svelte/icons/archive';
 	import Logo from './Logo.svelte';
 </script>
 
 <header class="app-header">
 	<a class="wordmark" href="/" aria-label="Nool home"><Logo size={28} /><span class="display">nool</span></a>
 	<nav class="actions">
-		<a class="btn btn-ghost" href="/connections"><Plug size={16} strokeWidth={1.5} /> Connections</a>
+		<a class="btn btn-ghost" href="/backups"><Archive size={16} strokeWidth={1.5} /> <span class="hide-sm">Backups</span></a>
+		<a class="btn btn-ghost" href="/connections"><Plug size={16} strokeWidth={1.5} /> <span class="hide-sm">Connections</span></a>
 	</nav>
 </header>
 
@@ -39,6 +41,10 @@
 	}
 
 	@media (max-width: 600px) {
+		.hide-sm {
+			display: none;
+		}
+
 		.app-header {
 			padding: 0 var(--s2);
 		}

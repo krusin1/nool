@@ -11,7 +11,7 @@
 
 	const mcpConfig = $derived(
 		JSON.stringify(
-			{ mcpServers: { nool: { command: 'node', args: [data.mcpPath], env: { NOOL_URL: data.origin, NOOL_TOKEN: token } } } },
+			{ mcpServers: { nool: { command: data.node, args: [data.mcpPath], env: { NOOL_URL: data.origin, NOOL_TOKEN: token } } } },
 			null,
 			2
 		)
@@ -85,7 +85,7 @@ post(NOOL + "/api/inbox/blocks", json.dumps({"project": PROJECT, "stage": STAGE,
 		</p>
 		<ol class="steps">
 			<li>In the Figma desktop app: Plugins → Development → Import plugin from manifest.</li>
-			<li>Choose <code>figma-plugin/manifest.json</code> in the Nool folder.</li>
+			<li>Choose this file: <code>{data.figmaManifest}</code></li>
 			<li>Run it from Plugins → Development → Send to Nool. Open Connection, paste the address and token below, and Connect.</li>
 		</ol>
 		<CopyBlock label="Nool address for the plugin" code={data.origin} />
@@ -99,7 +99,9 @@ post(NOOL + "/api/inbox/blocks", json.dumps({"project": PROJECT, "stage": STAGE,
 			like “export the selected frame and add it to Tidal, Build stage.”
 		</p>
 		<ol class="steps">
-			<li>Install it once: open a terminal in the Nool folder and run <code>npm install --prefix mcp</code>.</li>
+			{#if !data.desktop}
+				<li>Install it once: open a terminal in the Nool folder and run <code>npm install --prefix mcp</code>.</li>
+			{/if}
 			<li>Add this to your MCP app's config. In Claude Desktop: Settings → Developer → Edit config.</li>
 			<li>Restart the app. Nool needs to be running for the tools to work.</li>
 		</ol>
@@ -185,6 +187,7 @@ post(NOOL + "/api/inbox/blocks", json.dumps({"project": PROJECT, "stage": STAGE,
 		padding: 1px 4px;
 		border-radius: 2px;
 		background: var(--surface);
+		word-break: break-all;
 		border: var(--border);
 	}
 

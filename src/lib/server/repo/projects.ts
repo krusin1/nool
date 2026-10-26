@@ -1,4 +1,4 @@
-import { db, now, uid } from '../db.ts';
+import { all, db, now, params, tx, uid } from '../db.ts';
 import { TEMPLATES } from '#lib/templates.ts';
 import { emptyData } from '#lib/blocks.ts';
 import { addBlock, listBlocks } from './blocks.ts';
@@ -12,7 +12,7 @@ export function getProject(id: string): Project | undefined {
 }
 
 export function listSummaries(): ProjectSummary[] {
-	const projects = db.prepare('SELECT * FROM projects ORDER BY updated_at DESC').all() as Project[];
+	const projects = all<Project>('SELECT * FROM projects ORDER BY updated_at DESC');
 	const counts = db.prepare(
 		`SELECT
 			(SELECT COUNT(*) FROM blocks WHERE project_id = @id) AS blockCount,
@@ -44,17 +44,17 @@ export function createProject(input: { title: string; description?: string; temp
 		updated_at: t,
 		posted_at: null
 	};
-	db.transaction(() => {
+	tx(() => {
 		db.prepare(
 			'INSERT INTO projects (id, title, description, created_at, updated_at, posted_at) VALUES (@id, @title, @description, @created_at, @updated_at, @posted_at)'
-		).run(project);
+		).run(params(project));
 		const insertStage = db.prepare('INSERT INTO stages (id, project_id, name, position) VALUES (?, ?, ?, ?)');
 		template.stages.forEach((s, i) => {
 			const stageId = uid();
 			insertStage.run(stageId, project.id, s.name, i);
 			if (s.starter) addBlock({ project_id: project.id, stage_id: stageId, type: s.starter, data: emptyData(s.starter) });
 		});
-	})();
+	});
 	return project;
 }
 

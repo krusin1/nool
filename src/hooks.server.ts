@@ -1,9 +1,11 @@
 import { error } from '@sveltejs/kit';
 import type { Handle, ServerInit } from '@sveltejs/kit/hooks';
 import { seedIfEmpty } from '#lib/server/seed.ts';
+import { startAutoBackup } from '#lib/server/gdrive.ts';
 
 export const init: ServerInit = () => {
 	seedIfEmpty();
+	startAutoBackup();
 };
 
 const SAFE = new Set(['GET', 'HEAD', 'OPTIONS']);

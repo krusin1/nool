@@ -1,4 +1,4 @@
-import { db, uid } from './db.ts';
+import { db, tx, uid } from './db.ts';
 import seed from './seed-data.json';
 
 // Demo projects, inserted the first time the app runs with an empty database.
@@ -20,7 +20,7 @@ export function seedIfEmpty() {
 		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 	);
 
-	db.transaction(() => {
+	tx(() => {
 		for (const p of seed) {
 			const pid = uid();
 			insProject.run(pid, p.title, p.description, p.created_at, p.updated_at, p.posted_at);
@@ -39,5 +39,5 @@ export function seedIfEmpty() {
 				insPrecedent.run(uid(), pid, sid, x.source, x.title, x.creator, x.year, x.url, x.image_url, x.snippet, x.kept ? 1 : 0, x.note, p.created_at);
 			}
 		}
-	})();
+	});
 }

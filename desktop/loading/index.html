@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Nool</title>
+		<style>
+			:root { color-scheme: light dark; }
+			body { margin: 0; height: 100vh; display: grid; place-items: center; background: #fafaf8; color: #111; font: 15px/1.5 system-ui, sans-serif; }
+			@media (prefers-color-scheme: dark) { body { background: #121211; color: #ededea; } }
+			main { display: grid; justify-items: center; gap: 16px; text-align: center; padding: 24px; }
+			p { margin: 0; color: #6b6b6b; max-width: 36ch; }
+			svg { animation: breathe 1.6s ease-in-out infinite; }
+			@keyframes breathe { 50% { opacity: 0.4; } }
+			[data-state='error'] svg { animation: none; }
+			@media (prefers-reduced-motion: reduce) { svg { animation: none; } }
+		</style>
+	</head>
+	<body>
+		<main>
+			<svg width="56" height="56" viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" fill="#2b4bff" /><path d="M10.5 23 V14.5 C10.5 11 12.8 9.5 15.75 9.5 C18.7 9.5 21 11 21 14.5 V20 C21 22.6 22.6 24 25.5 23" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" /></svg>
+			<p id="msg">Opening Nool…</p>
+		</main>
+		<script>
+			window.noolError = (kind) => {
+				document.body.dataset.state = 'error';
+				document.getElementById('msg').textContent =
+					kind === 'port'
+						? 'Another app is using port 5173, which Nool needs. Close it and open Nool again.'
+						: "Nool couldn't start its local server. Quit and open it again.";
+			};
+		</script>
+	</body>
+</html>

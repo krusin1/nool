@@ -1,9 +1,9 @@
-import { db, reorder, uid } from '../db.ts';
+import { all, db, params, reorder, uid } from '../db.ts';
 import { touchProject } from './projects.ts';
 import type { Stage } from '#lib/types.ts';
 
 export function listStages(projectId: string): Stage[] {
-	return db.prepare('SELECT * FROM stages WHERE project_id = ? ORDER BY position').all(projectId) as Stage[];
+	return all<Stage>('SELECT * FROM stages WHERE project_id = ? ORDER BY position', projectId);
 }
 
 export function getStage(id: string): Stage | undefined {
@@ -13,7 +13,7 @@ export function getStage(id: string): Stage | undefined {
 export function addStage(projectId: string, name: string): Stage {
 	const { n } = db.prepare('SELECT COUNT(*) AS n FROM stages WHERE project_id = ?').get(projectId) as { n: number };
 	const stage: Stage = { id: uid(), project_id: projectId, name: name.trim() || 'New stage', position: n };
-	db.prepare('INSERT INTO stages (id, project_id, name, position) VALUES (@id, @project_id, @name, @position)').run(stage);
+	db.prepare('INSERT INTO stages (id, project_id, name, position) VALUES (@id, @project_id, @name, @position)').run(params(stage));
 	touchProject(projectId);
 	return stage;
 }

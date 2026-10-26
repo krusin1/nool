@@ -2,32 +2,41 @@
 
 Nool is Tamil for thread, and also for book. A process log for makers: document a project as you make it, keep what it builds on, and post it as a case study.
 
-## Run
+Nool is a desktop app. There is no server and no account: your projects stay on your computer. You can back them up to a file or to your own Google Drive.
+
+## Download
+
+Get the installer for your computer from the [latest release](https://github.com/krusin1/nool/releases/latest).
+
+First launch, because the app isn't signed with a paid developer certificate yet:
+- **macOS**: right-click Nool in Applications → Open → Open.
+- **Windows**: if SmartScreen appears, click More info → Run anyway.
+
+## Develop
+
+Needs Node 22.13 or newer.
 
 ```
 npm install
 npm run dev
 ```
 
-Open http://localhost:5173. The first start creates `data/nool.db` and three demo projects.
+Open http://localhost:5173. The first start creates `data/nool.db` and three demo projects. `npm run seed` clears the database so they come back.
 
-- `npm run seed` clears the database so the demo projects come back on the next start (uploads are kept).
-- `npm run build` then `npm start` runs the production build (port 3000).
-
-Data lives in `data/` (database and uploaded images). Set `NOOL_DATA_DIR` to keep it somewhere else.
+Desktop build (needs Rust): `npm run build:desktop`, `node scripts/fetch-node.mjs`, then `npm run tauri build`.
 
 ## Connections
 
-Other apps can send notes, links and images into Nool. Open **Connections** in the app for your token and setup.
+- **Figma**: import `figma-plugin/manifest.json` in the Figma desktop app (Plugins → Development → Import plugin from manifest), then connect it with your token from Connections.
+- **MCP** (Claude Desktop, Cursor…): the Connections page shows the config to paste. From source, run `npm install --prefix mcp` first; the desktop app includes everything.
+- **Scripts**: `POST /api/inbox/blocks` with `Authorization: Bearer <token>`. Connections has Blender and curl examples.
 
-- **Figma**: import `figma-plugin/manifest.json` in the Figma desktop app (Plugins → Development → Import plugin from manifest), then connect it with your token.
-- **MCP**: `npm install --prefix mcp`, then add the config from the Connections page to Claude Desktop, Cursor or another MCP app.
-- **Scripts**: `POST /api/inbox/blocks` with `Authorization: Bearer <token>`. The Connections page has Blender and curl examples.
+## Releases
+
+Push a tag like `v0.1.0`. GitHub Actions builds installers for macOS, Windows and Linux and attaches them to the release. Google Drive backup needs the repository secrets `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` (a Google OAuth client of type Desktop app, scope `drive.file`).
 
 ## Structure
 
-- `src/lib/server/` database, repositories, validation, uploads, inbox helpers
-- `src/routes/api/` JSON API for the desk; `src/routes/api/inbox/` token-protected API for other apps
-- `src/lib/components/` UI, one component per file; `blocks/` holds the block editors
-- `figma-plugin/` Send to Nool Figma plugin (plain JS, no build step)
-- `mcp/` standalone MCP server (its own dependencies, so the app stays light)
+- `src/` the app (SvelteKit). `src/lib/server/` database, backups, Google Drive, inbox.
+- `src-tauri/` desktop shell
+- `mcp/` MCP server · `figma-plugin/` Figma plugin · `site/` download page (Vercel)
