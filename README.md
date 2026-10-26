@@ -20,6 +20,7 @@ Data lives in `data/` (database and uploaded images). Set `NOOL_DATA_DIR` to kee
 
 Other apps can send notes, links and images into Nool. Open **Connections** in the app for your token and setup.
 
+- **Figma**: import `figma-plugin/manifest.json` in the Figma desktop app (Plugins → Development → Import plugin from manifest), then connect it with your token.
 - **MCP**: `npm install --prefix mcp`, then add the config from the Connections page to Claude Desktop, Cursor or another MCP app.
 - **Scripts**: `POST /api/inbox/blocks` with `Authorization: Bearer <token>`. The Connections page has Blender and curl examples.
 
@@ -28,4 +29,5 @@ Other apps can send notes, links and images into Nool. Open **Connections** in t
 - `src/lib/server/` database, repositories, validation, uploads, inbox helpers
 - `src/routes/api/` JSON API for the desk; `src/routes/api/inbox/` token-protected API for other apps
 - `src/lib/components/` UI, one component per file; `blocks/` holds the block editors
+- `figma-plugin/` Send to Nool Figma plugin (plain JS, no build step)
 - `mcp/` standalone MCP server (its own dependencies, so the app stays light)

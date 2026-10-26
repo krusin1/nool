@@ -78,6 +78,20 @@ post(NOOL + "/api/inbox/blocks", json.dumps({"project": PROJECT, "stage": STAGE,
 	</section>
 
 	<section>
+		<h2 class="display">Figma</h2>
+		<p class="muted">
+			The Send to Nool plugin exports the frames you select and sends them, with an optional caption or note, to the
+			project and stage you pick. No other app in between.
+		</p>
+		<ol class="steps">
+			<li>In the Figma desktop app: Plugins → Development → Import plugin from manifest.</li>
+			<li>Choose <code>figma-plugin/manifest.json</code> in the Nool folder.</li>
+			<li>Run it from Plugins → Development → Send to Nool. Open Connection, paste the address and token below, and Connect.</li>
+		</ol>
+		<CopyBlock label="Nool address for the plugin" code={data.origin} />
+	</section>
+
+	<section>
 		<h2 class="display">AI apps, through MCP</h2>
 		<p class="muted">
 			The Nool MCP server lets Claude, Cursor and other MCP apps list your projects and add notes, links, quotes and

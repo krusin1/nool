@@ -1,0 +1,154 @@
+<style>
+	:root { color-scheme: light dark; }
+	body { margin: 0; padding: 16px; font: 12px/1.5 Inter, system-ui, sans-serif; color: var(--figma-color-text, #111); background: var(--figma-color-bg, #fff); }
+	h1 { margin: 0 0 12px; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+	label { display: grid; gap: 4px; margin-bottom: 10px; color: var(--figma-color-text-secondary, #666); }
+	input, select, textarea { font: inherit; padding: 6px 8px; border: 1px solid var(--figma-color-border, #e6e6e3); border-radius: 4px; background: var(--figma-color-bg, #fff); color: var(--figma-color-text, #111); }
+	textarea { resize: vertical; min-height: 48px; }
+	button { font: inherit; font-weight: 600; padding: 8px 12px; border-radius: 4px; border: 1px solid var(--figma-color-border, #e6e6e3); background: none; color: inherit; cursor: pointer; }
+	.primary { background: #2b4bff; border-color: #2b4bff; color: #fff; width: 100%; }
+	button:disabled { opacity: .5; cursor: default; }
+	.row { display: flex; gap: 8px; }
+	.row > * { flex: 1; }
+	.sel { padding: 8px; margin-bottom: 10px; border-radius: 4px; background: var(--figma-color-bg-secondary, #f4f4f2); }
+	.status { min-height: 18px; margin-top: 10px; }
+	.err { color: #d2462b; }
+	details { margin-bottom: 12px; }
+	summary { cursor: pointer; color: var(--figma-color-text-secondary, #666); margin-bottom: 8px; }
+</style>
+
+<h1>
+	<svg width="18" height="18" viewBox="0 0 32 32"><rect x="2" y="2" width="28" height="28" fill="#2b4bff"/><path d="M10.5 23 V14.5 C10.5 11 12.8 9.5 15.75 9.5 C18.7 9.5 21 11 21 14.5 V20 C21 22.6 22.6 24 25.5 23" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+	Send to Nool
+</h1>
+
+<details id="setup">
+	<summary>Connection</summary>
+	<label>Nool address <input id="url" value="http://localhost:5173" /></label>
+	<label>Token (Nool → Connections) <input id="token" type="password" placeholder="nool_…" /></label>
+	<button id="connect">Connect</button>
+</details>
+
+<label>Project <select id="project"></select></label>
+<label>Stage <select id="stage"></select></label>
+<div class="sel" id="sel">Nothing selected</div>
+<label>Caption or note (optional) <textarea id="note" placeholder="What changed, why it matters"></textarea></label>
+<div class="row" style="margin-bottom:8px">
+	<label style="margin:0">Scale
+		<select id="scale"><option value="1">1×</option><option value="2" selected>2×</option><option value="3">3×</option></select>
+	</label>
+</div>
+<button class="primary" id="send" disabled>Send selection</button>
+<button id="sendNote" style="width:100%;margin-top:8px" disabled>Send note only</button>
+<div class="status" id="status"></div>
+
+<script>
+	const $ = (id) => document.getElementById(id);
+	let settings = {};
+	let projects = [];
+
+	const say = (msg, err) => { $('status').textContent = msg; $('status').className = 'status' + (err ? ' err' : ''); };
+	const base = () => $('url').value.replace(/\/$/, '');
+
+	async function nool(path, body) {
+		const res = await fetch(base() + path, {
+			method: body ? 'POST' : 'GET',
+			headers: { authorization: 'Bearer ' + $('token').value, ...(body ? { 'content-type': 'application/json' } : {}) },
+			body: body ? JSON.stringify(body) : undefined
+		});
+		const data = await res.json().catch(() => ({}));
+		if (!res.ok) throw new Error(data.message || 'Nool returned ' + res.status);
+		return data;
+	}
+
+	function fillStages() {
+		const p = projects.find((x) => x.id === $('project').value);
+		$('stage').innerHTML = '<option value="">Where I worked last</option>' +
+			(p ? p.stages.map((s) => `<option value="${s.id}">${s.name}</option>`).join('') : '');
+		if (settings.stage && p?.stages.some((s) => s.id === settings.stage)) $('stage').value = settings.stage;
+	}
+
+	async function connect() {
+		say('Connecting…');
+		try {
+			projects = await nool('/api/inbox');
+			$('project').innerHTML = projects.map((p) => `<option value="${p.id}">${p.title}${p.posted ? ' (posted)' : ''}</option>`).join('');
+			if (settings.project && projects.some((p) => p.id === settings.project)) $('project').value = settings.project;
+			fillStages();
+			$('send').disabled = $('sendNote').disabled = !projects.length;
+			$('setup').open = false;
+			save();
+			say(projects.length ? 'Connected.' : 'Connected, but there are no projects yet.');
+		} catch (e) {
+			$('setup').open = true;
+			say(e.message.includes('fetch') ? "Can't reach Nool. Is it running (npm run dev)?" : e.message, true);
+		}
+	}
+
+	function save() {
+		settings = { url: $('url').value, token: $('token').value, project: $('project').value, stage: $('stage').value };
+		parent.postMessage({ pluginMessage: { type: 'save-settings', settings } }, '*');
+	}
+
+	function toBase64(bytes) {
+		let s = '';
+		for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+		return btoa(s);
+	}
+
+	async function sendImages(images) {
+		try {
+			const note = $('note').value.trim();
+			for (const [i, img] of images.entries()) {
+				say(`Sending ${i + 1} of ${images.length}…`);
+				const { src } = await nool('/api/inbox/uploads', { name: img.name + '.png', type: 'image/png', base64: toBase64(img.bytes) });
+				await nool('/api/inbox/blocks', {
+					project: $('project').value, stage: $('stage').value || undefined, type: 'image', source: 'Figma',
+					data: { src, caption: note || img.name }
+				});
+			}
+			$('note').value = '';
+			say(`Sent ${images.length} image${images.length === 1 ? '' : 's'} to Nool.`);
+			parent.postMessage({ pluginMessage: { type: 'notify', message: 'Sent to Nool' } }, '*');
+		} catch (e) {
+			say(e.message, true);
+		} finally {
+			$('send').disabled = false;
+		}
+	}
+
+	async function sendNote() {
+		const text = $('note').value.trim();
+		if (!text) return say('Write a note first.', true);
+		try {
+			await nool('/api/inbox/blocks', { project: $('project').value, stage: $('stage').value || undefined, type: 'note', source: 'Figma', data: { text } });
+			$('note').value = '';
+			say('Note sent to Nool.');
+		} catch (e) {
+			say(e.message, true);
+		}
+	}
+
+	$('connect').onclick = connect;
+	$('project').onchange = () => { fillStages(); save(); };
+	$('stage').onchange = save;
+	$('send').onclick = () => { $('send').disabled = true; say('Exporting…'); parent.postMessage({ pluginMessage: { type: 'export', scale: Number($('scale').value) } }, '*'); };
+	$('sendNote').onclick = sendNote;
+
+	onmessage = (e) => {
+		const msg = e.data.pluginMessage;
+		if (!msg) return;
+		if (msg.type === 'settings') {
+			settings = msg.settings;
+			if (settings.url) $('url').value = settings.url;
+			if (settings.token) { $('token').value = settings.token; connect(); } else $('setup').open = true;
+		}
+		if (msg.type === 'selection') {
+			$('sel').textContent = msg.count ? `${msg.count} selected: ${msg.names.join(', ')}${msg.count > 5 ? '…' : ''}` : 'Nothing selected';
+		}
+		if (msg.type === 'exported') sendImages(msg.images);
+		if (msg.type === 'error') { say(msg.message, true); $('send').disabled = false; }
+	};
+
+	parent.postMessage({ pluginMessage: { type: 'load-settings' } }, '*');
+</script>

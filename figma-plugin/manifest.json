@@ -1,0 +1,14 @@
+{
+	"name": "Send to Nool",
+	"id": "nool-send-dev",
+	"api": "1.0.0",
+	"main": "code.js",
+	"ui": "ui.html",
+	"editorType": ["figma", "figjam"],
+	"documentAccess": "dynamic-page",
+	"networkAccess": {
+		"allowedDomains": ["none"],
+		"devAllowedDomains": ["http://localhost:5173", "http://127.0.0.1:5173"],
+		"reasoning": "Sends exported frames to the Nool app running on this computer."
+	}
+}
