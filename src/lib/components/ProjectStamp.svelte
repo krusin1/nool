@@ -8,14 +8,14 @@
 		title,
 		image = null,
 		value = 0,
-		published = false,
+		posted = null,
 		date
 	}: {
 		seed: string;
 		title: string;
 		image?: string | null;
 		value?: number;
-		published?: boolean;
+		posted?: string | null;
 		date: string;
 	} = $props();
 
@@ -42,8 +42,8 @@
 			{/if}
 		</div>
 	</div>
-	{#if published}
-		<Postmark {date} />
+	{#if posted}
+		<Postmark date={posted} />
 	{/if}
 </div>
 

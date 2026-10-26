@@ -1,15 +1,13 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import Plug from '@lucide/svelte/icons/plug';
 	import Logo from './Logo.svelte';
-
-	let { children }: { children?: Snippet } = $props();
 </script>
 
 <header class="app-header">
 	<a class="wordmark" href="/" aria-label="Nool home"><Logo size={28} /><span class="display">nool</span></a>
-	{#if children}
-		<div class="actions">{@render children()}</div>
-	{/if}
+	<nav class="actions">
+		<a class="btn btn-ghost" href="/connections"><Plug size={16} strokeWidth={1.5} /> Connections</a>
+	</nav>
 </header>
 
 <style>

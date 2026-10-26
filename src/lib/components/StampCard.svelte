@@ -1,22 +1,23 @@
 <script lang="ts">
 	import ProjectStamp from './ProjectStamp.svelte';
-	import type { Project } from '#lib/types.ts';
+	import type { ProjectSummary } from '#lib/types.ts';
 
-	let { project, cover, entryCount }: { project: Project; cover: string | null; entryCount: number } = $props();
+	let { summary }: { summary: ProjectSummary } = $props();
+	const p = $derived(summary.project);
 </script>
 
-<a class="card" href="/p/{project.id}">
+<a class="card" href="/p/{p.id}" aria-label="{p.title}, {p.posted_at ? 'posted' : 'mint'}, {summary.blockCount} blocks">
 	<ProjectStamp
-		seed={project.id}
-		title={project.title}
-		image={cover}
-		value={entryCount}
-		published={project.published}
-		date={project.created_at}
+		seed={p.id}
+		title={p.title}
+		image={summary.cover}
+		value={summary.blockCount}
+		posted={p.posted_at}
+		date={p.created_at}
 	/>
 	<span class="meta label">
-		<span>{project.published ? 'Published' : 'In progress'}</span>
-		<span>{entryCount} {entryCount === 1 ? 'entry' : 'entries'}</span>
+		<span>{p.posted_at ? 'Posted' : 'Mint'}</span>
+		<span>{summary.blockCount} {summary.blockCount === 1 ? 'block' : 'blocks'}</span>
 	</span>
 </a>
 

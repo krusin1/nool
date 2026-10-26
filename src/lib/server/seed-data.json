@@ -1,0 +1,824 @@
+[
+	{
+		"title": "Nool",
+		"description": "A process log for makers that finds what their work builds on, while they are still making it.",
+		"created_at": "2026-10-21T13:00:00Z",
+		"updated_at": "2026-10-22T18:45:00Z",
+		"posted_at": "2026-10-22T18:45:00Z",
+		"stages": [
+			{
+				"name": "Spark",
+				"blocks": [
+					{
+						"type": "note",
+						"data": {
+							"text": "The best thinking in a project happens in the middle. The test that failed, the reference that changed direction, the reason one material won. By the end most of it is gone, and the case study gets rebuilt from memory and a camera roll."
+						},
+						"created_at": "2026-10-21T13:10:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Two questions every maker gets asked: how did you get here, and what is this in conversation with? Portfolios answer the first one badly and the second one almost never."
+						},
+						"created_at": "2026-10-21T13:25:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Ground rule: AI connects and documents. People make. The AI never generates the creative work itself."
+						},
+						"created_at": "2026-10-21T13:40:00Z"
+					}
+				]
+			},
+			{
+				"name": "Moodboard",
+				"blocks": [
+					{
+						"type": "spread",
+						"data": {
+							"items": [
+								{
+									"id": "cs-b1",
+									"kind": "label",
+									"content": "Moodboard · Identity",
+									"caption": "",
+									"x": 4,
+									"y": 5,
+									"w": 22,
+									"rotate": 0,
+									"z": 1,
+									"tape": false
+								},
+								{
+									"id": "cs-b2",
+									"kind": "image",
+									"content": "/demo/case/board/stamp-study.svg",
+									"caption": "Every project is a stamp",
+									"x": 4,
+									"y": 13,
+									"w": 30,
+									"rotate": -2,
+									"z": 2,
+									"tape": true
+								},
+								{
+									"id": "cs-b3",
+									"kind": "quote",
+									"content": "Nool: Tamil for thread, and also for book.",
+									"caption": "",
+									"x": 6,
+									"y": 66,
+									"w": 24,
+									"rotate": 0,
+									"z": 3,
+									"tape": false
+								},
+								{
+									"id": "cs-b4",
+									"kind": "swatch",
+									"content": "#2B4BFF,#F3EFE6,#111111,#D2462B",
+									"caption": "",
+									"x": 31,
+									"y": 72,
+									"w": 16,
+									"rotate": 2,
+									"z": 4,
+									"tape": false
+								},
+								{
+									"id": "cs-b5",
+									"kind": "image",
+									"content": "/demo/case/board/thread.svg",
+									"caption": "",
+									"x": 36,
+									"y": 10,
+									"w": 12,
+									"rotate": 4,
+									"z": 5,
+									"tape": true
+								},
+								{
+									"id": "cs-b6",
+									"kind": "note",
+									"content": "Mint while you work. Postmarked when you post it.",
+									"caption": "",
+									"x": 36,
+									"y": 42,
+									"w": 11,
+									"rotate": -3,
+									"z": 6,
+									"tape": false
+								},
+								{
+									"id": "cs-b7",
+									"kind": "label",
+									"content": "Reading · Layout",
+									"caption": "",
+									"x": 54,
+									"y": 5,
+									"w": 20,
+									"rotate": 0,
+									"z": 7,
+									"tape": false
+								},
+								{
+									"id": "cs-b8",
+									"kind": "image",
+									"content": "/demo/case/board/layout-sketch.svg",
+									"caption": "Margin notes carry the lineage",
+									"x": 54,
+									"y": 12,
+									"w": 26,
+									"rotate": 1,
+									"z": 8,
+									"tape": false
+								},
+								{
+									"id": "cs-b9",
+									"kind": "image",
+									"content": "/demo/case/board/postmark.svg",
+									"caption": "",
+									"x": 76,
+									"y": 50,
+									"w": 20,
+									"rotate": -6,
+									"z": 9,
+									"tape": true
+								},
+								{
+									"id": "cs-b10",
+									"kind": "note",
+									"content": "All grotesk. Space Grotesk for titles, Hanken Grotesk to read.",
+									"caption": "",
+									"x": 56,
+									"y": 64,
+									"w": 15,
+									"rotate": 2,
+									"z": 10,
+									"tape": false
+								},
+								{
+									"id": "cs-b11",
+									"kind": "quote",
+									"content": "AI connects and documents. People make.",
+									"caption": "",
+									"x": 81,
+									"y": 14,
+									"w": 17,
+									"rotate": 0,
+									"z": 11,
+									"tape": false
+								}
+							]
+						},
+						"created_at": "2026-10-21T13:00:00Z"
+					}
+				]
+			},
+			{
+				"name": "Research",
+				"blocks": [
+					{
+						"type": "link",
+						"data": {
+							"url": "https://media.mit.edu/publications/documentation-in-progress-challenges-with-representing-design-process-online",
+							"note": "When student teams documented a three-week project on Build in Progress, they treated it as instructions for recreating the result and left out experimentation and mistakes (Tseng, Yang and Ruthmann). Tools have to make the messy middle worth keeping."
+						},
+						"created_at": "2026-10-22T14:05:00Z"
+					},
+					{
+						"type": "link",
+						"data": {
+							"url": "https://www.media.mit.edu/publications/product-versus-process-representing-and-appropriating-diy-projects-online/",
+							"note": "Interviews and surveys with Instructables authors and readers found that the people writing documentation and the people using it want different things from it (Tseng and Resnick). A process log and a published page should be two views of the same material."
+						},
+						"created_at": "2026-10-22T14:20:00Z"
+					},
+					{
+						"type": "link",
+						"data": {
+							"url": "https://userinterfaces.aalto.fi/inspiration-in-design/resources/DRS%202018%20final.pdf",
+							"note": "A survey of 51 professional designers found the internet is now a main source of ideas, but online examples arrive without documented reasoning, so designers struggle to trust them (Koch, László, Lucero and Oulasvirta). Work published with its process and lineage is exactly what that gap is missing."
+						},
+						"created_at": "2026-10-22T14:35:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Herring et al. (CHI 2009) found designers keep personal collections of examples for later. Koch et al. note these collections grow unmanageable, feel ineffective and go stale."
+						},
+						"created_at": "2026-10-22T14:50:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Schön, The Reflective Practitioner (1983): practitioners think through doing, and reflection in action is where professional knowledge forms. Documentation after the fact misses it."
+						},
+						"created_at": "2026-10-22T15:05:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Jansson and Smith (Design Studies, 1991) showed that seeing an example can make designers reproduce its features, including its flaws. Design fixation is the main risk of a precedent finder."
+						},
+						"created_at": "2026-10-22T15:20:00Z"
+					}
+				]
+			},
+			{
+				"name": "Experiments",
+				"blocks": [
+					{
+						"type": "image",
+						"data": {
+							"src": "/demo/case/positioning-map.svg",
+							"caption": "Positioning map. Horizontal: captures the finished product vs. captures the process. Vertical: your own work only vs. connects it to other work."
+						},
+						"created_at": "2026-10-22T15:40:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Fixed five stages: spark, research, experiments, build, outcome. Each one asks the precedent finder for something different: artworks and installations at spark, papers at research, technical approaches at experiments, code and tools at build, closest prior works at outcome."
+						},
+						"created_at": "2026-10-22T15:55:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Positioning v1: \"a process documentation platform with an AI precedent finder.\" Lists features and sounds like homework. Nobody wants to document; people want credit for their thinking and to know their idea is not already done. v2: \"Show what your work builds on.\""
+						},
+						"created_at": "2026-10-22T16:10:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Working name Marginalia was too long to say out loud. Shortlisted one and two syllable names, including names from Indian languages. Going with Nool for now: Tamil for thread, and also for book."
+						},
+						"created_at": "2026-10-22T16:25:00Z"
+					}
+				]
+			},
+			{
+				"name": "Build",
+				"blocks": [
+					{
+						"type": "image",
+						"data": {
+							"src": "/demo/case/workspace.png",
+							"caption": "Phase 1 workspace. Stage rail on the left, entries in the center, precedents for the current stage on the right."
+						},
+						"created_at": "2026-10-22T16:45:00Z"
+					},
+					{
+						"type": "image",
+						"data": {
+							"src": "/demo/case/loop.svg",
+							"caption": "The loop the prototype has to demonstrate end to end: create, log, structure, find precedents, keep, post."
+						},
+						"created_at": "2026-10-22T17:00:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Precedent pipeline: Claude writes 3 to 5 queries for the current stage from the title, description and entries. Queries run against Semantic Scholar, arXiv, The Met, Cooper Hewitt and GitHub. Results are deduped, Claude ranks the top 8 and writes one line on why each is relevant. Cached per stage, refreshed on demand."
+						},
+						"created_at": "2026-10-22T17:15:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Stack: SvelteKit with Svelte 5, plain CSS custom properties, SQLite for local persistence, Anthropic API on the server only. Type: all grotesk, Space Grotesk for titles and Hanken Grotesk for reading."
+						},
+						"created_at": "2026-10-22T17:30:00Z"
+					}
+				]
+			},
+			{
+				"name": "Outcome",
+				"blocks": [
+					{
+						"type": "image",
+						"data": {
+							"src": "/demo/case/nool-cover.svg",
+							"caption": "Identity: a perforated stamp with one thread that writes an n. Every project on the home page becomes its own stamp."
+						},
+						"created_at": "2026-10-22T17:50:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Where it sits: Hackaday.io and Build in Progress log process. Are.na collects references. Behance publishes the result. ResearchRabbit and Connected Papers map related papers. None connect a live process log to precedent across art, design and code."
+						},
+						"created_at": "2026-10-22T18:00:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Biggest risk is adoption, not technology. If logging takes more than ten seconds, people stop around week two. Mobile and voice capture come before anything else after the prototype."
+						},
+						"created_at": "2026-10-22T18:15:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "First market: thesis students and MFA programs. Required to document process and cite precedent, working to a deadline, and the school can pay."
+						},
+						"created_at": "2026-10-22T18:30:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Next: 5 to 10 makers use the prototype on a real project for 2 to 3 weeks. Two measures: do they keep logging, and do they keep any precedents."
+						},
+						"created_at": "2026-10-22T18:45:00Z"
+					}
+				]
+			}
+		],
+		"precedents": [
+			{
+				"stage": "Spark",
+				"source": "web",
+				"title": "As We May Think",
+				"creator": "Vannevar Bush",
+				"year": "1945",
+				"url": "https://www.theatlantic.com/magazine/archive/1945/07/as-we-may-think/303881/",
+				"image_url": null,
+				"snippet": "The Memex links documents through associative trails, the earliest version of tying a piece of work to what it draws on.",
+				"kept": true,
+				"note": "The original lineage machine. Trails, not folders."
+			},
+			{
+				"stage": "Moodboard",
+				"source": "web",
+				"title": "Mnemosyne Atlas",
+				"creator": "Aby Warburg",
+				"year": "1924–29",
+				"url": "https://warburg.sas.ac.uk/",
+				"image_url": null,
+				"snippet": "Panels of images arranged to show how visual ideas travel across centuries.",
+				"kept": true,
+				"note": "A lineage you can see at a glance. The letter should feel like one panel."
+			},
+			{
+				"stage": "Research",
+				"source": "semanticscholar",
+				"title": "The Reflective Practitioner: How Professionals Think in Action",
+				"creator": "Donald A. Schön",
+				"year": "1983",
+				"url": "https://www.semanticscholar.org/search?q=The%20Reflective%20Practitioner%20Sch%C3%B6n",
+				"image_url": null,
+				"snippet": "Reflection in action as the core of professional knowledge.",
+				"kept": true,
+				"note": "Why logging has to happen during the work."
+			},
+			{
+				"stage": "Research",
+				"source": "web",
+				"title": "Documentation in Progress: Challenges with Representing Design Process Online",
+				"creator": "Tiffany Tseng, Maria Yang, Alex Ruthmann",
+				"year": "MIT Media Lab",
+				"url": "https://media.mit.edu/publications/documentation-in-progress-challenges-with-representing-design-process-online",
+				"image_url": null,
+				"snippet": "Students left experimentation and mistakes out of their process documentation.",
+				"kept": true,
+				"note": "The clearest evidence for the problem."
+			},
+			{
+				"stage": "Research",
+				"source": "web",
+				"title": "Product versus Process: Representing and Appropriating DIY Projects Online",
+				"creator": "Tiffany Tseng, Mitchel Resnick",
+				"year": "DIS 2014",
+				"url": "https://www.media.mit.edu/publications/product-versus-process-representing-and-appropriating-diy-projects-online/",
+				"image_url": null,
+				"snippet": "Authors and readers of DIY documentation want different things from it.",
+				"kept": true,
+				"note": "Desk and letter as two views of one record."
+			},
+			{
+				"stage": "Research",
+				"source": "web",
+				"title": "Surfing for Inspiration: Digital Inspirational Material in Design Practice",
+				"creator": "Janin Koch, Magda László, Andrés Lucero, Antti Oulasvirta",
+				"year": "2017",
+				"url": "https://userinterfaces.aalto.fi/inspiration-in-design/resources/DRS%202018%20final.pdf",
+				"image_url": null,
+				"snippet": "Online examples lack documented reasoning, so designers find them hard to trust.",
+				"kept": true,
+				"note": "The gap a posted lineage fills."
+			},
+			{
+				"stage": "Research",
+				"source": "semanticscholar",
+				"title": "Getting Inspired! Understanding How and Why Examples Are Used in Creative Design Practice",
+				"creator": "Scarlett R. Herring, Chia-Chen Chang, Jesse Krantzler, Brian P. Bailey",
+				"year": "2009",
+				"url": "https://www.semanticscholar.org/search?q=Getting%20inspired%20understanding%20how%20and%20why%20examples%20are%20used%20in%20creative%20design%20practice",
+				"image_url": null,
+				"snippet": "Designers collect examples for later use in personal libraries.",
+				"kept": true,
+				"note": "Collections without context go stale."
+			},
+			{
+				"stage": "Research",
+				"source": "semanticscholar",
+				"title": "Design Fixation",
+				"creator": "David G. Jansson, Steven M. Smith",
+				"year": "1991",
+				"url": "https://www.semanticscholar.org/search?q=Design%20fixation%20Jansson%20Smith",
+				"image_url": null,
+				"snippet": "Exposure to examples can lead designers to reproduce their features.",
+				"kept": true,
+				"note": "The risk to design against. Precedents as context, never answers."
+			},
+			{
+				"stage": "Research",
+				"source": "semanticscholar",
+				"title": "Annotated Portfolios",
+				"creator": "Bill Gaver, John Bowers",
+				"year": "2012",
+				"url": "https://www.semanticscholar.org/search?q=Annotated%20portfolios%20Gaver%20Bowers",
+				"image_url": null,
+				"snippet": "Designed artefacts with annotations as a form of design knowledge.",
+				"kept": true,
+				"note": "What the letter is, academically."
+			},
+			{
+				"stage": "Experiments",
+				"source": "web",
+				"title": "Build in Progress",
+				"creator": "Tiffany Tseng, MIT Media Lab",
+				"year": "Research platform",
+				"url": "https://www.media.mit.edu/projects/build-in-progress/overview/",
+				"image_url": null,
+				"snippet": "A platform for sharing the story of a design process as it happens.",
+				"kept": true,
+				"note": "Closest direct precedent. Process first, but no link to outside work."
+			},
+			{
+				"stage": "Experiments",
+				"source": "web",
+				"title": "Hackaday.io project logs",
+				"creator": "Hackaday",
+				"year": "Online platform",
+				"url": "https://hackaday.io/",
+				"image_url": null,
+				"snippet": "Hardware projects documented as dated build logs.",
+				"kept": true,
+				"note": "The log format makers already accept."
+			},
+			{
+				"stage": "Experiments",
+				"source": "web",
+				"title": "Are.na",
+				"creator": "Are.na",
+				"year": "Online platform",
+				"url": "https://www.are.na/",
+				"image_url": null,
+				"snippet": "Collecting and connecting references, widely used by designers.",
+				"kept": true,
+				"note": "The reference side done well, with no project log."
+			},
+			{
+				"stage": "Experiments",
+				"source": "web",
+				"title": "Behance",
+				"creator": "Adobe",
+				"year": "Online platform",
+				"url": "https://www.behance.net/",
+				"image_url": null,
+				"snippet": "Polished project case studies built by hand after the work is done.",
+				"kept": false,
+				"note": ""
+			},
+			{
+				"stage": "Build",
+				"source": "web",
+				"title": "ResearchRabbit",
+				"creator": "ResearchRabbit",
+				"year": "Online tool",
+				"url": "https://www.researchrabbit.ai/",
+				"image_url": null,
+				"snippet": "Maps papers related to the ones you give it.",
+				"kept": true,
+				"note": "Same move as the precedent finder, academic only."
+			},
+			{
+				"stage": "Build",
+				"source": "github",
+				"title": "sveltejs/kit",
+				"creator": "Svelte",
+				"year": "Open source",
+				"url": "https://github.com/sveltejs/kit",
+				"image_url": null,
+				"snippet": "The framework the prototype is built on.",
+				"kept": false,
+				"note": ""
+			},
+			{
+				"stage": "Outcome",
+				"source": "semanticscholar",
+				"title": "Research through Design as a Method for Interaction Design Research in HCI",
+				"creator": "John Zimmerman, Jodi Forlizzi, Shelley Evenson",
+				"year": "2007",
+				"url": "https://www.semanticscholar.org/search?q=Research%20through%20design%20as%20a%20method%20for%20interaction%20design%20research%20in%20HCI",
+				"image_url": null,
+				"snippet": "Frames the process of making as a form of research.",
+				"kept": true,
+				"note": "The argument for schools and labs."
+			}
+		]
+	},
+	{
+		"title": "Tidal",
+		"description": "A wall of light that slows its pulse to match the breathing of the people in front of it.",
+		"created_at": "2026-09-08T14:00:00Z",
+		"updated_at": "2026-10-17T10:00:00Z",
+		"posted_at": null,
+		"stages": [
+			{
+				"name": "Spark",
+				"blocks": [
+					{
+						"type": "note",
+						"data": {
+							"text": "Sat on the subway platform at 1am and noticed the whole car exhale at once when the doors opened. What if a room could notice that? Not respond loudly. Just breathe back."
+						},
+						"created_at": "2026-09-08T14:10:00Z"
+					},
+					{
+						"type": "image",
+						"data": {
+							"src": "/demo/sketch-wall.svg",
+							"caption": "First sketch. Wall of light, two people, the waves slow down when they slow down."
+						},
+						"created_at": "2026-09-09T10:30:00Z"
+					}
+				]
+			},
+			{
+				"name": "Moodboard",
+				"blocks": [
+					{
+						"type": "spread",
+						"data": {
+							"items": []
+						},
+						"created_at": "2026-09-08T14:00:00Z"
+					}
+				]
+			},
+			{
+				"name": "Research",
+				"blocks": [
+					{
+						"type": "link",
+						"data": {
+							"url": "https://en.wikipedia.org/wiki/Calm_technology",
+							"note": "Calm technology as a frame: information that lives at the periphery and moves to the centre only when needed."
+						},
+						"created_at": "2026-09-12T16:00:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Resting breathing rate is roughly 12 to 20 breaths per minute. Slow-paced breathing guides usually target about 6. The wall should never lead faster than the slowest person in the room."
+						},
+						"created_at": "2026-09-14T11:20:00Z"
+					}
+				]
+			},
+			{
+				"name": "Experiments",
+				"blocks": [
+					{
+						"type": "image",
+						"data": {
+							"src": "/demo/breath-graph.svg",
+							"caption": "Chest strap vs. 60GHz mmWave radar at 1.5m. Radar lags by about half a breath but no wearable needed."
+						},
+						"created_at": "2026-09-20T19:45:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Voice note: tried the webcam approach with pose tracking on shoulders. Works when people stand still, falls apart the second anyone talks or turns. Parking it."
+						},
+						"created_at": "2026-09-22T22:05:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Easing matters more than accuracy. A linear map from breath rate to wave speed feels mechanical. A 4 second smoothing window makes it feel like it is listening."
+						},
+						"created_at": "2026-09-25T13:00:00Z"
+					}
+				]
+			},
+			{
+				"name": "Build",
+				"blocks": [
+					{
+						"type": "note",
+						"data": {
+							"text": "Final rig: 6 strips of WS2812B behind a frosted acrylic diffuser, ESP32 running FastLED, radar over serial. Teensy was overkill."
+						},
+						"created_at": "2026-10-03T15:30:00Z"
+					},
+					{
+						"type": "link",
+						"data": {
+							"url": "https://github.com/FastLED/FastLED",
+							"note": "FastLED handles the LED timing so the ESP32 can spend its cycles on breath detection."
+						},
+						"created_at": "2026-10-04T09:10:00Z"
+					}
+				]
+			},
+			{
+				"name": "Outcome",
+				"blocks": [
+					{
+						"type": "image",
+						"data": {
+							"src": "/demo/installation.svg",
+							"caption": "Installed at the thesis show. People stayed longer than I expected. A few closed their eyes."
+						},
+						"created_at": "2026-10-15T20:00:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "What I would change: the wall cannot tell two people apart, so it averages them. Next version should hold two rhythms at once and let them drift together."
+						},
+						"created_at": "2026-10-17T10:00:00Z"
+					}
+				]
+			}
+		],
+		"precedents": [
+			{
+				"stage": "Spark",
+				"source": "met",
+				"title": "Under the Wave off Kanagawa (Kanagawa oki nami ura)",
+				"creator": "Katsushika Hokusai",
+				"year": "ca. 1830–32",
+				"url": "https://www.metmuseum.org/art/collection/search?q=Hokusai+Great+Wave",
+				"image_url": null,
+				"snippet": "A single held moment of a rhythmic force, close to your idea of a pulse the viewer can feel but not control.",
+				"kept": true,
+				"note": "The suspended crest is the feeling I want at the top of each breath."
+			},
+			{
+				"stage": "Spark",
+				"source": "semanticscholar",
+				"title": "Ambient Displays: Turning Architectural Space into an Interface between People and Digital Information",
+				"creator": "Wisneski, Ishii, Dahley, Gorbet, Brave, Ullmer, Yarin",
+				"year": "1998",
+				"url": "https://www.semanticscholar.org/search?q=Ambient%20Displays%20Turning%20Architectural%20Space",
+				"image_url": null,
+				"snippet": "Treats walls and light as quiet information surfaces, the same register as a room that breathes back.",
+				"kept": false,
+				"note": ""
+			},
+			{
+				"stage": "Research",
+				"source": "semanticscholar",
+				"title": "Designing Calm Technology",
+				"creator": "Mark Weiser, John Seely Brown",
+				"year": "1996",
+				"url": "https://www.semanticscholar.org/search?q=Designing%20Calm%20Technology",
+				"image_url": null,
+				"snippet": "The source text for the periphery-to-centre idea in your calm technology note.",
+				"kept": true,
+				"note": "Core framing for the wall staying in the periphery."
+			},
+			{
+				"stage": "Research",
+				"source": "semanticscholar",
+				"title": "Tangible Bits: Towards Seamless Interfaces between People, Bits and Atoms",
+				"creator": "Hiroshi Ishii, Brygg Ullmer",
+				"year": "1997",
+				"url": "https://www.semanticscholar.org/search?q=Tangible%20Bits%20Ishii%20Ullmer",
+				"image_url": null,
+				"snippet": "Introduces ambient media as background awareness, relevant to light that responds without asking for attention.",
+				"kept": false,
+				"note": ""
+			},
+			{
+				"stage": "Experiments",
+				"source": "arxiv",
+				"title": "MediaPipe: A Framework for Building Perception Pipelines",
+				"creator": "Lugaresi et al.",
+				"year": "2019",
+				"url": "https://arxiv.org/search/?query=MediaPipe+Framework+Perception+Pipelines&searchtype=all",
+				"image_url": null,
+				"snippet": "The pose-tracking stack behind your parked webcam test; useful if you revisit camera-based sensing.",
+				"kept": false,
+				"note": ""
+			},
+			{
+				"stage": "Experiments",
+				"source": "github",
+				"title": "google-ai-edge/mediapipe",
+				"creator": "Google AI Edge",
+				"year": "2019",
+				"url": "https://github.com/google-ai-edge/mediapipe",
+				"image_url": null,
+				"snippet": "Reference implementation for shoulder and torso landmarks used in breath estimation from video.",
+				"kept": false,
+				"note": ""
+			},
+			{
+				"stage": "Build",
+				"source": "github",
+				"title": "FastLED/FastLED",
+				"creator": "FastLED",
+				"year": "2013",
+				"url": "https://github.com/FastLED/FastLED",
+				"image_url": null,
+				"snippet": "The LED library in your rig. Its built-in easing and blending helpers can replace hand-rolled smoothing.",
+				"kept": true,
+				"note": "Used for all LED output."
+			},
+			{
+				"stage": "Build",
+				"source": "github",
+				"title": "processing/p5.js",
+				"creator": "Processing Foundation",
+				"year": "2014",
+				"url": "https://github.com/processing/p5.js",
+				"image_url": null,
+				"snippet": "Quick way to prototype wave behaviour on screen before flashing changes to the ESP32.",
+				"kept": false,
+				"note": ""
+			},
+			{
+				"stage": "Outcome",
+				"source": "semanticscholar",
+				"title": "Ambient Displays: Turning Architectural Space into an Interface between People and Digital Information",
+				"creator": "Wisneski et al.",
+				"year": "1998",
+				"url": "https://www.semanticscholar.org/search?q=Ambient%20Displays%20Turning%20Architectural%20Space",
+				"image_url": null,
+				"snippet": "Closest academic precedent for positioning: architectural light as ambient, bodily information.",
+				"kept": false,
+				"note": ""
+			}
+		]
+	},
+	{
+		"title": "Soft Machines",
+		"description": "Knitted sensors that notice how they are being held.",
+		"created_at": "2026-10-19T12:00:00Z",
+		"updated_at": "2026-10-19T12:10:00Z",
+		"posted_at": null,
+		"stages": [
+			{
+				"name": "Spark",
+				"blocks": [
+					{
+						"type": "note",
+						"data": {
+							"text": "Conductive yarn changes resistance when stretched. What if a scarf could tell a hug from a tug?"
+						},
+						"created_at": "2026-10-19T12:10:00Z"
+					}
+				]
+			},
+			{
+				"name": "Moodboard",
+				"blocks": [
+					{
+						"type": "spread",
+						"data": {
+							"items": []
+						},
+						"created_at": "2026-10-19T12:00:00Z"
+					}
+				]
+			},
+			{
+				"name": "Research",
+				"blocks": []
+			},
+			{
+				"name": "Experiments",
+				"blocks": []
+			},
+			{
+				"name": "Build",
+				"blocks": []
+			},
+			{
+				"name": "Outcome",
+				"blocks": []
+			}
+		],
+		"precedents": []
+	}
+]

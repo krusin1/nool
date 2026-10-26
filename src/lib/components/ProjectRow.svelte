@@ -1,31 +1,27 @@
 <script lang="ts">
-	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
-	import StageProgress from './StageProgress.svelte';
-	import { formatDate } from '#lib/stages.ts';
-	import type { Entry, Project } from '#lib/types.ts';
+	import Mail from '@lucide/svelte/icons/mail';
+	import { formatDate } from '#lib/format.ts';
+	import type { ProjectSummary } from '#lib/types.ts';
 
-	let { project, entries }: { project: Project; entries: Entry[] } = $props();
-
-	const updated = $derived(
-		entries.reduce((latest, e) => (e.created_at > latest ? e.created_at : latest), project.created_at)
-	);
+	let { summary }: { summary: ProjectSummary } = $props();
+	const p = $derived(summary.project);
 </script>
 
 <article class="row">
-	<a class="main" href="/p/{project.id}">
-		<h2 class="title display">{project.title}</h2>
-		<p class="desc">{project.description}</p>
+	<a class="main" href="/p/{p.id}">
+		<h2 class="title display">{p.title}</h2>
+		{#if p.description}<p class="desc">{p.description}</p>{/if}
 	</a>
 	<div class="meta">
-		<StageProgress {entries} />
-		<span class="label">{entries.length} entries</span>
-		<span class="label">Updated {formatDate(updated)}</span>
-		<span class="status label" class:published={project.published}>
-			{project.published ? 'Published' : 'Draft'}
+		<span class="progress" aria-label="{summary.filledStages} of {summary.stageCount} stages have blocks">
+			{#each Array.from({ length: summary.stageCount }, (_, i) => i < summary.filledStages) as on, i (i)}
+				<span class="tick" class:on></span>
+			{/each}
 		</span>
-		<a class="view label" href="/view/{project.id}">
-			Preview page <ArrowUpRight size={14} strokeWidth={1.5} />
-		</a>
+		<span class="label">{summary.blockCount} blocks</span>
+		<span class="label">Updated {formatDate(p.updated_at)}</span>
+		<span class="status label" class:posted={p.posted_at}>{p.posted_at ? 'Posted' : 'Mint'}</span>
+		<a class="view label" href="/view/{p.id}"><Mail size={14} strokeWidth={1.5} /> Letter</a>
 	</div>
 </article>
 
@@ -64,7 +60,23 @@
 		margin-top: var(--s2);
 	}
 
-	.status.published {
+	.progress {
+		display: inline-flex;
+		gap: 4px;
+	}
+
+	.tick {
+		width: 14px;
+		height: 4px;
+		border-radius: 1px;
+		background: var(--line);
+	}
+
+	.tick.on {
+		background: var(--text);
+	}
+
+	.status.posted {
 		color: var(--accent);
 	}
 

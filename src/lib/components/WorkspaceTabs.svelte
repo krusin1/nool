@@ -10,8 +10,8 @@
 </script>
 
 <div class="tabs" role="tablist" aria-label="Workspace view">
-	<button role="tab" aria-selected={active === 'entries'} class:on={active === 'entries'} onclick={() => onselect('entries')}>
-		Entries <span class="n">{entryCount}</span>
+	<button role="tab" aria-selected={active === 'blocks'} class:on={active === 'blocks'} onclick={() => onselect('blocks')}>
+		Blocks <span class="n">{entryCount}</span>
 	</button>
 	<button
 		role="tab"

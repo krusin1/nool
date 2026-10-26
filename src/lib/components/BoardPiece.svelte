@@ -1,7 +1,7 @@
 <script lang="ts">
 	// One collaged piece on the spread. Sizes use container units so the whole
 	// spread scales like a printed page.
-	import type { BoardItem } from '#lib/types.ts';
+	import type { SpreadItem } from '#lib/types.ts';
 
 	let {
 		item = $bindable(),
@@ -12,7 +12,7 @@
 		ondblclick,
 		ondone
 	}: {
-		item: BoardItem;
+		item: SpreadItem;
 		editable?: boolean;
 		selected?: boolean;
 		editing?: boolean;

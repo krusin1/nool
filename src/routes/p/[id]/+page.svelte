@@ -1,98 +1,216 @@
 <script lang="ts">
-	import WorkspaceHeader from '#lib/components/WorkspaceHeader.svelte';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { untrack } from 'svelte';
+	import DeskHeader from '#lib/components/DeskHeader.svelte';
 	import StageRail from '#lib/components/StageRail.svelte';
-	import DropZone from '#lib/components/DropZone.svelte';
-	import EntryCard from '#lib/components/EntryCard.svelte';
+	import DeskBlock from '#lib/components/blocks/DeskBlock.svelte';
+	import Composer from '#lib/components/Composer.svelte';
 	import PrecedentPanel from '#lib/components/PrecedentPanel.svelte';
 	import WorkspaceTabs from '#lib/components/WorkspaceTabs.svelte';
-	import MoodboardEditor from '#lib/components/MoodboardEditor.svelte';
-	import { STAGES } from '#lib/stages.ts';
-	import type { BoardItem, Entry, EntryType, Precedent, StageId, Tab } from '#lib/types.ts';
-	import { untrack } from 'svelte';
+	import PostOverlay from '#lib/components/PostOverlay.svelte';
+	import { api } from '#lib/api.ts';
+	import { autosave } from '#lib/autosave.svelte.ts';
+	import { coverOf } from '#lib/stamp.ts';
+	import type { Block, BlockDataMap, BlockType, Tab } from '#lib/types.ts';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 
-	// Local copies so Phase 1 interactions (add, edit, keep, dismiss) work without persistence.
-	const initial = untrack(() => structuredClone({ entries: data.entries, precedents: data.precedents, board: data.board }));
-	let entries = $state<Entry[]>(initial.entries.sort((a, b) => b.created_at.localeCompare(a.created_at)));
-	let precedents = $state<Precedent[]>(initial.precedents);
-	let board = $state<BoardItem[]>(initial.board);
+	// The desk edits its own copy and saves changes as they happen.
+	const initial = untrack(() => structuredClone(data));
+	let project = $state(initial.project);
+	let stages = $state(initial.stages);
+	let blocks = $state(initial.blocks);
+	let precedents = $state(initial.precedents);
 
-	let stage = $state<StageId>('spark');
-	let tab = $state<Tab>('entries');
+	let stageId = $state(initial.stages[0]?.id ?? '');
+	let tab = $state<Tab>('blocks');
+	let posting = $state(false);
 
-	const current = $derived(STAGES.find((s) => s.id === stage)!);
-	const stageEntryCount = $derived(
-		stage === 'moodboard' ? board.length : entries.filter((e) => e.stage === stage).length
+	const stage = $derived(stages.find((s) => s.id === stageId) ?? stages[0]);
+	const counts = $derived(
+		Object.fromEntries(stages.map((s) => [s.id, blocks.filter((b) => b.stage_id === s.id).length]))
 	);
-	const stagePrecedentCount = $derived(precedents.filter((p) => p.stage === stage).length);
+	const stageBlocks = $derived(blocks.filter((b) => b.stage_id === stage?.id));
 
-	function addEntry(input: { type: EntryType; raw_content: string; file_path: string | null }) {
-		entries.unshift({
-			id: crypto.randomUUID(),
-			project_id: data.project.id,
-			stage,
-			ai_summary: '',
-			created_at: new Date().toISOString(),
-			...input
-		});
+	// Project
+	function editProject() {
+		autosave.schedule('project', () =>
+			api.updateProject(project.id, { title: project.title, description: project.description })
+		);
+	}
+
+	async function post() {
+		autosave.flush();
+		project = await autosave.now(() => api.post(project.id));
+		posting = true;
+	}
+
+	async function recall() {
+		project = await autosave.now(() => api.recall(project.id));
+	}
+
+	async function remove() {
+		if (!confirm(`Delete "${project.title}" and everything in it? This can't be undone.`)) return;
+		await api.deleteProject(project.id);
+		await goto('/');
+	}
+
+	// Stages
+	async function addStage() {
+		const s = await autosave.now(() => api.addStage(project.id, `Stage ${stages.length + 1}`));
+		stages.push(s);
+		stageId = s.id;
+	}
+
+	function renameStage(id: string, name: string) {
+		const s = stages.find((x) => x.id === id);
+		if (!s || !name.trim()) return;
+		s.name = name.trim();
+		autosave.schedule(`stage:${id}`, () => api.renameStage(id, s.name), 0);
+	}
+
+	async function deleteStage(id: string) {
+		const s = stages.find((x) => x.id === id);
+		const n = counts[id] ?? 0;
+		if (!s || stages.length === 1) return;
+		if (n && !confirm(`Delete "${s.name}" and its ${n} block${n === 1 ? '' : 's'}?`)) return;
+		await autosave.now(() => api.deleteStage(id));
+		stages = stages.filter((x) => x.id !== id);
+		blocks = blocks.filter((b) => b.stage_id !== id);
+		precedents = precedents.filter((p) => p.stage_id !== id);
+		if (stageId === id) stageId = stages[0].id;
+	}
+
+	function moveStage(id: string, dir: -1 | 1) {
+		const i = stages.findIndex((s) => s.id === id);
+		const j = i + dir;
+		if (j < 0 || j >= stages.length) return;
+		[stages[i], stages[j]] = [stages[j], stages[i]];
+		autosave.now(() => api.reorderStages(project.id, stages.map((s) => s.id)));
+	}
+
+	// Blocks
+	async function addBlock<T extends BlockType>(type: T, blockData: BlockDataMap[T]) {
+		const b = await autosave.now(() => api.addBlock(stage.id, type, blockData));
+		blocks.push(b);
+	}
+
+	function saveBlock(b: Block) {
+		autosave.schedule(b.id, () => api.updateBlock(b.id, $state.snapshot(b.data)));
+	}
+
+	function moveBlock(b: Block, dir: -1 | 1) {
+		const ids = stageBlocks.map((x) => x.id);
+		const i = ids.indexOf(b.id);
+		const j = i + dir;
+		if (j < 0 || j >= ids.length) return;
+		[ids[i], ids[j]] = [ids[j], ids[i]];
+		applyOrder(stage.id, ids);
+	}
+
+	function moveToStage(b: Block, target: string) {
+		const ids = [...blocks.filter((x) => x.stage_id === target).map((x) => x.id), b.id];
+		b.stage_id = target;
+		applyOrder(target, ids);
+	}
+
+	function applyOrder(target: string, ids: string[]) {
+		const others = blocks.filter((x) => x.stage_id !== target);
+		const ordered = ids.map((id, i) => Object.assign(blocks.find((x) => x.id === id)!, { position: i }));
+		blocks = [...others, ...ordered];
+		autosave.now(() => api.reorderBlocks(target, ids));
+	}
+
+	async function deleteBlock(b: Block) {
+		autosave.cancel(b.id);
+		blocks = blocks.filter((x) => x.id !== b.id);
+		await autosave.now(() => api.deleteBlock(b.id));
+	}
+
+	function closeOverlay() {
+		posting = false;
+		invalidateAll();
 	}
 </script>
 
 <svelte:head>
-	<title>{data.project.title} · Nool</title>
+	<title>{project.title} · Nool</title>
 </svelte:head>
 
-<div class="workspace">
-	<WorkspaceHeader project={data.project} />
+<svelte:window onbeforeunload={() => autosave.flush()} />
+
+<div class="desk">
+	<DeskHeader bind:project onedit={editProject} onpost={post} onrecall={recall} ondelete={remove} />
 
 	<div class="cols">
 		<aside class="rail-col">
-			<StageRail {entries} boardCount={board.length} current={stage} onselect={(id) => (stage = id)} />
+			<StageRail
+				{stages}
+				{counts}
+				current={stage?.id ?? ''}
+				onselect={(id) => (stageId = id)}
+				onrename={renameStage}
+				onadd={addStage}
+				ondelete={deleteStage}
+				onmove={moveStage}
+			/>
 		</aside>
 
 		<WorkspaceTabs
 			active={tab}
-			entryCount={stageEntryCount}
-			precedentCount={stagePrecedentCount}
+			entryCount={stageBlocks.length}
+			precedentCount={precedents.filter((p) => p.stage_id === stage?.id).length}
 			onselect={(t) => (tab = t)}
 		/>
 
-		<main class="center" class:hidden-sm={tab !== 'entries'}>
-			<div class="center-inner" class:wide={stage === 'moodboard'}>
-				<div class="stage-head">
-					<h2 class="display">{current.label}</h2>
-					<p class="muted">{current.hint}</p>
+		{#if stage}
+			<main class="center" class:hidden-sm={tab !== 'blocks'}>
+				<div class="center-inner" class:wide={stageBlocks.some((b) => b.type === 'spread')}>
+					<div class="stage-head">
+						<input
+							class="display stage-name"
+							value={stage.name}
+							aria-label="Stage name"
+							onchange={(e) => renameStage(stage.id, e.currentTarget.value)}
+							onkeydown={(e) => e.key === 'Enter' && e.currentTarget.blur()}
+						/>
+					</div>
+
+					<div class="blocks">
+						{#each blocks as block, i (block.id)}
+							{#if block.stage_id === stage.id}
+								<DeskBlock
+									bind:block={blocks[i]}
+									{stages}
+									first={stageBlocks[0]?.id === block.id}
+									last={stageBlocks.at(-1)?.id === block.id}
+									onchange={() => saveBlock(block)}
+									onmove={(dir) => moveBlock(block, dir)}
+									onmovestage={(target) => moveToStage(block, target)}
+									ondelete={() => deleteBlock(block)}
+								/>
+							{/if}
+						{/each}
+					</div>
+
+					<Composer stageName={stage.name} onadd={addBlock} />
 				</div>
+			</main>
 
-				{#if stage === 'moodboard'}
-					<MoodboardEditor bind:items={board} projectId={data.project.id} />
-				{:else}
-				<DropZone stageLabel={current.label} onadd={addEntry} />
-
-				<div class="entries">
-					{#each entries as entry, i (entry.id)}
-						{#if entry.stage === stage}
-							<EntryCard bind:entry={entries[i]} />
-						{/if}
-					{/each}
-					{#if stageEntryCount === 0}
-						<p class="empty label">Nothing in {current.label} yet. Add a note, link or image above.</p>
-					{/if}
-				</div>
-				{/if}
-			</div>
-		</main>
-
-		<aside class="precedent-col" class:hidden-sm={tab !== 'precedents'}>
-			<PrecedentPanel bind:precedents {stage} stageLabel={current.label} />
-		</aside>
+			<aside class="precedent-col" class:hidden-sm={tab !== 'precedents'}>
+				<PrecedentPanel bind:precedents stageId={stage.id} stageName={stage.name} />
+			</aside>
+		{/if}
 	</div>
 </div>
 
+{#if posting}
+	<PostOverlay {project} cover={coverOf(blocks)} value={blocks.length} onclose={closeOverlay} />
+{/if}
+
 <style>
-	.workspace {
+	.desk {
 		display: flex;
 		flex-direction: column;
 		height: 100dvh;
@@ -102,7 +220,7 @@
 		flex: 1;
 		min-height: 0;
 		display: grid;
-		grid-template-columns: 220px minmax(0, 1fr) 380px;
+		grid-template-columns: 220px minmax(0, 1fr) 360px;
 	}
 
 	.rail-col,
@@ -117,11 +235,10 @@
 
 	.precedent-col {
 		border-left: var(--border);
-		background: var(--bg);
 	}
 
 	.center-inner {
-		max-width: 680px;
+		max-width: 720px;
 		margin: 0 auto;
 		padding: var(--s4) var(--s4) var(--s8);
 	}
@@ -134,30 +251,33 @@
 		margin-bottom: var(--s3);
 	}
 
-	.stage-head h2 {
+	.stage-name {
+		width: 100%;
+		padding: 0;
+		border: none;
+		border-bottom: 1px solid transparent;
+		background: transparent;
 		font-size: var(--fs-xl);
-		line-height: 1.1;
-		letter-spacing: -0.01em;
+		font-weight: var(--fw-bold);
+		line-height: 1.2;
+		outline: none;
+		transition: border-color var(--ease);
 	}
 
-	.stage-head p {
-		margin-top: 4px;
+	.stage-name:hover,
+	.stage-name:focus {
+		border-bottom-color: var(--line);
 	}
 
-	.entries {
+	.blocks {
 		display: grid;
 		gap: var(--s2);
-		margin-top: var(--s3);
-	}
-
-	.empty {
-		padding: var(--s4) 0;
-		text-align: center;
+		margin-bottom: var(--s2);
 	}
 
 	@media (max-width: 1200px) {
 		.cols {
-			grid-template-columns: 200px minmax(0, 1fr) 320px;
+			grid-template-columns: 200px minmax(0, 1fr) 300px;
 		}
 
 		.center-inner {
@@ -166,7 +286,7 @@
 	}
 
 	@media (max-width: 900px) {
-		.workspace {
+		.desk {
 			height: auto;
 			min-height: 100dvh;
 		}
@@ -197,7 +317,7 @@
 			padding: var(--s3) var(--s2) var(--s8);
 		}
 
-		.stage-head h2 {
+		.stage-name {
 			font-size: var(--fs-lg);
 		}
 	}

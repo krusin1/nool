@@ -1,33 +1,68 @@
-export type StageId = 'spark' | 'moodboard' | 'research' | 'experiments' | 'build' | 'outcome';
-
-export type EntryType = 'text' | 'image' | 'link' | 'voice';
-
-// 'web' covers precedents a maker adds by hand (sites, products, archives).
-export type SourceId = 'met' | 'cooperhewitt' | 'semanticscholar' | 'arxiv' | 'github' | 'web';
+// Shared types for client and server.
 
 export interface Project {
 	id: string;
 	title: string;
 	description: string;
 	created_at: string;
-	published: boolean;
+	updated_at: string;
+	/** Set when the project is posted as a case study. Null while it is mint. */
+	posted_at: string | null;
 }
 
-export interface Entry {
+export interface Stage {
 	id: string;
 	project_id: string;
-	stage: StageId;
-	type: EntryType;
-	raw_content: string;
-	file_path: string | null;
-	ai_summary: string;
-	created_at: string;
+	name: string;
+	position: number;
 }
+
+export interface SpreadItem {
+	id: string;
+	kind: 'image' | 'note' | 'quote' | 'swatch' | 'label';
+	content: string; // text, image src, or comma-separated hex colors
+	caption: string;
+	x: number; // percent of spread width
+	y: number; // percent of spread height
+	w: number; // percent of spread width
+	rotate: number;
+	z: number;
+	tape: boolean;
+}
+
+export interface BlockDataMap {
+	note: { text: string };
+	image: { src: string; caption: string };
+	link: { url: string; note: string };
+	quote: { text: string; cite: string };
+	todo: { items: { text: string; done: boolean }[] };
+	palette: { colors: string[] };
+	spread: { items: SpreadItem[] };
+}
+
+export type BlockType = keyof BlockDataMap;
+
+interface BlockBase {
+	id: string;
+	project_id: string;
+	stage_id: string;
+	position: number;
+	/** Where the block came from: 'desk' when added in the app, otherwise the sending app. */
+	source: string;
+	created_at: string;
+	updated_at: string;
+}
+
+export type Block = {
+	[T in BlockType]: BlockBase & { type: T; data: BlockDataMap[T] };
+}[BlockType];
+
+export type SourceId = 'met' | 'cooperhewitt' | 'semanticscholar' | 'arxiv' | 'github' | 'web';
 
 export interface Precedent {
 	id: string;
 	project_id: string;
-	stage: StageId;
+	stage_id: string;
 	source: SourceId;
 	title: string;
 	creator: string;
@@ -37,26 +72,16 @@ export interface Precedent {
 	snippet: string;
 	kept: boolean;
 	note: string;
+	created_at: string;
 }
 
-export type Tab = 'entries' | 'precedents';
-
-// Moodboard: items collaged on a two-page book spread. Positions are percentages
-// of the spread (x, y from top-left; w of spread width) so it scales to any size.
-export type BoardKind = 'image' | 'note' | 'quote' | 'swatch' | 'label';
-
-export interface BoardItem {
-	id: string;
-	project_id: string;
-	kind: BoardKind;
-	content: string; // text, image path, or comma-separated hex colors for swatches
-	caption: string;
-	x: number;
-	y: number;
-	w: number;
-	rotate: number;
-	z: number;
-	tape: boolean;
+export interface ProjectSummary {
+	project: Project;
+	blockCount: number;
+	stageCount: number;
+	filledStages: number;
+	cover: string | null;
 }
 
 export type HomeView = 'stamps' | 'list';
+export type Tab = 'blocks' | 'precedents';

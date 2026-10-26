@@ -1,0 +1,13 @@
+{
+	"name": "nool-mcp",
+	"version": "0.1.0",
+	"private": true,
+	"description": "MCP server that lets AI apps (Claude, Cursor, and others) send notes, links and images into Nool.",
+	"type": "module",
+	"bin": { "nool-mcp": "./nool-mcp.js" },
+	"engines": { "node": ">=20" },
+	"dependencies": {
+		"@modelcontextprotocol/sdk": "^1.32.2",
+		"zod": "^4.6.7"
+	}
+}

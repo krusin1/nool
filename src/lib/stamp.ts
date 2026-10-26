@@ -1,7 +1,7 @@
-import type { Entry } from './types.ts';
-
 // Each project gets its own stamp: palette, tilt and motif come from a hash of its id,
 // so a new project always looks like a new stamp and stays the same on every visit.
+
+import type { Block } from './types.ts';
 
 export interface StampLook {
 	paper: string;
@@ -41,19 +41,6 @@ export function stampLook(seed: string): StampLook {
 	};
 }
 
-const STAGE_PRIORITY = ['outcome', 'build', 'experiments', 'research', 'moodboard', 'spark'];
-
-/** The stamp's picture: the most finished image the project has. */
-export function coverImage(entries: Entry[]): string | null {
-	const images = entries.filter((e) => e.type === 'image' && e.file_path);
-	images.sort(
-		(a, b) =>
-			STAGE_PRIORITY.indexOf(a.stage) - STAGE_PRIORITY.indexOf(b.stage) ||
-			b.created_at.localeCompare(a.created_at)
-	);
-	return images[0]?.file_path ?? null;
-}
-
 // Perforated edge as an SVG mask, for a stamp with a 4:5 aspect ratio.
 function perforationMask(): string {
 	const W = 200,
@@ -68,3 +55,16 @@ function perforationMask(): string {
 }
 
 export const PERFORATION = perforationMask();
+
+/** The stamp's picture: the last image in the project, reading stages in order. */
+export function coverOf(blocks: Block[]): string | null {
+	for (let i = blocks.length - 1; i >= 0; i--) {
+		const b = blocks[i];
+		if (b.type === 'image' && b.data.src) return b.data.src;
+		if (b.type === 'spread') {
+			const img = b.data.items.findLast((it) => it.kind === 'image' && it.content);
+			if (img) return img.content;
+		}
+	}
+	return null;
+}

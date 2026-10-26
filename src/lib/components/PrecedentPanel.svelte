@@ -1,26 +1,34 @@
 <script lang="ts">
-	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
+	import Plus from '@lucide/svelte/icons/plus';
 	import PrecedentCard from './PrecedentCard.svelte';
-	import type { Precedent, StageId } from '#lib/types.ts';
+	import PrecedentForm from './PrecedentForm.svelte';
+	import { api } from '#lib/api.ts';
+	import { autosave } from '#lib/autosave.svelte.ts';
+	import type { Precedent } from '#lib/types.ts';
 
 	let {
 		precedents = $bindable(),
-		stage,
-		stageLabel
-	}: { precedents: Precedent[]; stage: StageId; stageLabel: string } = $props();
+		stageId,
+		stageName
+	}: { precedents: Precedent[]; stageId: string; stageName: string } = $props();
 
-	let refreshing = $state(false);
-	const visible = $derived(precedents.filter((p) => p.stage === stage));
+	let adding = $state(false);
+	const visible = $derived(precedents.filter((p) => p.stage_id === stageId));
 	const keptCount = $derived(visible.filter((p) => p.kept).length);
+
+	async function add(input: { title: string; creator: string; year: string; url: string; note: string }) {
+		const p = await autosave.now(() => api.addPrecedent({ stage_id: stageId, ...input }));
+		precedents.push(p);
+		adding = false;
+	}
+
+	function update(id: string, patch: { kept?: boolean; note?: string }) {
+		autosave.now(() => api.updatePrecedent(id, patch));
+	}
 
 	function dismiss(id: string) {
 		precedents = precedents.filter((p) => p.id !== id);
-	}
-
-	function refresh() {
-		// Phase 4 replaces this with a real fetch.
-		refreshing = true;
-		setTimeout(() => (refreshing = false), 700);
+		autosave.now(() => api.deletePrecedent(id));
 	}
 </script>
 
@@ -28,25 +36,36 @@
 	<header>
 		<div>
 			<h2>Precedents</h2>
-			<span class="label">For {stageLabel} · {keptCount} kept</span>
+			<span class="label">For {stageName} · {keptCount} kept</span>
 		</div>
-		<button class="btn" onclick={refresh} disabled={refreshing}>
-			<span class="icon" class:spin={refreshing}><RefreshCw size={16} strokeWidth={1.5} /></span>
-			Refresh
-		</button>
+		{#if !adding}
+			<button class="btn" onclick={() => (adding = true)}><Plus size={16} strokeWidth={1.5} /> Add</button>
+		{/if}
 	</header>
+
+	{#if adding}
+		<PrecedentForm oncancel={() => (adding = false)} onsave={add} />
+	{/if}
 
 	{#if visible.length}
 		<div class="list">
 			{#each precedents as precedent, i (precedent.id)}
-				{#if precedent.stage === stage}
-					<PrecedentCard bind:precedent={precedents[i]} ondismiss={() => dismiss(precedent.id)} />
+				{#if precedent.stage_id === stageId}
+					<PrecedentCard
+						bind:precedent={precedents[i]}
+						onupdate={(patch) => update(precedent.id, patch)}
+						ondismiss={() => dismiss(precedent.id)}
+					/>
 				{/if}
 			{/each}
 		</div>
-	{:else}
-		<p class="empty label">No precedents for this stage yet. Add entries, then refresh.</p>
+	{:else if !adding}
+		<p class="empty label">
+			Add the works, papers and code this stage draws on. Kept precedents become the lineage on your letter.
+		</p>
 	{/if}
+
+	<p class="soon label">Automatic precedent search is coming. For now, add the ones you know.</p>
 </section>
 
 <style>
@@ -71,22 +90,15 @@
 		gap: 12px;
 	}
 
-	.icon {
-		display: inline-flex;
-	}
-
-	.spin {
-		animation: spin 700ms linear infinite;
-	}
-
-	@keyframes spin {
-		to {
-			transform: rotate(360deg);
-		}
-	}
-
 	.empty {
-		padding: var(--s4) 0;
+		padding: var(--s2) 0;
+		line-height: 1.5;
+	}
+
+	.soon {
+		margin-top: var(--s3);
+		padding-top: var(--s2);
+		border-top: var(--border);
 	}
 
 	@media (max-width: 900px) {

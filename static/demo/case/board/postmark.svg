@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 220"><rect width="420" height="220" fill="#fbf8f1"/>
+<g fill="none" stroke="#d2462b" stroke-width="3" opacity=".9">
+<circle cx="110" cy="110" r="78"/><circle cx="110" cy="110" r="60"/>
+<path d="M200 70 q25 -14 50 0 t50 0 t50 0 t50 0"/><path d="M200 95 q25 -14 50 0 t50 0 t50 0 t50 0"/><path d="M200 120 q25 -14 50 0 t50 0 t50 0 t50 0"/><path d="M200 145 q25 -14 50 0 t50 0 t50 0 t50 0"/>
+</g>
+<g font-family="Helvetica, Arial, sans-serif" font-weight="700" fill="#d2462b" text-anchor="middle">
+<text x="110" y="104" font-size="18">POSTED</text><text x="110" y="128" font-size="14">22 OCT 2026</text></g>
+<path id="arc" d="M50 110 A60 60 0 0 1 170 110" fill="none"/>
+</svg>

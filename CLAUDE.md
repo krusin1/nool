@@ -1,98 +1,73 @@
-# Nool (working name)
+# Nool
 
-Nool is Tamil for thread, and also for book.
-
-A process documentation platform for designers and creative technologists. Makers document their project as they work. An AI precedent finder runs alongside and surfaces related artworks, papers, code and projects for the stage they are in. Finished projects publish as a page with a "lineage" section showing what the work builds on.
+Nool is Tamil for thread, and also for book. A process documentation platform for designers and creative technologists. Makers document a project while they work on it, keep the works it builds on, and post it as a case study (a "letter") with a lineage section.
 
 Principle: AI connects and documents. People make. The AI never generates the creative work itself.
 
-## Prototype goal
+Documentation should feel like part of making, not an extra step: capture is one keystroke, paste or drop; other apps can send work in directly.
 
-A working, clickable prototype that demonstrates one full loop:
-create project → drop content into stages → AI structures it → precedents appear → keep precedents → publish a project page.
+## Language (postage)
 
-Optimize for clarity of the core loop, not completeness. No auth, no multi-user, no payments.
+- Home is the **Album**. Each project is a **stamp**.
+- In progress = **mint**. Published = **posted**, shown with a postmark.
+- New project = **Issue a stamp**. Publish = **Post**. Unpublish = **Recall**.
+- The workspace is the **desk**. The published case study is the **letter**.
 
 ## Stack
 
-- SvelteKit (TypeScript), Svelte 5 runes
-- Plain CSS with custom properties (no Tailwind, no component library)
-- SQLite via better-sqlite3 for local persistence
-- Anthropic API for structuring and query generation (server-side only, key in `.env` as `ANTHROPIC_API_KEY`)
-- Precedent sources (all free):
-  - Semantic Scholar API (papers)
-  - arXiv API (papers)
-  - The Met Collection API (art and objects, no key)
-  - Cooper Hewitt API (design objects, key in `.env` as `COOPER_HEWITT_KEY`, optional)
-  - GitHub search API (code)
-- Local file uploads stored in `/static/uploads` for the prototype
+- SvelteKit 3 (TypeScript), Svelte 5 runes, adapter-node. Imports use `#lib/...` with file extensions (`#lib/types.ts`).
+- Plain CSS with custom properties. No component library.
+- SQLite via better-sqlite3, file at `data/nool.db` (override with `NOOL_DATA_DIR`). Uploads in `data/uploads`, served from `/uploads/[name]`.
+- Lucide icons, Space Grotesk and Hanken Grotesk via Fontsource.
+- `mcp/`: standalone MCP server with its own package.json, so the app stays light.
 
 ## Data model
 
-- `project`: id, title, one-line description, created_at, published (bool)
-- `entry`: id, project_id, stage, type (text | image | link | voice), raw_content, file_path, ai_summary, created_at
-- `board_item` (moodboard): id, project_id, kind (image | note | quote | swatch | label), content, caption, x, y, w (percent of the spread), rotate, z, tape (bool)
-- `precedent`: id, project_id, stage, source, title, creator, year, url, image_url, snippet, kept (bool), note
-- Stages (fixed, in order): `spark`, `moodboard`, `research`, `experiments`, `build`, `outcome`
+- `projects`: id, title, description, created_at, updated_at, posted_at (null = mint)
+- `stages`: id, project_id, name, position. Fully customizable: rename, add, delete (a project keeps at least one), reorder.
+- `blocks`: id, project_id, stage_id, type, data (JSON), position, source ('desk' or the sending app), created_at, updated_at
+  - types: note `{text}`, image `{src, caption}`, link `{url, note}`, quote `{text, cite}`, todo `{items:[{text,done}]}`, palette `{colors}`, spread `{items: SpreadItem[]}` (book-spread collage)
+- `precedents`: id, project_id, stage_id, source, title, creator, year, url, image_url, snippet, kept, note
+- `settings`: key/value (inbox token)
+- Templates for new projects: Studio (Spark, Moodboard with a spread, Research, Experiments, Build, Outcome), Simple, Blank.
 
 ## Screens
 
-1. **Projects home** (`/`): "New project" button and two views, toggled and remembered per browser:
-   - Stamps (default): each project is a perforated postage stamp. Picture is the project's most finished image; with no image, a generated motif plus the title. Palette, tilt and motif come from a hash of the project id, so every new project gets a new stamp. Title sits in the bottom-left corner, entry count as the value top-right. Published projects carry a postmark.
-   - List: rows with title, description, stage progress, counts, status.
-   - The new project form shows a live stamp preview.
-2. **Project workspace** (`/p/[id]`): three columns.
-   - Left: stage rail (5 stages, current stage highlighted, entry count per stage).
-   - Center: entries for the selected stage, newest first. Drop zone at top accepts text, images, links. Each entry shows raw content and an editable AI summary.
-   - Moodboard stage: the center becomes a two-page book spread. Makers collage images, notes, quotes, color swatches and labels, drag to arrange, double-click to edit text, rotate and remove.
-   - Right: precedent panel for the selected stage. Cards with title, creator, year, source label, thumbnail if available. Actions: Keep (with optional note), Dismiss. "Refresh precedents" button.
-3. **Published page** (`/view/[id]`): editorial reading layout. Masthead with facts and contents, each stage as a numbered section with summaries and figures, kept precedents as numbered notes in the margin, the moodboard spread shown full width, then a "Lineage" section listing kept precedents with the maker's notes.
+1. **Album** (`/`): stamps view (default) and list view. Stamp picture is the project's last image; with none, a generated motif and the title. Palette, tilt and motif come from a hash of the id. Value = block count. Posted stamps carry a postmark. "New stamp" form with live stamp preview and template choice.
+2. **Desk** (`/p/[id]`): stage rail (edit mode for stages), blocks for the selected stage with inline editing and autosave, composer at the foot (Enter = note, URL = link, paste/drop images, one-click block types), precedent panel (manual add, keep, note, dismiss). Header: editable title and description, save status, Letter, Post/Recall, delete. Posting plays the stamp-on-envelope animation. Under 900px: single column with Blocks / Precedents tabs.
+3. **Letter** (`/view/[id]`): editorial case study. Masthead, stages as numbered sections, empty blocks hidden, figures numbered, kept precedents as margin notes keyed to the Lineage list.
+4. **Connections** (`/connections`): inbox token, MCP config, Blender and curl examples, API reference.
 
-## AI behavior
+## API
 
-- On new entry: generate a 1 to 2 sentence summary in the maker's voice. Never invent facts not present in the entry.
-- Precedent search: send the project title, description, and all entries for the current stage to Claude. Ask it to return 3 to 5 search queries tailored to the stage, as JSON:
-  - spark: artworks, installations, projects with similar concepts
-  - moodboard: visual references, artworks, design objects
-  - research: academic papers, theory
-  - experiments: technical approaches to the same problem
-  - build: code, tools, components
-  - outcome: closest prior works, for positioning
-- Run queries against the relevant sources, dedupe, then ask Claude to rank the top 8 by relevance and write a one-line "why this is relevant" for each.
-- Cache results per project and stage in SQLite. Only refetch on "Refresh".
+- Desk API under `/api/` (projects, stages, blocks, precedents, uploads). Same-origin only for writes (enforced in `hooks.server.ts`).
+- Inbox API under `/api/inbox/` for other apps, `Authorization: Bearer <token>`: `GET /api/inbox`, `POST /api/inbox/blocks` `{project, stage?, type, data, source?}` (names or ids; no stage = last-used stage), `POST /api/inbox/uploads` (multipart `file`).
+- MCP tools: list_projects, add_note, add_link, add_quote, add_image (local path or URL).
 
 ## Design system
 
-Clean, minimal, editorial. Think a well-set print journal, not a SaaS dashboard.
+Clean, minimal, editorial. A well-set print journal, not a SaaS dashboard.
 
-- Colors (CSS custom properties on `:root`):
-  - `--bg: #FAFAF8`, `--surface: #FFFFFF`, `--text: #111111`, `--muted: #6B6B6B`, `--line: #E6E6E3`, `--accent: #2B4BFF`
-  - Dark mode via `prefers-color-scheme` with equivalent tokens.
-- Type: all grotesk. Space Grotesk for titles, numerals and the wordmark (`--font-display`), Hanken Grotesk for interface and reading text (`--font-ui`). Two weights only (400, 600).
-- Logo: a perforated stamp in the accent color with one thread writing an "n" (`src/lib/components/Logo.svelte`).
-- Scale: 13 / 15 / 18 / 24 / 36 px.
-- Spacing on an 8px grid. Generous whitespace.
-- 1px borders using `--line`. No shadows, no gradients, minimal rounding (4px max).
-- Accent color used sparingly: active stage, primary action, kept state.
-- Motion: 150ms ease for hover and state changes only.
+- Colors on `:root`: `--bg #FAFAF8`, `--surface #FFFFFF`, `--text #111111`, `--muted #6B6B6B`, `--line #E6E6E3`, `--accent #2B4BFF`. Dark mode via `prefers-color-scheme`.
+- Type: all grotesk. Space Grotesk for titles, numerals and wordmark (`--font-display`), Hanken Grotesk for interface and reading (`--font-ui`). Weights 400 and 600.
+- Scale 13 / 15 / 18 / 24 / 36. 8px spacing grid. 1px borders, no shadows, no gradients in UI, 4px max radius.
+- Accent sparingly: active stage, primary action, kept and posted states.
+- Motion: 150ms ease for hover and state changes. The posting animation is the one exception; it respects reduced motion.
 - Icons: Lucide, stroke 1.5, 16px.
-- Responsive: workspace collapses to a single column with tabs (Entries / Precedents) under 900px.
+- Logo: perforated stamp with one thread writing an "n" (`Logo.svelte`).
 
-## Build order
+## Roadmap
 
-Work in phases. Finish and verify each phase before starting the next. Commit after each phase.
+Done: scaffold, persistence, customizable stages, blocks, posting, letter, connections (inbox API + MCP).
 
-1. Scaffold SvelteKit, design tokens, layout shell, all three screens with hardcoded mock data.
-2. SQLite schema and server routes. Projects and entries persist. Text, image and link entries work.
-3. AI summaries on entries (Anthropic API, server-side).
-4. Precedent finder: query generation, source fetchers, ranking, cache, Keep and Dismiss.
-5. Published page with lineage section.
-6. Polish: empty states, loading states, error handling for failed API calls, responsive layout.
+Next:
+1. AI summaries on blocks (Anthropic API, server-side, key in `.env` as `ANTHROPIC_API_KEY`). Never invent facts.
+2. Precedent finder: Claude writes 3 to 5 stage-specific queries from title, description and blocks; search Semantic Scholar, arXiv, The Met, Cooper Hewitt (`COOPER_HEWITT_KEY`), GitHub; dedupe; Claude ranks top 8 with a one-line "why"; cache per stage; refresh on demand. One module per source in `src/lib/server/sources/`. Fail gracefully per source.
+3. Drag-and-drop block reordering, mobile capture, voice notes.
 
 ## Conventions
 
-- Keep components small. One component per file in `src/lib/components`.
-- Each precedent source gets its own module in `src/lib/server/sources/` with a shared return type.
-- All external API calls happen server-side.
-- Fail gracefully: if a source errors, show results from the others.
-- Seed script (`npm run seed`) creates one demo project with entries in every stage for testing.
+- One component per file in `src/lib/components` (block editors in `blocks/`).
+- Server code in `src/lib/server/` (db, repo/*, validate, uploads, inbox). All external calls server-side.
+- Validate every write in `validate.ts`. Keep the client bundle small: no heavy dependencies.
+- `npm run seed` clears the database; demo projects are inserted on next start.

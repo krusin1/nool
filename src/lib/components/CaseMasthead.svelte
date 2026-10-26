@@ -1,36 +1,42 @@
 <script lang="ts">
-	import { STAGES, type Stage } from '#lib/stages.ts';
-
-	const total = STAGES.length;
-	import type { Project } from '#lib/types.ts';
+	import { pad2 } from '#lib/format.ts';
+	import type { Project, Stage } from '#lib/types.ts';
 
 	let {
 		project,
 		span,
-		stages,
-		entryCount,
+		sections,
+		total,
+		blockCount,
 		keptCount
-	}: { project: Project; span: string; stages: Stage[]; entryCount: number; keptCount: number } = $props();
+	}: {
+		project: Project;
+		span: string;
+		sections: { stage: Stage; index: number }[];
+		total: number;
+		blockCount: number;
+		keptCount: number;
+	} = $props();
 </script>
 
 <header class="masthead">
 	<div class="inner">
 		<span class="label kicker">Case study</span>
 		<h1 class="display">{project.title}</h1>
-		<p class="dek">{project.description}</p>
+		{#if project.description}<p class="dek">{project.description}</p>{/if}
 
 		<dl class="facts">
 			<div><dt class="label">Documented</dt><dd>{span}</dd></div>
-			<div><dt class="label">Entries</dt><dd>{entryCount}</dd></div>
-			<div><dt class="label">Stages</dt><dd>{stages.length} of {total}</dd></div>
+			<div><dt class="label">Blocks</dt><dd>{blockCount}</dd></div>
+			<div><dt class="label">Stages</dt><dd>{sections.length} of {total}</dd></div>
 			<div><dt class="label">Lineage</dt><dd>{keptCount} works</dd></div>
 		</dl>
 
 		<nav class="contents" aria-label="Contents">
-			{#each stages as stage, i (stage.id)}
-				<a href="#{stage.id}"><span class="label">{String(i + 1).padStart(2, '0')}</span> {stage.label}</a>
+			{#each sections as { stage, index } (stage.id)}
+				<a href="#stage-{stage.id}"><span class="label">{pad2(index + 1)}</span> {stage.name}</a>
 			{/each}
-			<a href="#lineage"><span class="label">→</span> Lineage</a>
+			{#if keptCount}<a href="#lineage"><span class="label">→</span> Lineage</a>{/if}
 		</nav>
 	</div>
 </header>
@@ -58,11 +64,10 @@
 	h1 {
 		font-size: var(--fs-xl);
 		line-height: 1.05;
-		letter-spacing: -0.015em;
 	}
 
 	.dek {
-		max-width: 30ch;
+		max-width: 34ch;
 		font-size: var(--fs-lg);
 		line-height: 1.35;
 		color: var(--muted);

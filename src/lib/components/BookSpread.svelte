@@ -1,29 +1,31 @@
 <script lang="ts">
 	// A two-page book spread. Read-only on the published page; draggable in the workspace.
 	import BoardPiece from './BoardPiece.svelte';
-	import type { BoardItem } from '#lib/types.ts';
+	import type { SpreadItem } from '#lib/types.ts';
 
 	let {
 		items = $bindable(),
 		editable = false,
 		selected = $bindable(null),
-		editing = $bindable(null)
+		editing = $bindable(null),
+		onchange
 	}: {
-		items: BoardItem[];
+		items: SpreadItem[];
 		editable?: boolean;
 		selected?: string | null;
 		editing?: string | null;
+		onchange?: () => void;
 	} = $props();
 
 	let spread: HTMLDivElement;
-	let drag: { id: string; startX: number; startY: number; x0: number; y0: number } | null = null;
+	let drag: { id: string; startX: number; startY: number; x0: number; y0: number; moved: boolean } | null = null;
 
-	function down(e: PointerEvent, item: BoardItem) {
+	function down(e: PointerEvent, item: SpreadItem) {
 		if (!editable || editing === item.id) return;
 		e.preventDefault();
 		selected = item.id;
 		item.z = Math.max(...items.map((i) => i.z)) + 1;
-		drag = { id: item.id, startX: e.clientX, startY: e.clientY, x0: item.x, y0: item.y };
+		drag = { id: item.id, startX: e.clientX, startY: e.clientY, x0: item.x, y0: item.y, moved: false };
 		(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
 		(e.currentTarget as HTMLElement).focus();
 	}
@@ -37,9 +39,11 @@
 		const dy = ((e.clientY - drag.startY) / rect.height) * 100;
 		item.x = Math.min(98 - item.w, Math.max(0, drag.x0 + dx));
 		item.y = Math.min(96, Math.max(0, drag.y0 + dy));
+		drag.moved = true;
 	}
 
 	function up() {
+		if (drag?.moved) onchange?.();
 		drag = null;
 	}
 
@@ -74,7 +78,7 @@
 				editing={editing === item.id}
 				onpointerdown={(e) => down(e, item)}
 				ondblclick={() => editable && (item.kind === 'note' || item.kind === 'quote' || item.kind === 'label') && (editing = item.id)}
-				ondone={() => (editing = null)}
+				ondone={() => ((editing = null), onchange?.())}
 			/>
 		{/each}
 

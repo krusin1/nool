@@ -1,12 +1,12 @@
 <script lang="ts">
+	import { postmarkDate } from '#lib/format.ts';
+
 	let { date }: { date: string } = $props();
 
-	const label = $derived(
-		new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()
-	);
+	const label = $derived(postmarkDate(date));
 </script>
 
-<svg class="postmark" viewBox="0 0 160 80" aria-label="Published {label}" role="img">
+<svg class="postmark" viewBox="0 0 160 80" aria-label="Posted {label}" role="img">
 	<g fill="none" stroke="currentColor" stroke-width="2">
 		<circle cx="40" cy="40" r="32" />
 		<circle cx="40" cy="40" r="25" stroke-width="1" />
@@ -15,7 +15,7 @@
 		{/each}
 	</g>
 	<g fill="currentColor" text-anchor="middle" font-family="var(--font-display)" font-weight="600">
-		<text x="40" y="38" font-size="8.5" letter-spacing=".5">PUBLISHED</text>
+		<text x="40" y="38" font-size="8.5" letter-spacing=".5">POSTED</text>
 		<text x="40" y="49" font-size="7">{label}</text>
 	</g>
 </svg>

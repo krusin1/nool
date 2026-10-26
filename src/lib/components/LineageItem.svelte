@@ -1,21 +1,25 @@
 <script lang="ts">
-	import { SOURCE_LABELS, stageLabel } from '#lib/stages.ts';
+	import { SOURCE_LABELS } from '#lib/format.ts';
 	import type { Precedent } from '#lib/types.ts';
 
-	let { precedent, ref }: { precedent: Precedent; ref: number } = $props();
+	let { precedent, ref, stageName }: { precedent: Precedent; ref: number; stageName: string } = $props();
 </script>
 
 <li class="item" id="ref-{ref}">
 	<span class="ref display">{ref}</span>
 	<div class="work">
-		<a class="title" href={precedent.url} target="_blank" rel="noreferrer">{precedent.title}</a>
-		<span class="by">{precedent.creator}, {precedent.year}</span>
+		{#if precedent.url}
+			<a class="title" href={precedent.url} target="_blank" rel="noreferrer">{precedent.title}</a>
+		{:else}
+			<span class="title">{precedent.title}</span>
+		{/if}
+		<span class="by">{[precedent.creator, precedent.year].filter(Boolean).join(', ')}</span>
 		{#if precedent.note}
 			<p class="note">{precedent.note}</p>
 		{/if}
 	</div>
 	<div class="meta label">
-		<span>{stageLabel(precedent.stage)}</span>
+		<span>{stageName}</span>
 		<span>{SOURCE_LABELS[precedent.source]}</span>
 	</div>
 </li>

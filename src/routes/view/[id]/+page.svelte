@@ -1,45 +1,42 @@
 <script lang="ts">
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	import CaseMasthead from '#lib/components/CaseMasthead.svelte';
-	import StageSection from '#lib/components/StageSection.svelte';
+	import LetterStage from '#lib/components/LetterStage.svelte';
 	import LineageItem from '#lib/components/LineageItem.svelte';
 	import Logo from '#lib/components/Logo.svelte';
-	import { STAGES, formatDate } from '#lib/stages.ts';
+	import { formatDate, postmarkDate } from '#lib/format.ts';
+	import { hasContent } from '#lib/blocks.ts';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 
-	const stageOrder = (id: string) => STAGES.findIndex((s) => s.id === id);
-
 	const sections = $derived(
-		STAGES.map((stage) => ({
-			stage,
-			index: stageOrder(stage.id),
-			entries: data.entries
-				.filter((e) => e.stage === stage.id)
-				.sort((a, b) => a.created_at.localeCompare(b.created_at)),
-			board: stage.id === 'moodboard' ? data.board : [],
-			notes: data.precedents.filter((p) => p.kept && p.stage === stage.id)
-		})).filter((s) => s.entries.length || s.board.length)
+		data.stages
+			.map((stage, index) => ({
+				stage,
+				index,
+				blocks: data.blocks.filter((b) => b.stage_id === stage.id && hasContent(b)),
+				notes: data.precedents.filter((p) => p.kept && p.stage_id === stage.id)
+			}))
+			.filter((s) => s.blocks.length || s.notes.length)
 	);
 
-	// Kept precedents, numbered in stage order, shared by margin notes and the lineage list.
+	// Kept precedents, numbered in reading order, shared by margin notes and the lineage list.
 	const kept = $derived(sections.flatMap((s) => s.notes));
 	const refs = $derived(new Map(kept.map((p, i) => [p.id, i + 1])));
+	const stageName = $derived(new Map(data.stages.map((s) => [s.id, s.name])));
 
-	// Figures numbered in reading order.
 	const figures = $derived(
 		new Map(
-			sections
-				.flatMap((s) => s.entries)
-				.filter((e) => e.type === 'image')
-				.map((e, i) => [e.id, i + 1])
+			data.blocks
+				.filter((b) => b.type === 'image' && b.data.src)
+				.map((b, i) => [b.id, i + 1])
 		)
 	);
 
 	const span = $derived.by(() => {
-		const dates = data.entries.map((e) => e.created_at).sort();
-		if (!dates.length) return '';
+		const dates = data.blocks.map((b) => b.created_at).sort();
+		if (!dates.length) return formatDate(data.project.created_at);
 		const a = formatDate(dates[0]);
 		const b = formatDate(dates[dates.length - 1]);
 		return a === b ? a : `${a} to ${b}`;
@@ -48,55 +45,59 @@
 
 <svelte:head>
 	<title>{data.project.title} · Case study</title>
+	{#if data.project.description}<meta name="description" content={data.project.description} />{/if}
 </svelte:head>
 
 <div class="bar">
-	<a class="back label" href="/p/{data.project.id}"><ArrowLeft size={14} strokeWidth={1.5} /> Back to workspace</a>
-	<a class="mark" href="/" aria-label="Nool home"><Logo size={22} /><span class="display">nool</span></a>
-	<span class="label">{data.project.published ? 'Published' : 'Preview'}</span>
+	<a class="back label" href="/p/{data.project.id}"><ArrowLeft size={14} strokeWidth={1.5} /> Desk</a>
+	<a class="mark" href="/" aria-label="Nool"><Logo size={22} /><span class="display">nool</span></a>
+	<span class="label status" class:posted={data.project.posted_at}>
+		{data.project.posted_at ? `Posted ${postmarkDate(data.project.posted_at)}` : 'Draft letter · not posted yet'}
+	</span>
 </div>
 
 <article class="page">
 	<CaseMasthead
 		project={data.project}
 		{span}
-		stages={sections.map((s) => s.stage)}
-		entryCount={data.entries.length}
+		{sections}
+		total={data.stages.length}
+		blockCount={data.blocks.filter(hasContent).length}
 		keptCount={kept.length}
 	/>
 
 	{#each sections as section (section.stage.id)}
-		<StageSection
+		<LetterStage
 			stage={section.stage}
 			index={section.index}
-			entries={section.entries}
-			board={section.board}
+			total={data.stages.length}
+			blocks={section.blocks}
 			notes={section.notes}
 			{figures}
 			{refs}
 		/>
 	{/each}
 
-	<section class="lineage" id="lineage">
-		<div class="lin-head">
-			<span class="label kicker">Lineage</span>
-			<h2 class="display">What this work builds on</h2>
-			<p class="muted">Chosen and annotated by the maker. Numbers match the notes in the margin.</p>
-		</div>
-		{#if kept.length}
+	{#if !sections.length}
+		<p class="empty muted">Nothing on this letter yet. Add blocks on the desk and they appear here.</p>
+	{/if}
+
+	{#if kept.length}
+		<section class="lineage" id="lineage">
+			<div class="lin-head">
+				<span class="label kicker">Lineage</span>
+				<h2 class="display">What this work builds on</h2>
+				<p class="muted">Chosen and annotated by the maker. Numbers match the notes in the margin.</p>
+			</div>
 			<ol>
 				{#each kept as precedent (precedent.id)}
-					<LineageItem {precedent} ref={refs.get(precedent.id)!} />
+					<LineageItem {precedent} ref={refs.get(precedent.id) ?? 0} stageName={stageName.get(precedent.stage_id) ?? ''} />
 				{/each}
 			</ol>
-		{:else}
-			<p class="label">No precedents kept yet.</p>
-		{/if}
-	</section>
+		</section>
+	{/if}
 
-	<footer class="colophon label">
-		Documented on Nool. The maker wrote every entry; AI summarized and found precedents, and the maker chose what to keep.
-	</footer>
+	<footer class="colophon label">Posted with Nool. The maker made the work and chose what this letter builds on.</footer>
 </article>
 
 <style>
@@ -113,8 +114,12 @@
 		background: var(--bg);
 	}
 
-	.bar > :last-child {
+	.status {
 		justify-self: end;
+	}
+
+	.status.posted {
+		color: var(--accent);
 	}
 
 	.mark {
@@ -143,6 +148,11 @@
 		max-width: 1120px;
 		margin: 0 auto;
 		padding: 0 var(--s4) var(--s10);
+	}
+
+	.empty {
+		padding: var(--s8) 0;
+		border-top: var(--border);
 	}
 
 	.lineage {
@@ -210,15 +220,13 @@
 
 	@media (max-width: 600px) {
 		.bar {
+			grid-template-columns: auto 1fr;
+			gap: var(--s2);
 			padding: 0 var(--s2);
 		}
 
 		.mark {
 			display: none;
-		}
-
-		.bar {
-			grid-template-columns: 1fr auto;
 		}
 
 		.page {

@@ -33,7 +33,7 @@
 </script>
 
 <svelte:head>
-	<title>Projects · Nool</title>
+	<title>Album · Nool</title>
 </svelte:head>
 
 <AppHeader />
@@ -41,14 +41,14 @@
 <main class="home" class:wide={view === 'stamps'}>
 	<div class="intro">
 		<div>
-			<h1 class="display">Projects</h1>
-			<p class="muted">Show what your work builds on.</p>
+			<h1 class="display">Album</h1>
+			<p class="muted">Every project is a stamp. Mint while you work, postmarked when you post it.</p>
 		</div>
 		<div class="controls">
 			<ViewToggle {view} onchange={setView} />
 			{#if !creating}
 				<button class="btn btn-primary" onclick={() => (creating = true)}>
-					<Plus size={16} strokeWidth={1.5} /> New project
+					<Plus size={16} strokeWidth={1.5} /> New stamp
 				</button>
 			{/if}
 		</div>
@@ -58,16 +58,21 @@
 		<NewProjectForm oncancel={() => (creating = false)} />
 	{/if}
 
-	{#if view === 'stamps'}
+	{#if !data.projects.length && !creating}
+		<div class="empty">
+			<p class="display">Your album is empty.</p>
+			<p class="muted">Issue a stamp for the project you're working on now.</p>
+		</div>
+	{:else if view === 'stamps'}
 		<section class="stamps" aria-label="Your projects">
-			{#each data.projects as item (item.project.id)}
-				<StampCard project={item.project} cover={item.cover} entryCount={item.entries.length} />
+			{#each data.projects as summary (summary.project.id)}
+				<StampCard {summary} />
 			{/each}
 		</section>
 	{:else}
 		<section class="list" aria-label="Your projects">
-			{#each data.projects as item (item.project.id)}
-				<ProjectRow project={item.project} entries={item.entries} />
+			{#each data.projects as summary (summary.project.id)}
+				<ProjectRow {summary} />
 			{/each}
 		</section>
 	{/if}
@@ -106,6 +111,16 @@
 		display: flex;
 		align-items: center;
 		gap: var(--s1);
+	}
+
+	.empty {
+		padding: var(--s8) 0;
+		text-align: center;
+	}
+
+	.empty .display {
+		font-size: var(--fs-lg);
+		margin-bottom: var(--s1);
 	}
 
 	.stamps {

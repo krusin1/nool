@@ -4,13 +4,18 @@
 	import X from '@lucide/svelte/icons/x';
 	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 	import SourceThumb from './SourceThumb.svelte';
-	import { SOURCE_LABELS } from '#lib/stages.ts';
+	import { SOURCE_LABELS } from '#lib/format.ts';
 	import type { Precedent } from '#lib/types.ts';
 
 	let {
 		precedent = $bindable(),
+		onupdate,
 		ondismiss
-	}: { precedent: Precedent; ondismiss: () => void } = $props();
+	}: {
+		precedent: Precedent;
+		onupdate: (patch: { kept?: boolean; note?: string }) => void;
+		ondismiss: () => void;
+	} = $props();
 
 	let noting = $state(false);
 	let draft = $state('');
@@ -19,9 +24,11 @@
 		if (precedent.kept) {
 			precedent.kept = false;
 			noting = false;
+			onupdate({ kept: false });
 			return;
 		}
 		precedent.kept = true;
+		onupdate({ kept: true });
 		draft = precedent.note;
 		noting = true;
 	}
@@ -29,6 +36,7 @@
 	function saveNote() {
 		precedent.note = draft.trim();
 		noting = false;
+		onupdate({ note: precedent.note });
 	}
 </script>
 
@@ -36,7 +44,7 @@
 	<div class="top">
 		<SourceThumb source={precedent.source} image_url={precedent.image_url} alt={precedent.title} />
 		<div class="info">
-			<span class="label">{SOURCE_LABELS[precedent.source]} · {precedent.year}</span>
+			<span class="label">{SOURCE_LABELS[precedent.source]}{precedent.year ? ` · ${precedent.year}` : ''}</span>
 			<a class="title" href={precedent.url} target="_blank" rel="noreferrer">
 				{precedent.title}<ArrowUpRight class="ext" size={14} strokeWidth={1.5} />
 			</a>
@@ -44,7 +52,7 @@
 		</div>
 	</div>
 
-	<p class="why">{precedent.snippet}</p>
+	{#if precedent.snippet}<p class="why">{precedent.snippet}</p>{/if}
 
 	{#if precedent.kept && noting}
 		<div class="note-edit">
@@ -75,7 +83,8 @@
 			<button class="btn btn-ghost" onclick={ondismiss}>
 				<X size={16} strokeWidth={1.5} /> Dismiss
 			</button>
-		{:else if !precedent.note && !noting}
+		{/if}
+		{#if precedent.kept && !precedent.note && !noting}
 			<button class="btn btn-ghost" onclick={() => ((draft = ''), (noting = true))}>Add note</button>
 		{/if}
 	</div>
