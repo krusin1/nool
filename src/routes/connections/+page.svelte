@@ -85,7 +85,7 @@ post(NOOL + "/api/inbox/blocks", json.dumps({"project": PROJECT, "stage": STAGE,
 			like “export the selected frame and add it to Tidal, Build stage.”
 		</p>
 		<ol class="steps">
-			<li>Install it once: open a terminal in the Nool folder and run <code>cd mcp && npm install</code>.</li>
+			<li>Install it once: open a terminal in the Nool folder and run <code>npm install --prefix mcp</code>.</li>
 			<li>Add this to your MCP app's config. In Claude Desktop: Settings → Developer → Edit config.</li>
 			<li>Restart the app. Nool needs to be running for the tools to work.</li>
 		</ol>

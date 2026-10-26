@@ -20,7 +20,7 @@ Data lives in `data/` (database and uploaded images). Set `NOOL_DATA_DIR` to kee
 
 Other apps can send notes, links and images into Nool. Open **Connections** in the app for your token and setup.
 
-- **MCP**: `cd mcp && npm install`, then add the config from the Connections page to Claude Desktop, Cursor or another MCP app.
+- **MCP**: `npm install --prefix mcp`, then add the config from the Connections page to Claude Desktop, Cursor or another MCP app.
 - **Scripts**: `POST /api/inbox/blocks` with `Authorization: Bearer <token>`. The Connections page has Blender and curl examples.
 
 ## Structure
