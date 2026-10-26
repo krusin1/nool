@@ -40,6 +40,10 @@ export const api = {
 		call<Precedent>('PATCH', `/api/precedents/${id}`, patch),
 	deletePrecedent: (id: string) => call('DELETE', `/api/precedents/${id}`),
 
+	summarize: (stageId: string) => call<{ text: string }>('POST', `/api/stages/${stageId}/summary`),
+	findPrecedents: (stageId: string) =>
+		call<{ precedents: Precedent[]; failed: string[]; queries: string[]; usedAi: boolean }>('POST', `/api/stages/${stageId}/find`),
+
 	rotateToken: () => call<{ token: string }>('POST', '/api/settings/token'),
 
 	async upload(file: File): Promise<string> {

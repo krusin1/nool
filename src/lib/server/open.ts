@@ -23,3 +23,22 @@ export function openExternal(url: string): Promise<boolean> {
 		});
 	});
 }
+
+/** Show a file in Finder / Explorer / the file manager. Desktop app only. */
+export function revealPath(path: string): Promise<boolean> {
+	if (!isDesktop()) return Promise.resolve(false);
+	const [cmd, args] =
+		process.platform === 'win32'
+			? ['explorer', [`/select,${path}`]]
+			: process.platform === 'darwin'
+				? ['open', ['-R', path]]
+				: ['xdg-open', [path.replace(/[\\/][^\\/]*$/, '')]];
+	return new Promise((resolve) => {
+		const child = spawn(cmd, args, { stdio: 'ignore', detached: true });
+		child.on('error', () => resolve(false));
+		child.on('spawn', () => {
+			child.unref();
+			resolve(true);
+		});
+	});
+}

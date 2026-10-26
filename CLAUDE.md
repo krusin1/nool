@@ -48,6 +48,7 @@ Documentation should feel like part of making, not an extra step: capture is one
 
 - Desk API under `/api/` (projects, stages, blocks, precedents, uploads). Same-origin only for writes (enforced in `hooks.server.ts`).
 - Inbox API under `/api/inbox/` for other apps, `Authorization: Bearer <token>`: `GET /api/inbox`, `POST /api/inbox/blocks` `{project, stage?, type, data, source?}` (names or ids; no stage = last-used stage), `POST /api/inbox/uploads` (multipart `file`).
+- AI and setup: `PUT/DELETE /api/settings/ai`, `POST /api/stages/[id]/summary`, `POST /api/stages/[id]/find`, `GET/POST/DELETE /api/mcp`, `PUT /api/settings/sources`.
 - MCP tools: list_projects, add_note, add_link, add_quote, add_image (local path or URL).
 
 ## Design system
@@ -70,10 +71,14 @@ Never commit keys or tokens. `.env` and `.env.*` are git-ignored. `GOOGLE_CLIENT
 
 Done: scaffold, persistence, customizable stages, blocks, posting, letter, connections (inbox API, MCP, Figma plugin), backups, desktop app, download site.
 
+Done (opt-in AI): everything runs only on a button press.
+- AI connection on Connections (`ai.ts`): Claude, ChatGPT, Gemini, OpenRouter, Ollama (local), any OpenAI-compatible. Key saved in local `settings` (`ai`), checked before saving, never sent to the page.
+- Summarize (stage head): from the stage's own notes, never invented; shown for editing, added as a note only if the maker chooses.
+- Find precedents (panel): queries from AI or keywords; Semantic Scholar, arXiv, The Met, Cooper Hewitt (key in settings `cooperhewitt_key`), GitHub in `src/lib/server/sources/`; dedupe; AI ranks top 8 with a "why", else round-robin. Suggestions are unkept rows; finding again replaces unkept suggestions only. Failed sources are reported.
+- One-click MCP setup (`mcp-install.ts`) for Claude Desktop, Cursor, Windsurf; backs up the config as `.before-nool`. Figma steps with "Show it" (desktop).
+
 Next:
-1. AI summaries on blocks (Anthropic API, server-side, key in `.env` as `ANTHROPIC_API_KEY`). Never invent facts.
-2. Precedent finder: Claude writes 3 to 5 stage-specific queries from title, description and blocks; search Semantic Scholar, arXiv, The Met, Cooper Hewitt (`COOPER_HEWITT_KEY`), GitHub; dedupe; Claude ranks top 8 with a one-line "why"; cache per stage; refresh on demand. One module per source in `src/lib/server/sources/`. Fail gracefully per source.
-3. Drag-and-drop block reordering, mobile capture, voice notes.
+1. Drag-and-drop block reordering, mobile capture, voice notes.
 
 ## Conventions
 

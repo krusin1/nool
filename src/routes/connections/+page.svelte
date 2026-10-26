@@ -2,20 +2,32 @@
 	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
 	import AppHeader from '#lib/components/AppHeader.svelte';
 	import CopyBlock from '#lib/components/CopyBlock.svelte';
+	import AiConnect from '#lib/components/AiConnect.svelte';
+	import McpApps from '#lib/components/McpApps.svelte';
+	import FolderOpen from '@lucide/svelte/icons/folder-open';
 	import { untrack } from 'svelte';
 	import { api } from '#lib/api.ts';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 	let token = $state(untrack(() => data.token));
+	let chKey = $state('');
+	let chSaved = $state(untrack(() => data.cooperhewitt));
+	let revealed = $state('');
 
-	const mcpConfig = $derived(
-		JSON.stringify(
-			{ mcpServers: { nool: { command: data.node, args: [data.mcpPath], env: { NOOL_URL: data.origin, NOOL_TOKEN: token } } } },
-			null,
-			2
-		)
-	);
+	const mcpConfig = $derived(JSON.stringify({ mcpServers: { nool: { ...data.mcpEntry, env: { ...data.mcpEntry.env, NOOL_TOKEN: token } } } }, null, 2));
+
+	async function reveal() {
+		const r = await fetch('/api/reveal', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ what: 'figma' }) });
+		revealed = (await r.json()).opened ? 'Opened. Pick manifest.json in Figma.' : 'Copy the path below instead.';
+	}
+
+	async function saveCh(e: SubmitEvent) {
+		e.preventDefault();
+		const r = await fetch('/api/settings/sources', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ cooperhewitt: chKey }) });
+		chSaved = (await r.json()).cooperhewitt;
+		chKey = '';
+	}
 
 	const curl = $derived(`curl -X POST ${data.origin}/api/inbox/blocks \\
   -H "Authorization: Bearer ${token}" \\
@@ -63,49 +75,82 @@ post(NOOL + "/api/inbox/blocks", json.dumps({"project": PROJECT, "stage": STAGE,
 	<header class="intro">
 		<h1 class="display">Connections</h1>
 		<p class="muted">
-			Send work into Nool from the apps you make it in. Exports, renders, notes and links land on the right stage
-			without leaving what you're doing. Each block shows which app sent it.
+			Connect an AI model if you want one, and send work into Nool from the apps you make it in. Exports, renders,
+			notes and links land on the right stage, and each block shows which app sent it.
 		</p>
 	</header>
+
+	<section id="ai">
+		<h2 class="display">AI model</h2>
+		<p class="muted">
+			Optional. Connect the model you already use to get stage summaries and sharper precedent picks. It only runs when
+			you press Summarize or Find precedents, never on its own, and it never writes the work for you. Your key stays on
+			this computer.
+		</p>
+		<AiConnect providers={data.providers} status={data.ai} />
+	</section>
+
+	<section>
+		<h2 class="display">AI apps</h2>
+		<p class="muted">
+			Let Claude, Cursor or Windsurf add notes, links and images to your projects while you chat. One click adds Nool to
+			the app. Restart the app afterwards, and keep Nool open while you use it.
+		</p>
+		<McpApps apps={data.mcpApps} />
+		<details>
+			<summary class="label">Another MCP app? Add this to its config by hand</summary>
+			{#if !data.desktop}
+				<p class="label">Running from source: install the server once with <code>npm install --prefix mcp</code>.</p>
+			{/if}
+			<CopyBlock label="MCP config" code={mcpConfig} />
+		</details>
+	</section>
+
+	<section>
+		<h2 class="display">Figma</h2>
+		<p class="muted">
+			The Send to Nool plugin sends the frames you select, with a caption or note, to the project and stage you pick.
+			Figma asks you to add it once.
+		</p>
+		<ol class="steps">
+			<li>Open the Figma desktop app and any design file.</li>
+			<li>Menu → Plugins → Development → <strong>Import plugin from manifest…</strong></li>
+			<li>
+				Pick Nool's plugin file.
+				{#if data.desktop}
+					<button class="btn btn-ghost inline" onclick={reveal}><FolderOpen size={14} strokeWidth={1.5} /> Show it</button>
+					{#if revealed}<span class="label">{revealed}</span>{/if}
+				{/if}
+			</li>
+			<li>Run Plugins → Development → <strong>Send to Nool</strong>. Paste the address and token below and press Connect.</li>
+		</ol>
+		<CopyBlock label="Plugin file" code={data.figmaManifest} />
+		<CopyBlock label="Nool address" code={data.origin} />
+		<CopyBlock label="Token" code={token} />
+	</section>
+
+	<section>
+		<h2 class="display">Precedent sources</h2>
+		<p class="muted">
+			Find precedents searches The Met, Semantic Scholar, arXiv and GitHub with no setup. Cooper Hewitt needs a free key.
+		</p>
+		<form class="inline-form" onsubmit={saveCh}>
+			<input type="password" bind:value={chKey} placeholder={chSaved ? 'Cooper Hewitt key saved' : 'Cooper Hewitt key (optional)'} autocomplete="off" />
+			<button class="btn">{chSaved && !chKey ? 'Remove' : 'Save'}</button>
+		</form>
+		<span class="label"><a href="https://collection.cooperhewitt.org/api" target="_blank" rel="noreferrer">Get a Cooper Hewitt key</a></span>
+	</section>
 
 	<section>
 		<div class="head">
 			<h2 class="display">Your token</h2>
 			<button class="btn btn-ghost" onclick={rotate}><RefreshCw size={14} strokeWidth={1.5} /> New token</button>
 		</div>
-		<p class="muted">Anything with this token can add to your projects. Keep it private.</p>
+		<p class="muted">
+			Anything with this token can add to your projects. Keep it private. If you make a new one, press Add Nool again
+			for your AI apps and reconnect Figma.
+		</p>
 		<CopyBlock label="Inbox token" code={token} />
-	</section>
-
-	<section>
-		<h2 class="display">Figma</h2>
-		<p class="muted">
-			The Send to Nool plugin exports the frames you select and sends them, with an optional caption or note, to the
-			project and stage you pick. No other app in between.
-		</p>
-		<ol class="steps">
-			<li>In the Figma desktop app: Plugins → Development → Import plugin from manifest.</li>
-			<li>Choose this file: <code>{data.figmaManifest}</code></li>
-			<li>Run it from Plugins → Development → Send to Nool. Open Connection, paste the address and token below, and Connect.</li>
-		</ol>
-		<CopyBlock label="Nool address for the plugin" code={data.origin} />
-	</section>
-
-	<section>
-		<h2 class="display">AI apps, through MCP</h2>
-		<p class="muted">
-			The Nool MCP server lets Claude, Cursor and other MCP apps list your projects and add notes, links, quotes and
-			images. With other MCP servers connected alongside it, such as Figma's or a Blender one, you can ask things
-			like “export the selected frame and add it to Tidal, Build stage.”
-		</p>
-		<ol class="steps">
-			{#if !data.desktop}
-				<li>Install it once: open a terminal in the Nool folder and run <code>npm install --prefix mcp</code>.</li>
-			{/if}
-			<li>Add this to your MCP app's config. In Claude Desktop: Settings → Developer → Edit config.</li>
-			<li>Restart the app. Nool needs to be running for the tools to work.</li>
-		</ol>
-		<CopyBlock label="MCP config" code={mcpConfig} />
 	</section>
 
 	<section>
@@ -166,6 +211,35 @@ post(NOOL + "/api/inbox/blocks", json.dumps({"project": PROJECT, "stage": STAGE,
 
 	h2 {
 		font-size: var(--fs-md);
+	}
+
+	.inline {
+		display: inline-flex;
+		padding: 2px 8px;
+		margin-left: 4px;
+	}
+
+	.inline-form {
+		display: flex;
+		gap: var(--s1);
+	}
+
+	.inline-form input {
+		flex: 1;
+		min-width: 0;
+		padding: var(--s1);
+		border: var(--border);
+		border-radius: var(--radius);
+		background: var(--surface);
+		font: inherit;
+	}
+
+	section a {
+		color: var(--accent);
+	}
+
+	details p {
+		margin: 12px 0;
 	}
 
 	.head {

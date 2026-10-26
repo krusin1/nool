@@ -7,6 +7,7 @@
 	import Composer from '#lib/components/Composer.svelte';
 	import PrecedentPanel from '#lib/components/PrecedentPanel.svelte';
 	import WorkspaceTabs from '#lib/components/WorkspaceTabs.svelte';
+	import StageSummary from '#lib/components/StageSummary.svelte';
 	import PostOverlay from '#lib/components/PostOverlay.svelte';
 	import { api } from '#lib/api.ts';
 	import { autosave } from '#lib/autosave.svelte.ts';
@@ -175,6 +176,12 @@
 							onchange={(e) => renameStage(stage.id, e.currentTarget.value)}
 							onkeydown={(e) => e.key === 'Enter' && e.currentTarget.blur()}
 						/>
+						<StageSummary
+							stageId={stage.id}
+							ai={data.ai}
+							empty={!stageBlocks.length}
+							onadd={(text) => addBlock('note', { text })}
+						/>
 					</div>
 
 					<div class="blocks">
@@ -199,7 +206,7 @@
 			</main>
 
 			<aside class="precedent-col" class:hidden-sm={tab !== 'precedents'}>
-				<PrecedentPanel bind:precedents stageId={stage.id} stageName={stage.name} />
+				<PrecedentPanel bind:precedents stageId={stage.id} stageName={stage.name} ai={data.ai} />
 			</aside>
 		{/if}
 	</div>
@@ -248,6 +255,10 @@
 	}
 
 	.stage-head {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: center;
+		gap: var(--s1);
 		margin-bottom: var(--s3);
 	}
 
