@@ -78,8 +78,10 @@ Done (opt-in AI): everything runs only on a button press.
 - Find precedents (panel): queries from AI or keywords; Semantic Scholar, arXiv, The Met, Cooper Hewitt (key in settings `cooperhewitt_key`), GitHub in `src/lib/server/sources/`; dedupe; AI ranks top 8 with a "why", else round-robin. Suggestions are unkept rows; finding again replaces unkept suggestions only. Failed sources are reported.
 - One-click MCP setup (`mcp-install.ts`) for Claude Desktop, Cursor, Windsurf; backs up the config as `.before-nool`. Figma steps with "Show it" (desktop).
 
+Done: drag-and-drop block reordering (grip handle), Replace button on images (clicking an image does nothing), remove colors from palettes, plain-language Connections with a collapsed For developers section.
+
 Next:
-1. Drag-and-drop block reordering, mobile capture, voice notes.
+1. Mobile capture, voice notes.
 
 ## Conventions
 

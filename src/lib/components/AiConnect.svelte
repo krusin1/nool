@@ -113,10 +113,10 @@
 			{:else if p.keyUrl}
 				<li>
 					<a href={p.keyUrl} target="_blank" rel="noreferrer">Open the {p.name} key page <ArrowUpRight size={12} strokeWidth={1.5} /></a>,
-					sign in and create a key.
-					You may need to add a small amount of credit; you pay the provider directly for what you use.
+					and sign in. Press the button to create a new key.
+					Some providers ask you to add a little credit first. You pay them directly, usually cents per use.
 				</li>
-				<li>Copy the key and paste it here.</li>
+				<li>Copy the key (a long line of letters and numbers), paste it below and press <strong>Connect</strong>.</li>
 			{:else}
 				<li>Enter the service's address (it usually ends in <code>/v1</code>), a model name, and a key if it needs one.</li>
 			{/if}
@@ -141,7 +141,7 @@
 				<input bind:value={model} placeholder={p.defaultModel || 'model name'} />
 			{/if}
 		</label>
-		<span class="label">Leave the model as it is unless you want a specific one.</span>
+		<span class="label">You can leave Model as it is.</span>
 
 		{#if failed}<p class="label err">{failed}</p>{/if}
 		<div class="row">

@@ -123,6 +123,32 @@
 		autosave.now(() => api.reorderBlocks(target, ids));
 	}
 
+	// Drag and drop: drag a block by its handle onto another block, or onto a stage in the rail.
+	let dragId = $state('');
+	let over = $state<{ id: string; after: boolean } | null>(null);
+
+	function dragOver(e: DragEvent, b: Block) {
+		if (!dragId || dragId === b.id) return;
+		e.preventDefault();
+		const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+		over = { id: b.id, after: e.clientY > r.top + r.height / 2 };
+	}
+
+	function drop(e: DragEvent) {
+		e.preventDefault();
+		if (!dragId || !over) return endDrag();
+		const ids = stageBlocks.map((x) => x.id).filter((id) => id !== dragId);
+		const at = ids.indexOf(over.id) + (over.after ? 1 : 0);
+		ids.splice(at, 0, dragId);
+		applyOrder(stage.id, ids);
+		endDrag();
+	}
+
+	function endDrag() {
+		dragId = '';
+		over = null;
+	}
+
 	async function deleteBlock(b: Block) {
 		autosave.cancel(b.id);
 		blocks = blocks.filter((x) => x.id !== b.id);
@@ -184,9 +210,11 @@
 						/>
 					</div>
 
-					<div class="blocks">
+					<div class="blocks" role="list" ondrop={drop} ondragover={(e) => dragId && e.preventDefault()}>
 						{#each blocks as block, i (block.id)}
 							{#if block.stage_id === stage.id}
+								<!-- svelte-ignore a11y_no_static_element_interactions -->
+								<div class="slot" ondragover={(e) => dragOver(e, block)}>
 								<DeskBlock
 									bind:block={blocks[i]}
 									{stages}
@@ -196,7 +224,19 @@
 									onmove={(dir) => moveBlock(block, dir)}
 									onmovestage={(target) => moveToStage(block, target)}
 									ondelete={() => deleteBlock(block)}
+									dragging={dragId === block.id}
+									dropBefore={over?.id === block.id && !over.after}
+									dropAfter={over?.id === block.id && over.after}
+									ondragstart={(e) => {
+										dragId = block.id;
+										if (e.dataTransfer) {
+											e.dataTransfer.effectAllowed = 'move';
+											e.dataTransfer.setData('text/x-nool-block', block.id);
+										}
+									}}
+									ondragend={endDrag}
 								/>
+								</div>
 							{/if}
 						{/each}
 					</div>

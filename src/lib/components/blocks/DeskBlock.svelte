@@ -2,6 +2,7 @@
 	import ArrowUp from '@lucide/svelte/icons/arrow-up';
 	import ArrowDown from '@lucide/svelte/icons/arrow-down';
 	import Trash from '@lucide/svelte/icons/trash';
+	import GripVertical from '@lucide/svelte/icons/grip-vertical';
 	import BlockIcon from './BlockIcon.svelte';
 	import NoteBlock from './NoteBlock.svelte';
 	import ImageBlock from './ImageBlock.svelte';
@@ -22,7 +23,12 @@
 		onchange,
 		onmove,
 		onmovestage,
-		ondelete
+		ondelete,
+		dragging = false,
+		dropBefore = false,
+		dropAfter = false,
+		ondragstart,
+		ondragend
 	}: {
 		block: Block;
 		stages: Stage[];
@@ -32,11 +38,35 @@
 		onmove: (dir: -1 | 1) => void;
 		onmovestage: (stageId: string) => void;
 		ondelete: () => void;
+		dragging?: boolean;
+		dropBefore?: boolean;
+		dropAfter?: boolean;
+		ondragstart?: (e: DragEvent) => void;
+		ondragend?: () => void;
 	} = $props();
+
+	let grabbed = $state(false);
 </script>
 
-<article class="block {block.type}">
+<article
+	class="block {block.type}"
+	class:dragging
+	class:drop-before={dropBefore}
+	class:drop-after={dropAfter}
+	draggable={grabbed}
+	ondragstart={(e) => ondragstart?.(e)}
+	ondragend={() => ((grabbed = false), ondragend?.())}
+>
 	<header>
+		<span
+			class="grip"
+			role="button"
+			tabindex="-1"
+			aria-label="Drag to reorder"
+			title="Drag to reorder"
+			onpointerdown={() => (grabbed = true)}
+			onpointerup={() => (grabbed = false)}
+		><GripVertical size={16} strokeWidth={1.5} /></span>
 		<span class="kind label"><BlockIcon type={block.type} size={14} /> {BLOCK_LABELS[block.type]}</span>
 		{#if block.source !== 'desk'}
 			<span class="via label">via {block.source}</span>
@@ -53,7 +83,7 @@
 					{/each}
 				</select>
 			{/if}
-			<button onclick={ondelete} aria-label="Delete block"><Trash size={14} strokeWidth={1.5} /></button>
+			<button onclick={ondelete} aria-label="Remove block" title="Remove block"><Trash size={14} strokeWidth={1.5} /></button>
 		</div>
 	</header>
 
@@ -87,6 +117,46 @@
 		border-color: var(--muted);
 	}
 
+	.block {
+		position: relative;
+	}
+
+	.block.dragging {
+		opacity: 0.4;
+	}
+
+	.block.drop-before::before,
+	.block.drop-after::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		height: 2px;
+		background: var(--accent);
+	}
+
+	.block.drop-before::before {
+		top: -10px;
+	}
+
+	.block.drop-after::after {
+		bottom: -10px;
+	}
+
+	.grip {
+		display: grid;
+		place-items: center;
+		margin-left: -12px;
+		color: var(--muted);
+		cursor: grab;
+		opacity: 0.5;
+		transition: opacity var(--ease);
+	}
+
+	.block:hover .grip {
+		opacity: 1;
+	}
+
 	header {
 		display: flex;
 		align-items: center;
@@ -113,7 +183,7 @@
 		align-items: center;
 		gap: 2px;
 		margin-left: auto;
-		opacity: 0;
+		opacity: 0.45;
 		transition: opacity var(--ease);
 	}
 

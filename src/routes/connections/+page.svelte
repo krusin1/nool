@@ -74,96 +74,101 @@ post(NOOL + "/api/inbox/blocks", json.dumps({"project": PROJECT, "stage": STAGE,
 <main class="page">
 	<header class="intro">
 		<h1 class="display">Connections</h1>
-		<p class="muted">
-			Connect an AI model if you want one, and send work into Nool from the apps you make it in. Exports, renders,
-			notes and links land on the right stage, and each block shows which app sent it.
-		</p>
+		<p class="muted">Two optional extras: an AI helper, and sending work into Nool from the apps you design in.</p>
 	</header>
 
 	<section id="ai">
-		<h2 class="display">AI model</h2>
+		<h2 class="display">1. AI helper</h2>
 		<p class="muted">
-			Optional. Connect the model you already use to get stage summaries and sharper precedent picks. It only runs when
-			you press Summarize or Find precedents, never on its own, and it never writes the work for you. Your key stays on
-			this computer.
+			Adds a <strong>Summarize</strong> button to each stage and smarter <strong>Find precedents</strong> results. It
+			only runs when you press a button. It never makes the work for you.
 		</p>
 		<AiConnect providers={data.providers} status={data.ai} />
 	</section>
 
 	<section>
-		<h2 class="display">AI apps</h2>
+		<h2 class="display">2. Chat apps</h2>
 		<p class="muted">
-			Let Claude, Cursor or Windsurf add notes, links and images to your projects while you chat. One click adds Nool to
-			the app. Restart the app afterwards, and keep Nool open while you use it.
+			Use Claude, Cursor or Windsurf? Press <strong>Add Nool</strong>, then close and reopen that app. After that you
+			can type things like “add a note to my Tidal project” in the chat. Keep Nool open while you do.
 		</p>
 		<McpApps apps={data.mcpApps} />
+	</section>
+
+	<section>
+		<h2 class="display">3. Figma</h2>
+		<p class="muted">Send frames from Figma straight into a project. You set this up once.</p>
+		<ol class="steps">
+			<li>Open the <strong>Figma desktop app</strong> (not the website) and open any design file.</li>
+			<li>
+				In the top menu choose <strong>Plugins</strong>, then <strong>Development</strong>, then
+				<strong>Import plugin from manifest</strong>.
+			</li>
+			<li>
+				{#if data.desktop}
+					Press
+					<button class="btn btn-ghost inline" onclick={reveal}><FolderOpen size={14} strokeWidth={1.5} /> Show plugin file</button>
+					here. A folder opens with a file called <strong>manifest.json</strong>. Pick that file in Figma.
+					{#if revealed}<span class="label">{revealed}</span>{/if}
+				{:else}
+					Pick the file called <strong>manifest.json</strong> in Nool's <strong>figma-plugin</strong> folder.
+				{/if}
+			</li>
+			<li>
+				Run it from <strong>Plugins</strong>, then <strong>Development</strong>, then <strong>Send to Nool</strong>. It
+				asks for two things. Copy them from here:
+			</li>
+		</ol>
+		<div class="pair">
+			<CopyBlock label="Address" code={data.origin} />
+			<CopyBlock label="Password (token)" code={token} />
+		</div>
 		<details>
-			<summary class="label">Another MCP app? Add this to its config by hand</summary>
-			{#if !data.desktop}
-				<p class="label">Running from source: install the server once with <code>npm install --prefix mcp</code>.</p>
-			{/if}
-			<CopyBlock label="MCP config" code={mcpConfig} />
+			<summary class="label">Can't find the file?</summary>
+			<p class="label">It's here on this computer. Copy this and paste it into the file picker in Figma.</p>
+			<CopyBlock label="Plugin file" code={data.figmaManifest} />
 		</details>
 	</section>
 
 	<section>
-		<h2 class="display">Figma</h2>
+		<h2 class="display">4. Museum search</h2>
 		<p class="muted">
-			The Send to Nool plugin sends the frames you select, with a caption or note, to the project and stage you pick.
-			Figma asks you to add it once.
-		</p>
-		<ol class="steps">
-			<li>Open the Figma desktop app and any design file.</li>
-			<li>Menu → Plugins → Development → <strong>Import plugin from manifest…</strong></li>
-			<li>
-				Pick Nool's plugin file.
-				{#if data.desktop}
-					<button class="btn btn-ghost inline" onclick={reveal}><FolderOpen size={14} strokeWidth={1.5} /> Show it</button>
-					{#if revealed}<span class="label">{revealed}</span>{/if}
-				{/if}
-			</li>
-			<li>Run Plugins → Development → <strong>Send to Nool</strong>. Paste the address and token below and press Connect.</li>
-		</ol>
-		<CopyBlock label="Plugin file" code={data.figmaManifest} />
-		<CopyBlock label="Nool address" code={data.origin} />
-		<CopyBlock label="Token" code={token} />
-	</section>
-
-	<section>
-		<h2 class="display">Precedent sources</h2>
-		<p class="muted">
-			Find precedents searches The Met, Semantic Scholar, arXiv and GitHub with no setup. Cooper Hewitt needs a free key.
+			Find precedents already searches The Met, research papers and GitHub. To add the Cooper Hewitt design museum, get
+			a free key from <a href="https://collection.cooperhewitt.org/api" target="_blank" rel="noreferrer">their site</a> and paste it
+			here. Optional.
 		</p>
 		<form class="inline-form" onsubmit={saveCh}>
-			<input type="password" bind:value={chKey} placeholder={chSaved ? 'Cooper Hewitt key saved' : 'Cooper Hewitt key (optional)'} autocomplete="off" />
+			<input type="password" bind:value={chKey} placeholder={chSaved ? 'Key saved' : 'Cooper Hewitt key'} autocomplete="off" />
 			<button class="btn">{chSaved && !chKey ? 'Remove' : 'Save'}</button>
 		</form>
-		<span class="label"><a href="https://collection.cooperhewitt.org/api" target="_blank" rel="noreferrer">Get a Cooper Hewitt key</a></span>
 	</section>
 
-	<section>
-		<div class="head">
-			<h2 class="display">Your token</h2>
-			<button class="btn btn-ghost" onclick={rotate}><RefreshCw size={14} strokeWidth={1.5} /> New token</button>
-		</div>
-		<p class="muted">
-			Anything with this token can add to your projects. Keep it private. If you make a new one, press Add Nool again
-			for your AI apps and reconnect Figma.
-		</p>
-		<CopyBlock label="Inbox token" code={token} />
-	</section>
+	<details class="dev">
+		<summary class="display">For developers</summary>
+		<div class="dev-body">
+			<div class="head">
+				<h3>Token</h3>
+				<button class="btn btn-ghost" onclick={rotate}><RefreshCw size={14} strokeWidth={1.5} /> New token</button>
+			</div>
+			<p class="muted">
+				Anything with this token can add to your projects. If you make a new one, press Add Nool again and reconnect
+				Figma.
+			</p>
+			<CopyBlock label="Inbox token" code={token} />
 
-	<section>
-		<h2 class="display">Scripts and plugins</h2>
-		<p class="muted">
-			Anything that can make a web request can post to the inbox: a Blender script, a Figma plugin, a shortcut on
-			your phone. Projects and stages can be named instead of using ids. Leave the stage out and the block lands on
-			the stage you worked in last.
-		</p>
-		<CopyBlock label="Blender (Python)" code={blender} />
-		<CopyBlock label="Terminal (curl)" code={curl} />
-		<details>
-			<summary class="label">Inbox API reference</summary>
+			<h3>Other MCP apps</h3>
+			{#if !data.desktop}
+				<p class="label">Running from source: install the server once with <code>npm install --prefix mcp</code>.</p>
+			{/if}
+			<CopyBlock label="MCP config" code={mcpConfig} />
+
+			<h3>Scripts</h3>
+			<p class="muted">
+				Anything that can make a web request can post to the inbox. Projects and stages can be named instead of ids.
+				Leave the stage out and the block lands on the stage you worked in last.
+			</p>
+			<CopyBlock label="Blender (Python)" code={blender} />
+			<CopyBlock label="Terminal (curl)" code={curl} />
 			<ul class="ref">
 				<li><code>GET /api/inbox</code> lists projects and stages.</li>
 				<li><code>POST /api/inbox/uploads</code> takes an image as a <code>file</code> form field and returns <code>{'{ src }'}</code>.</li>
@@ -175,8 +180,8 @@ post(NOOL + "/api/inbox/blocks", json.dumps({"project": PROJECT, "stage": STAGE,
 				</li>
 				<li>Every call needs <code>Authorization: Bearer &lt;token&gt;</code>.</li>
 			</ul>
-		</details>
-	</section>
+		</div>
+	</details>
 </main>
 
 <style>
@@ -263,6 +268,33 @@ post(NOOL + "/api/inbox/blocks", json.dumps({"project": PROJECT, "stage": STAGE,
 		background: var(--surface);
 		word-break: break-all;
 		border: var(--border);
+	}
+
+	.pair {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--s1);
+	}
+
+	.dev summary {
+		font-size: var(--fs-md);
+	}
+
+	.dev-body {
+		display: grid;
+		gap: 12px;
+		margin-top: var(--s2);
+	}
+
+	h3 {
+		font-size: var(--fs-sm);
+		margin-top: var(--s2);
+	}
+
+	@media (max-width: 600px) {
+		.pair {
+			grid-template-columns: 1fr;
+		}
 	}
 
 	details {

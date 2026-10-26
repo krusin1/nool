@@ -28,9 +28,13 @@
 
 <figure>
 	{#if data.src}
-		<button class="img" onclick={() => input.click()} aria-label="Replace image">
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<div class="img" ondragover={(e) => e.preventDefault()} ondrop={(e) => (e.preventDefault(), e.stopPropagation(), replace(e.dataTransfer?.files ?? null))}>
 			<img src={data.src} alt={data.caption} loading="lazy" />
-		</button>
+			<button class="btn btn-ghost replace" onclick={() => input.click()} disabled={busy}>
+				<ImagePlus size={14} strokeWidth={1.5} /> {busy ? 'Uploading…' : 'Replace'}
+			</button>
+		</div>
 	{:else}
 		<button class="empty" onclick={() => input.click()} disabled={busy}>
 			<ImagePlus size={16} strokeWidth={1.5} />
@@ -50,10 +54,28 @@
 	}
 
 	.img {
-		padding: 0;
+		position: relative;
 		border: var(--border);
-		background: none;
-		cursor: pointer;
+	}
+
+	.replace {
+		position: absolute;
+		right: 8px;
+		bottom: 8px;
+		background: var(--surface);
+		opacity: 0;
+		transition: opacity var(--ease);
+	}
+
+	.img:hover .replace,
+	.replace:focus-visible {
+		opacity: 1;
+	}
+
+	@media (hover: none) {
+		.replace {
+			opacity: 1;
+		}
 	}
 
 	.img img {
