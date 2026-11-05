@@ -38,6 +38,7 @@ export interface BlockDataMap {
 	todo: { items: { text: string; done: boolean }[] };
 	palette: { colors: string[] };
 	spread: { items: SpreadItem[] };
+	voice: { src: string; caption: string; transcript: string; duration: number };
 }
 
 export type BlockType = keyof BlockDataMap;

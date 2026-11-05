@@ -4,6 +4,7 @@
 	import CopyBlock from '#lib/components/CopyBlock.svelte';
 	import AiConnect from '#lib/components/AiConnect.svelte';
 	import McpApps from '#lib/components/McpApps.svelte';
+	import PhoneConnect from '#lib/components/PhoneConnect.svelte';
 	import FolderOpen from '@lucide/svelte/icons/folder-open';
 	import { untrack } from 'svelte';
 	import { api } from '#lib/api.ts';
@@ -130,8 +131,17 @@ post(NOOL + "/api/inbox/blocks", json.dumps({"project": PROJECT, "stage": STAGE,
 		</details>
 	</section>
 
+	<section id="phone">
+		<h2 class="display">4. Phone</h2>
+		<p class="muted">
+			Capture from your phone while you're away from the desk: a photo of a sketch, a quick note, a voice memo. Works
+			over your own Wi-Fi, nothing goes through the internet. Off until you turn it on.
+		</p>
+		<PhoneConnect />
+	</section>
+
 	<section>
-		<h2 class="display">4. Museum search</h2>
+		<h2 class="display">5. Museum search</h2>
 		<p class="muted">
 			Find precedents already searches The Met, research papers and GitHub. To add the Cooper Hewitt design museum, get
 			a free key from <a href="https://collection.cooperhewitt.org/api" target="_blank" rel="noreferrer">their site</a> and paste it

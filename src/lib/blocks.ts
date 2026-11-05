@@ -8,7 +8,8 @@ export const BLOCK_LABELS: Record<BlockType, string> = {
 	quote: 'Quote',
 	todo: 'Checklist',
 	palette: 'Colors',
-	spread: 'Spread'
+	spread: 'Spread',
+	voice: 'Voice'
 };
 
 export const BLOCK_TYPES = Object.keys(BLOCK_LABELS) as BlockType[];
@@ -21,7 +22,8 @@ export function emptyData<T extends BlockType>(type: T): BlockDataMap[T] {
 		quote: { text: '', cite: '' },
 		todo: { items: [{ text: '', done: false }] },
 		palette: { colors: ['#2B4BFF', '#F3EFE6', '#111111', '#D2462B'] },
-		spread: { items: [] }
+		spread: { items: [] },
+		voice: { src: '', caption: '', transcript: '', duration: 0 }
 	};
 	return defaults[type];
 }
@@ -45,5 +47,7 @@ export function hasContent(b: Block): boolean {
 			return b.data.colors.length > 0;
 		case 'spread':
 			return b.data.items.length > 0;
+		case 'voice':
+			return !!b.data.src;
 	}
 }

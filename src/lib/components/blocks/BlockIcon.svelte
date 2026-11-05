@@ -6,11 +6,12 @@
 	import ListChecks from '@lucide/svelte/icons/list-checks';
 	import Palette from '@lucide/svelte/icons/palette';
 	import BookOpen from '@lucide/svelte/icons/book-open';
+	import Mic from '@lucide/svelte/icons/mic';
 	import type { BlockType } from '#lib/types.ts';
 
 	let { type, size = 16 }: { type: BlockType; size?: number } = $props();
 
-	const icons = { note: FileText, image: ImageIcon, link: Link, quote: Quote, todo: ListChecks, palette: Palette, spread: BookOpen };
+	const icons = { note: FileText, image: ImageIcon, link: Link, quote: Quote, todo: ListChecks, palette: Palette, spread: BookOpen, voice: Mic };
 	const Icon = $derived(icons[type]);
 </script>
 

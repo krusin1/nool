@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation';
-	import { untrack } from 'svelte';
+	import { setContext, untrack } from 'svelte';
 	import DeskHeader from '#lib/components/DeskHeader.svelte';
 	import StageRail from '#lib/components/StageRail.svelte';
 	import DeskBlock from '#lib/components/blocks/DeskBlock.svelte';
@@ -16,6 +16,7 @@
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
+	setContext('nool:speech', () => data.speech);
 
 	// The desk edits its own copy and saves changes as they happen.
 	const initial = untrack(() => structuredClone(data));

@@ -11,6 +11,7 @@
 	import TodoBlock from './TodoBlock.svelte';
 	import PaletteBlock from './PaletteBlock.svelte';
 	import SpreadEditor from './SpreadEditor.svelte';
+	import VoiceBlock from './VoiceBlock.svelte';
 	import { BLOCK_LABELS } from '#lib/blocks.ts';
 	import { formatDate } from '#lib/format.ts';
 	import type { Block, Stage } from '#lib/types.ts';
@@ -101,6 +102,8 @@
 		<PaletteBlock bind:data={block.data} {onchange} />
 	{:else if block.type === 'spread'}
 		<SpreadEditor bind:items={block.data.items} {onchange} />
+	{:else if block.type === 'voice'}
+		<VoiceBlock bind:data={block.data} blockId={block.id} {onchange} />
 	{/if}
 </article>
 

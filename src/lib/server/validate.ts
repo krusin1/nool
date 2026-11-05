@@ -40,7 +40,13 @@ export function blockData<T extends BlockType>(type: T, raw: unknown): BlockData
 		quote: () => ({ text: s(o.text), cite: s(o.cite, 500) }),
 		todo: () => ({ items: arr(o.items).map((i) => ({ text: s(obj(i).text, 2000), done: obj(i).done === true })) }),
 		palette: () => ({ colors: arr(o.colors).map((c) => s(c, 32)).filter(Boolean).slice(0, 12) }),
-		spread: () => ({ items: arr(o.items).slice(0, 200).map(spreadItem) })
+		spread: () => ({ items: arr(o.items).slice(0, 200).map(spreadItem) }),
+		voice: () => ({
+			src: s(o.src, 2000),
+			caption: s(o.caption, 2000),
+			transcript: s(o.transcript),
+			duration: Math.max(0, Math.min(36000, Number(o.duration) || 0))
+		})
 	};
 	return clean[type]() as BlockDataMap[T];
 }

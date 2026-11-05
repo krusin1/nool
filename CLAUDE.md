@@ -31,7 +31,7 @@ Documentation should feel like part of making, not an extra step: capture is one
 - `projects`: id, title, description, created_at, updated_at, posted_at (null = mint)
 - `stages`: id, project_id, name, position. Fully customizable: rename, add, delete (a project keeps at least one), reorder.
 - `blocks`: id, project_id, stage_id, type, data (JSON), position, source ('desk' or the sending app), created_at, updated_at
-  - types: note `{text}`, image `{src, caption}`, link `{url, note}`, quote `{text, cite}`, todo `{items:[{text,done}]}`, palette `{colors}`, spread `{items: SpreadItem[]}` (book-spread collage)
+  - types: note `{text}`, image `{src, caption}`, link `{url, note}`, quote `{text, cite}`, todo `{items:[{text,done}]}`, palette `{colors}`, spread `{items: SpreadItem[]}` (book-spread collage), voice `{src, caption, transcript, duration}`
 - `precedents`: id, project_id, stage_id, source, title, creator, year, url, image_url, snippet, kept, note
 - `settings`: key/value (inbox token)
 - Templates for new projects: Studio (Spark, Moodboard with a spread, Research, Experiments, Build, Outcome), Simple, Blank.
@@ -42,7 +42,7 @@ Documentation should feel like part of making, not an extra step: capture is one
 2. **Desk** (`/p/[id]`): stage rail (edit mode for stages), blocks for the selected stage with inline editing and autosave, composer at the foot (Enter = note, URL = link, paste/drop images, one-click block types), precedent panel (manual add, keep, note, dismiss). Header: editable title and description, save status, Letter, Post/Recall, delete. Posting plays the stamp-on-envelope animation. Under 900px: single column with Blocks / Precedents tabs.
 3. **Letter** (`/view/[id]`): editorial case study. Masthead, stages as numbered sections, empty blocks hidden, figures numbered, kept precedents as margin notes keyed to the Lineage list.
 0. **Welcome** (`/welcome`): first launch only (settings `welcomed`). Three steps: what Nool is, connect an AI (optional, skippable), ready.
-4. **Connections** (`/connections`): inbox token, Figma plugin, MCP config, Blender and curl examples, API reference.
+4. **Connections** (`/connections`): AI helper, chat apps, Figma, phone (QR), museum search, inbox token, Figma plugin, MCP config, Blender and curl examples, API reference.
 5. **Backups** (`/backups`): save/restore a `.nool` backup file (gzipped JSON: database snapshot + images); Google Drive backup with `drive.file` scope, manual or daily, last 10 kept. Restoring replaces projects and saves a safety copy first.
 
 ## API
@@ -81,8 +81,11 @@ Done (opt-in AI): everything runs only on a button press.
 
 Done: drag-and-drop block reordering (grip handle), Replace button on images (clicking an image does nothing), remove colors from palettes, plain-language Connections with a collapsed For developers section.
 
-Next:
-1. Mobile capture, voice notes.
+Done: voice notes and phone capture.
+- Voice block: record in the composer (MediaRecorder, `recorder.svelte.ts`), play back, caption; Transcribe button only when the connected AI has speech (OpenAI or a custom OpenAI-compatible service, `ai.ts` `transcribe`). Uploads accept audio (40 MB) and `/uploads/[name]` serves byte ranges. macOS mic permission in `src-tauri/Info.plist`. Desktop server runs with `BODY_SIZE_LIMIT=50M`.
+- Phone capture (`phone.ts`, `phone-page.ts`): off by default (settings `phone`). When on, a second server on 0.0.0.0:PORT+1 serves one capture page and three add-only routes (`/projects`, `/upload`, `/block`), each needing the pairing key (settings `phone_key`) from the QR on Connections. Blocks arrive with source "Phone". Unpair = new key.
+
+Next: to be decided.
 
 ## Conventions
 

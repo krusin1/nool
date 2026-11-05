@@ -28,6 +28,8 @@ function blockText(b: Block): string {
 			return b.data.items.map((i) => `[${i.done ? 'x' : ' '}] ${i.text}`).join('\n');
 		case 'palette':
 			return `[palette] ${b.data.colors.join(', ')}`;
+		case 'voice':
+			return [b.data.caption && `[voice note] ${b.data.caption}`, b.data.transcript && `(transcript) ${b.data.transcript}`].filter(Boolean).join('\n');
 		case 'spread':
 			return b.data.items.filter((i) => i.kind !== 'image' && i.kind !== 'swatch').map((i) => i.content).join(' / ');
 	}

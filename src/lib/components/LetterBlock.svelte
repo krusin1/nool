@@ -9,6 +9,12 @@
 
 {#if block.type === 'note' && block.data.text.trim()}
 	<p class="para" class:lede>{block.data.text}</p>
+{:else if block.type === 'voice' && block.data.src}
+	<figure class="voice">
+		<audio controls preload="metadata" src={block.data.src}></audio>
+		{#if block.data.caption}<figcaption>{block.data.caption}</figcaption>{/if}
+		{#if block.data.transcript}<p class="para transcript">{block.data.transcript}</p>{/if}
+	</figure>
 {:else if block.type === 'image' && block.data.src}
 	<figure>
 		<img src={block.data.src} alt={block.data.caption} loading="lazy" />
@@ -136,5 +142,16 @@
 		width: 80px;
 		height: 56px;
 		border: var(--border);
+	}
+	.voice audio {
+		width: 100%;
+		max-width: 480px;
+	}
+
+	.transcript {
+		margin-top: 12px;
+		padding-left: 16px;
+		border-left: 2px solid var(--line);
+		color: var(--muted);
 	}
 </style>

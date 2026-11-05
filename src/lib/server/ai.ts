@@ -42,9 +42,9 @@ export const aiConnected = () => !!load();
 /** What the page may see. Never the key itself. */
 export function aiStatus() {
 	const c = load();
-	if (!c) return { connected: false as const };
+	if (!c) return { connected: false as const, speech: false };
 	const p = PROVIDERS.find((x) => x.id === c.provider)!;
-	return { connected: true as const, provider: c.provider, name: p.name, model: c.model, url: c.url, keyEnd: c.key ? c.key.slice(-4) : '' };
+	return { connected: true as const, speech: c.provider in SPEECH_MODEL, provider: c.provider, name: p.name, model: c.model, url: c.url, keyEnd: c.key ? c.key.slice(-4) : '' };
 }
 
 export function configFrom(input: { provider: string; key?: string; model?: string; url?: string }): Config {
@@ -125,4 +125,33 @@ export async function ollamaModels(): Promise<string[]> {
 	} catch {
 		return [];
 	}
+}
+
+// --- Speech to text (voice notes) ---
+// Only OpenAI-style services offer a transcription endpoint: OpenAI itself, and "Other"
+// services such as Groq or a local Whisper server.
+const SPEECH_MODEL: Partial<Record<ProviderId, string>> = { openai: 'gpt-4o-mini-transcribe', custom: 'whisper-1' };
+
+export const speechReady = () => {
+	const c = load();
+	return !!c && c.provider in SPEECH_MODEL;
+};
+
+export async function transcribe(audio: Buffer, type: string, name: string): Promise<string> {
+	const c = load();
+	if (!c || !(c.provider in SPEECH_MODEL)) throw new Error('Transcribing needs ChatGPT (OpenAI) or another speech service connected in Connections.');
+	const form = new FormData();
+	form.append('file', new Blob([new Uint8Array(audio)], { type }), name);
+	form.append('model', SPEECH_MODEL[c.provider]!);
+	const res = await fetch(`${c.url}/audio/transcriptions`, {
+		method: 'POST',
+		signal: AbortSignal.timeout(180_000),
+		headers: c.key ? { authorization: `Bearer ${c.key}` } : {},
+		body: form
+	}).catch((e) => {
+		throw new Error(/fetch failed/.test(e.message) ? 'Could not reach the speech service.' : e.message);
+	});
+	const j = await res.json().catch(() => ({}));
+	if (!res.ok) throw new Error(j.error?.message ?? `The speech service returned ${res.status}`);
+	return String(j.text ?? '').trim();
 }

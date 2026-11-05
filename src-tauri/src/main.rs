@@ -60,6 +60,8 @@ fn start_server(app: &tauri::App) -> Result<CommandChild, Box<dyn std::error::Er
         .env("HOST", "127.0.0.1")
         .env("ORIGIN", format!("http://localhost:{PORT}"))
         .env("NODE_NO_WARNINGS", "1")
+        // Photos and voice recordings are larger than the server's 512 KB default.
+        .env("BODY_SIZE_LIMIT", "50M")
         .env("NOOL_DESKTOP", "1")
         .env("NOOL_DATA_DIR", path(&data))
         .env("NOOL_RESOURCES", path(&resources))

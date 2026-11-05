@@ -4,6 +4,8 @@
 	import CornerDownLeft from '@lucide/svelte/icons/corner-down-left';
 	import BlockIcon from './blocks/BlockIcon.svelte';
 	import AutoText from './AutoText.svelte';
+	import Square from '@lucide/svelte/icons/square';
+	import { Recorder, clock } from '#lib/recorder.svelte.ts';
 	import { api } from '#lib/api.ts';
 	import { BLOCK_LABELS, emptyData, isUrl } from '#lib/blocks.ts';
 	import type { BlockDataMap, BlockType } from '#lib/types.ts';
@@ -22,7 +24,35 @@
 	let failed = $state('');
 	let fileInput: HTMLInputElement;
 
-	const QUICK: BlockType[] = ['image', 'quote', 'todo', 'palette', 'spread'];
+	const QUICK: BlockType[] = ['image', 'voice', 'quote', 'todo', 'palette', 'spread'];
+	const rec = new Recorder();
+
+	async function stopRecording(keep = true) {
+		const r = await rec.stop(keep);
+		if (!r) return;
+		busy = true;
+		failed = '';
+		try {
+			await onadd('voice', { src: await api.upload(r.file), caption: '', transcript: '', duration: Math.round(r.duration) });
+		} catch (e) {
+			failed = (e as Error).message;
+		} finally {
+			busy = false;
+		}
+	}
+
+	async function audioFiles(files: Iterable<File>) {
+		for (const f of [...files].filter((f) => f.type.startsWith('audio/'))) {
+			busy = true;
+			try {
+				await onadd('voice', { src: await api.upload(f), caption: f.name.replace(/\.[^.]+$/, ''), transcript: '', duration: 0 });
+			} catch (e) {
+				failed = (e as Error).message;
+			} finally {
+				busy = false;
+			}
+		}
+	}
 
 	async function submit() {
 		const value = text.trim();
@@ -33,6 +63,7 @@
 	}
 
 	async function images(files: Iterable<File>) {
+		audioFiles(files);
 		const list = [...files].filter((f) => f.type.startsWith('image/'));
 		if (!list.length) return;
 		busy = true;
@@ -48,6 +79,7 @@
 
 	function quick(type: BlockType) {
 		if (type === 'image') fileInput.click();
+		else if (type === 'voice') rec.start();
 		else onadd(type, emptyData(type));
 	}
 
@@ -96,27 +128,73 @@
 			<CornerDownLeft size={16} strokeWidth={1.5} />
 		</button>
 	</div>
+	{#if rec.state === 'recording'}
+		<div class="recording" role="status">
+			<span class="dot"></span>
+			<span class="time">{clock(rec.seconds)}</span>
+			<span class="label">Recording</span>
+			<button class="btn btn-ghost" onclick={() => stopRecording(false)}>Cancel</button>
+			<button class="btn btn-primary" onclick={() => stopRecording()}><Square size={14} strokeWidth={1.5} /> Stop and add</button>
+		</div>
+	{/if}
 	<div class="bar">
 		{#each QUICK as type (type)}
-			<button class="btn btn-ghost" onclick={() => quick(type)} disabled={busy && type === 'image'}>
+			<button class="btn btn-ghost" onclick={() => quick(type)} disabled={(busy && (type === 'image' || type === 'voice')) || (type === 'voice' && rec.state !== 'idle')}>
 				<BlockIcon {type} />
 				{type === 'image' && busy ? 'Uploading…' : BLOCK_LABELS[type]}
 			</button>
 		{/each}
 		<span class="hint label">Enter to add · Shift+Enter for a new line</span>
 	</div>
-	{#if failed}<p class="label err">{failed}</p>{/if}
+	{#if failed || rec.error}<p class="label err">{failed || rec.error}</p>{/if}
 	<input
 		bind:this={fileInput}
 		class="visually-hidden"
 		type="file"
-		accept="image/*"
+		accept="image/*,audio/*"
 		multiple
 		onchange={(e) => images(e.currentTarget.files ?? [])}
 	/>
 </div>
 
 <style>
+	.recording {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 8px 12px;
+		border-top: var(--border);
+	}
+
+	.recording .dot {
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		background: #d2462b;
+		animation: pulse 1.2s ease-in-out infinite;
+	}
+
+	.recording .time {
+		font-family: var(--font-display);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.recording .label {
+		margin-right: auto;
+	}
+
+	@keyframes pulse {
+		50% {
+			opacity: 0.3;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.recording .dot {
+			animation: none;
+		}
+	}
+
 	.composer {
 		border: 1px dashed var(--line);
 		border-radius: var(--radius);

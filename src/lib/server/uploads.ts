@@ -10,18 +10,37 @@ const TYPES: Record<string, string> = {
 	'image/gif': 'gif',
 	'image/webp': 'webp',
 	'image/svg+xml': 'svg',
-	'image/avif': 'avif'
+	'image/avif': 'avif',
+	'audio/webm': 'weba',
+	'audio/ogg': 'ogg',
+	'audio/mp4': 'm4a',
+	'audio/x-m4a': 'm4a',
+	'audio/aac': 'aac',
+	'audio/mpeg': 'mp3',
+	'audio/wav': 'wav',
+	'audio/x-wav': 'wav'
 };
 
-const MIME = Object.fromEntries(Object.entries(TYPES).map(([m, e]) => [e, m]));
+const MIME: Record<string, string> = { ...Object.fromEntries(Object.entries(TYPES).map(([m, e]) => [e, m])), m4a: 'audio/mp4', wav: 'audio/wav' };
+export const MAX_AUDIO = 40 * 1024 * 1024;
+
+/** The MIME type without parameters ("audio/webm;codecs=opus" → "audio/webm"). */
+const base = (t: string) => t.split(';')[0].trim().toLowerCase();
 
 /** Store an uploaded image and return the URL it is served from. */
 export async function saveUpload(file: File): Promise<string> {
-	const ext = TYPES[file.type];
-	if (!ext) throw new Error('Only images can be uploaded (PNG, JPEG, GIF, WebP, SVG, AVIF).');
-	if (file.size > MAX_UPLOAD) throw new Error('Images must be 15 MB or smaller.');
+	return saveBytes(Buffer.from(await file.arrayBuffer()), file.type);
+}
+
+/** Store image or audio bytes and return the URL they are served from. */
+export async function saveBytes(buf: Buffer, type: string): Promise<string> {
+	const t = base(type);
+	const ext = TYPES[t];
+	if (!ext) throw new Error('Only images and audio can be uploaded.');
+	const audio = t.startsWith('audio/');
+	if (buf.length > (audio ? MAX_AUDIO : MAX_UPLOAD)) throw new Error(audio ? 'Recordings must be 40 MB or smaller.' : 'Images must be 15 MB or smaller.');
 	const name = `${uid()}.${ext}`;
-	await writeFile(join(UPLOAD_DIR, name), Buffer.from(await file.arrayBuffer()));
+	await writeFile(join(UPLOAD_DIR, name), buf);
 	return `/uploads/${name}`;
 }
 
