@@ -34,3 +34,7 @@ vite.config.ts.timestamp-*
 /src-tauri/binaries
 /mcp/dist
 /mcp/node_modules
+
+/src/routes-web
+/build-web
+/src/lib/web-server

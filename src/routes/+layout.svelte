@@ -6,6 +6,7 @@
 	import '@fontsource/space-grotesk/600.css';
 	import '../app.css';
 	import favicon from '#lib/assets/nool-favicon.svg';
+	import PreviewBanner from '#lib/components/PreviewBanner.svelte';
 	import type { LayoutProps } from './$types';
 
 	let { children, data }: LayoutProps = $props();
@@ -32,4 +33,5 @@
 	<title>Nool</title>
 </svelte:head>
 
+{#if (data as { web?: boolean }).web}<PreviewBanner />{/if}
 {@render children()}

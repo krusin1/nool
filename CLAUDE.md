@@ -91,6 +91,10 @@ Done: share the letter (`export.ts`, Share menu on the letter, `ShareLetter.svel
 - Desktop can't download from the webview, so `POST /api/projects/[id]/export` saves to ~/Downloads (never overwriting) and reveals the file; browsers use `GET …/export?format=html|zip`.
 - `build/start.js` (from `scripts/start.js`) is the server entry: it marks requests as http. adapter-node 6 otherwise assumes https and no longer reads ORIGIN, which broke same-origin writes in the desktop app.
 
+Done: browser preview (`npm run build:web`, Vercel project from the repo root via `vercel.json`).
+- Same app, no server: `scripts/make-web.js` copies `src/routes` to `src/routes-web` without server loads and endpoints and adds the browser loaders in `src/web/routes`, and copies `src/lib/server` to `src/lib/web-server` with browser versions from `src/web/server` (sql.js database saved in IndexedDB, uploads as data URLs, settings, AI off). A Vite plugin points `lib/server` imports at the copy. `src/web/api.ts` answers same-origin `/api` fetches in the page with the real handlers for projects, stages, blocks, precedents, uploads and welcomed; everything else says it's in the desktop app.
+- Preview banner (Start over, get the desktop app), PDF-only Share, no AI or precedent search, Connections and Backups go to `/desktop`. `SITE_URL` in `src/lib/links.ts`.
+
 Next: to be decided.
 
 ## Conventions

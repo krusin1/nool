@@ -4,7 +4,11 @@
 	import FolderArchive from '@lucide/svelte/icons/folder-archive';
 	import Printer from '@lucide/svelte/icons/printer';
 
+	import { page } from '$app/state';
+
 	let { id, desktop }: { id: string; desktop: boolean } = $props();
+	// The browser preview can print; web page and folder exports need the desktop app.
+	const web = $derived(!!(page.data as { web?: boolean }).web);
 
 	let open = $state(false);
 	let busy = $state('');
@@ -50,12 +54,13 @@
 	</button>
 	{#if open}
 		<div class="menu" role="menu">
-			{#each OPTIONS as o (o.f)}
+			{#each OPTIONS.filter((o) => !web || o.f === 'pdf') as o (o.f)}
 				<button role="menuitem" class="item" disabled={!!busy} onclick={() => share(o.f)}>
 					<o.icon size={16} strokeWidth={1.5} />
 					<span><strong>{busy === o.f ? 'Saving…' : o.name}</strong><span class="label">{o.hint}</span></span>
 				</button>
 			{/each}
+			{#if web}<p class="label note">Web page and website folder exports are in the desktop app.</p>{/if}
 			{#if note}<p class="label note" role="status">{note}</p>{/if}
 		</div>
 	{/if}

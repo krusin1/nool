@@ -3,5 +3,13 @@
 	"compilerOptions": {
 		"strict": true
 	},
-	"include": ["src", "vite.config.ts"]
+	"include": [
+		"src",
+		"vite.config.ts"
+	],
+	"exclude": [
+		"src/routes-web",
+		"src/lib/web-server",
+		"src/web/server"
+	]
 }

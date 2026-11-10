@@ -2,6 +2,7 @@
 	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import AskClaude from './AskClaude.svelte';
 	import { api } from '#lib/api.ts';
+	import { page } from '$app/state';
 
 	let {
 		stageId,
@@ -12,6 +13,7 @@
 		onadd
 	}: { stageId: string; projectTitle: string; stageName: string; ai: boolean; empty: boolean; onadd: (text: string) => void } = $props();
 
+	const web = $derived(!!(page.data as { web?: boolean }).web);
 	let busy = $state(false);
 	let text = $state('');
 	let failed = $state('');
@@ -45,7 +47,7 @@
 	}
 </script>
 
-{#if !empty}
+{#if !empty && !web}
 	<button class="btn btn-ghost trigger" onclick={run} disabled={busy}>
 		<Sparkles size={16} strokeWidth={1.5} />
 		{busy ? 'Summarizing…' : 'Summarize'}

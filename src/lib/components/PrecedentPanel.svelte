@@ -4,6 +4,7 @@
 	import PrecedentCard from './PrecedentCard.svelte';
 	import PrecedentForm from './PrecedentForm.svelte';
 	import AskClaude from './AskClaude.svelte';
+	import { page } from '$app/state';
 	import { api } from '#lib/api.ts';
 	import { autosave } from '#lib/autosave.svelte.ts';
 	import { SOURCE_LABELS } from '#lib/format.ts';
@@ -17,6 +18,8 @@
 		ai
 	}: { precedents: Precedent[]; stageId: string; stageName: string; projectTitle: string; ai: boolean } = $props();
 
+	// Browser preview: searching needs the desktop app.
+	const web = $derived(!!(page.data as { web?: boolean }).web);
 	let adding = $state(false);
 	let finding = $state(false);
 	let note = $state('');
@@ -73,6 +76,9 @@
 		{/if}
 	</header>
 
+	{#if web}
+		<p class="label find">Precedent search and AI picks are in the desktop app. Add your own with <strong>Add</strong>.</p>
+	{:else}
 	<div class="find">
 		<button class="btn" onclick={find} disabled={finding}>
 			<Search size={16} strokeWidth={1.5} />
@@ -93,6 +99,7 @@
 			/>
 		{/if}
 	</div>
+	{/if}
 	{#if failed}<p class="label err">{failed}</p>{/if}
 	{#if note}<p class="label">{note}</p>{/if}
 
