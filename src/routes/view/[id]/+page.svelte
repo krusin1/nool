@@ -4,6 +4,8 @@
 	import LetterStage from '#lib/components/LetterStage.svelte';
 	import LineageItem from '#lib/components/LineageItem.svelte';
 	import Logo from '#lib/components/Logo.svelte';
+	import ShareLetter from '#lib/components/ShareLetter.svelte';
+	import { onMount } from 'svelte';
 	import { formatDate, postmarkDate } from '#lib/format.ts';
 	import { hasContent } from '#lib/blocks.ts';
 	import type { PageProps } from './$types';
@@ -41,6 +43,11 @@
 		const b = formatDate(dates[dates.length - 1]);
 		return a === b ? a : `${a} to ${b}`;
 	});
+
+	// ?print=1 (from Share → PDF in the desktop app): open the print dialog once the page is laid out.
+	onMount(() => {
+		if (new URLSearchParams(location.search).has('print')) document.fonts.ready.then(() => setTimeout(() => window.print(), 300));
+	});
 </script>
 
 <svelte:head>
@@ -48,13 +55,18 @@
 	{#if data.project.description}<meta name="description" content={data.project.description} />{/if}
 </svelte:head>
 
+{#if !data.exporting}
 <div class="bar">
 	<a class="back label" href="/p/{data.project.id}"><ArrowLeft size={14} strokeWidth={1.5} /> Desk</a>
 	<a class="mark" href="/" aria-label="Nool"><Logo size={22} /><span class="display">nool</span></a>
-	<span class="label status" class:posted={data.project.posted_at}>
-		{data.project.posted_at ? `Posted ${postmarkDate(data.project.posted_at)}` : 'Draft letter · not posted yet'}
-	</span>
+	<div class="right">
+		<span class="label status" class:posted={data.project.posted_at}>
+			{data.project.posted_at ? `Posted ${postmarkDate(data.project.posted_at)}` : 'Draft · not posted yet'}
+		</span>
+		<ShareLetter id={data.project.id} desktop={data.desktop} />
+	</div>
 </div>
+{/if}
 
 <article class="page">
 	<CaseMasthead
@@ -114,8 +126,11 @@
 		background: var(--bg);
 	}
 
-	.status {
+	.right {
 		justify-self: end;
+		display: flex;
+		align-items: center;
+		gap: var(--s2);
 	}
 
 	.status.posted {
@@ -235,6 +250,26 @@
 
 		.lin-head h2 {
 			font-size: var(--fs-lg);
+		}
+	}
+
+	/* Print and PDF: the letter alone, set for paper. */
+	@media print {
+		.bar {
+			display: none;
+		}
+
+		.page {
+			max-width: none;
+			padding: 0;
+		}
+
+		.lineage {
+			break-before: page;
+		}
+
+		.colophon {
+			margin-top: var(--s6);
 		}
 	}
 </style>

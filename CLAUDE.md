@@ -22,7 +22,7 @@ Documentation should feel like part of making, not an extra step: capture is one
 - Lucide icons, Space Grotesk and Hanken Grotesk via Fontsource.
 - `mcp/`: standalone MCP server with its own package.json, so the app stays light. Bundled to one file (`mcp/dist`) for the desktop app.
 - `figma-plugin/`: Send to Nool plugin (plain JS).
-- `src-tauri/`: desktop shell (Tauri 2). Starts the bundled Node runtime (`nool-node` sidecar) running the adapter-node server on 127.0.0.1:5173 with data in the OS app-data folder, then shows it in a window. Links open in the system browser via `/api/open`.
+- `src-tauri/`: desktop shell (Tauri 2). Starts the bundled Node runtime (`nool-node` sidecar) running the adapter-node server (`server/start.js`) on 127.0.0.1:5173 with data in the OS app-data folder, then shows it in a window. Links open in the system browser via `/api/open`.
 - `site/`: static download page, deployed on Vercel. Links to the latest GitHub Release. "Open in app" uses the `nool://` link the desktop app registers (tauri-plugin-deep-link; `nool://p/<id>` opens a project).
 - `.github/workflows/release.yml`: builds macOS (Apple Silicon), Windows and Linux installers on tag `v*`.
 
@@ -40,7 +40,7 @@ Documentation should feel like part of making, not an extra step: capture is one
 
 1. **Album** (`/`): stamps view (default) and list view. Stamp picture is the project's last image; with none, a generated motif and the title. Palette, tilt and motif come from a hash of the id. Value = block count. Posted stamps carry a postmark. "New stamp" form with live stamp preview and template choice.
 2. **Desk** (`/p/[id]`): stage rail (edit mode for stages), blocks for the selected stage with inline editing and autosave, composer at the foot (Enter = note, URL = link, paste/drop images, one-click block types), precedent panel (manual add, keep, note, dismiss). Header: editable title and description, save status, Letter, Post/Recall, delete. Posting plays the stamp-on-envelope animation. Under 900px: single column with Blocks / Precedents tabs.
-3. **Letter** (`/view/[id]`): editorial case study. Masthead, stages as numbered sections, empty blocks hidden, figures numbered, kept precedents as margin notes keyed to the Lineage list.
+3. **Letter** (`/view/[id]`): editorial case study, with Share (web page, website folder, PDF). Masthead, stages as numbered sections, empty blocks hidden, figures numbered, kept precedents as margin notes keyed to the Lineage list.
 0. **Welcome** (`/welcome`): first launch only (settings `welcomed`). Three steps: what Nool is, connect an AI (optional, skippable), ready.
 4. **Connections** (`/connections`): AI helper, chat apps, Figma, phone (QR), museum search, inbox token, Figma plugin, MCP config, Blender and curl examples, API reference.
 5. **Backups** (`/backups`): save/restore a `.nool` backup file (gzipped JSON: database snapshot + images); Google Drive backup with `drive.file` scope, manual or daily, last 10 kept. Restoring replaces projects and saves a safety copy first.
@@ -84,6 +84,12 @@ Done: drag-and-drop block reordering (grip handle), Replace button on images (cl
 Done: voice notes and phone capture.
 - Voice block: record in the composer (MediaRecorder, `recorder.svelte.ts`), play back, caption; Transcribe button only when the connected AI has speech (OpenAI or a custom OpenAI-compatible service, `ai.ts` `transcribe`). Uploads accept audio (40 MB) and `/uploads/[name]` serves byte ranges. macOS mic permission in `src-tauri/Info.plist`. Desktop server runs with `BODY_SIZE_LIMIT=50M`.
 - Phone capture (`phone.ts`, `phone-page.ts`): off by default (settings `phone`). When on, a second server on 0.0.0.0:PORT+1 serves one capture page and three add-only routes (`/projects`, `/upload`, `/block`), each needing the pairing key (settings `phone_key`) from the QR on Connections. Blocks arrive with source "Phone". Unpair = new key.
+
+Done: share the letter (`export.ts`, Share menu on the letter, `ShareLetter.svelte`).
+- Web page: one .html with CSS, woff2 fonts and images inlined as data URIs, no scripts. Website folder: .zip with index.html, assets/style.css, fonts, images/ and a README. Both are made from `/view/[id]?export=1` (no app bar) via event.fetch; built CSS, fonts and static files are read from disk (build/client or static/).
+- PDF: print stylesheet on the letter; the browser prints directly, the desktop app opens `/view/[id]?print=1` in the system browser, which opens the print dialog.
+- Desktop can't download from the webview, so `POST /api/projects/[id]/export` saves to ~/Downloads (never overwriting) and reveals the file; browsers use `GET …/export?format=html|zip`.
+- `build/start.js` (from `scripts/start.js`) is the server entry: it marks requests as http. adapter-node 6 otherwise assumes https and no longer reads ORIGIN, which broke same-origin writes in the desktop app.
 
 Next: to be decided.
 

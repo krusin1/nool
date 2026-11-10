@@ -55,7 +55,7 @@ fn start_server(app: &tauri::App) -> Result<CommandChild, Box<dyn std::error::Er
     let mut cmd = app
         .shell()
         .sidecar("nool-node")?
-        .args([path(&resources.join("server").join("index.js"))])
+        .args([path(&resources.join("server").join("start.js"))])
         .env("PORT", PORT.to_string())
         .env("HOST", "127.0.0.1")
         .env("ORIGIN", format!("http://localhost:{PORT}"))

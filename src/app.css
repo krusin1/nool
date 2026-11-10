@@ -189,3 +189,35 @@ button {
 	border-color: transparent;
 	color: var(--text);
 }
+
+/* Print (Share → PDF): white paper, keep figures and notes whole. */
+@media print {
+	:root,
+	:root * {
+		--bg: #fff;
+		--surface: #fff;
+		--text: #111;
+		--muted: #555;
+		--line: #ddd;
+	}
+
+	body {
+		background: #fff;
+		color: #111;
+	}
+
+	figure,
+	img,
+	blockquote,
+	li {
+		break-inside: avoid;
+	}
+
+	audio {
+		display: none;
+	}
+
+	@page {
+		margin: 16mm 14mm;
+	}
+}
