@@ -3,264 +3,218 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Nool · A process log for makers</title>
-		<meta name="description" content="Document as you make, keep what your work builds on, and post it as a case study. A desktop app. Your work stays on your computer." />
-		<link rel="icon" href="/favicon.svg" />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600&family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet" />
-		<style>
-			:root {
-				--bg: #fafaf8;
-				--surface: #fff;
-				--text: #111;
-				--muted: #6b6b6b;
-				--line: #e6e6e3;
-				--accent: #2b4bff;
-				--on-accent: #fff;
-				--display: 'Space Grotesk', system-ui, sans-serif;
-				--ui: 'Hanken Grotesk', system-ui, sans-serif;
-				color-scheme: light;
-			}
-			@media (prefers-color-scheme: dark) {
-				:root {
-					--bg: #121211;
-					--surface: #1a1a19;
-					--text: #ededea;
-					--muted: #9a9a96;
-					--line: #2c2c2a;
-					--accent: #7b8fff;
-					--on-accent: #0d0d0c;
-					color-scheme: dark;
-				}
-			}
-			* { box-sizing: border-box; }
-			body { margin: 0; background: var(--bg); color: var(--text); font: 400 15px/1.55 var(--ui); -webkit-font-smoothing: antialiased; }
-			a { color: inherit; }
-			.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
-			header.bar { display: flex; align-items: center; justify-content: space-between; height: 64px; border-bottom: 1px solid var(--line); }
-			.mark { display: inline-flex; align-items: center; gap: 10px; font: 600 24px/1 var(--display); letter-spacing: -0.02em; text-decoration: none; }
-			.bar nav a { font-size: 13px; color: var(--muted); text-decoration: none; margin-left: 24px; }
-			.bar nav a:hover { color: var(--text); }
-			header.bar { position: relative; }
-			.bar nav a.open-app { display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); font-weight: 600; }
-			.bar nav a.open-app:hover { background: var(--accent); color: var(--on-accent); }
-			.open-hint { position: absolute; right: 0; top: 60px; margin: 0; padding: 8px 12px; font-size: 13px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; z-index: 2; }
-			.open-hint a { color: var(--accent); }
-
-			.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 64px; align-items: center; padding: 96px 0 80px; }
-			.kicker { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
-			h1 { margin: 16px 0 0; font: 600 clamp(36px, 6vw, 64px)/1.02 var(--display); letter-spacing: -0.03em; }
-			.dek { margin: 24px 0 0; font-size: 18px; color: var(--muted); max-width: 46ch; }
-			.cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-top: 32px; }
-			.btn { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 4px; border: 1px solid var(--line); background: var(--surface); font: 600 15px var(--ui); text-decoration: none; transition: opacity 150ms ease, border-color 150ms ease; }
-			.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-			.btn:hover { opacity: 0.9; }
-			.small { font-size: 13px; color: var(--muted); }
-			.others { margin-top: 12px; }
-			.others a { margin-right: 12px; }
-
-			.stamps { position: relative; height: 420px; }
-			.stamp { position: absolute; width: 210px; aspect-ratio: 4 / 5; padding: 16px; background: var(--paper); -webkit-mask: var(--perf) 0 0 / 100% 100%; mask: var(--perf) 0 0 / 100% 100%; transition: transform 150ms ease; }
-			.stamp:hover { transform: rotate(0) translateY(-4px) !important; }
-			.stamp .face { position: relative; height: 100%; background: var(--ink); color: var(--paper); overflow: hidden; }
-			.stamp .face svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.35; }
-			.stamp .t { position: absolute; left: 14px; bottom: 12px; right: 14px; font: 600 28px/0.95 var(--display); letter-spacing: -0.02em; }
-			.stamp .v { position: absolute; right: 12px; top: 10px; font: 600 22px/1 var(--display); }
-			.stamp .c { position: absolute; left: 14px; top: 14px; font: 600 10px var(--ui); letter-spacing: 0.08em; }
-
-			section { padding: 72px 0; border-top: 1px solid var(--line); }
-			h2 { margin: 0 0 8px; font: 600 36px/1.1 var(--display); letter-spacing: -0.02em; }
-			.lead { color: var(--muted); max-width: 60ch; margin: 0 0 40px; }
-			.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; }
-			.num { font: 400 36px/1 var(--display); color: var(--muted); }
-			.grid h3 { margin: 16px 0 8px; font: 600 18px var(--display); }
-			.grid p { margin: 0; color: var(--muted); }
-
-			.private { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 48px; }
-			.private ul { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
-			.private li { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--line); }
-			.private li b { font: 600 15px var(--display); }
-			.private li span { color: var(--muted); }
-
-			footer { padding: 40px 0 64px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-
-			@media (max-width: 860px) {
-				.hero { grid-template-columns: 1fr; padding: 56px 0 48px; gap: 40px; }
-				.stamps { height: 300px; }
-				.stamp { width: 150px; }
-				.stamp .t { font-size: 20px; }
-				.grid { grid-template-columns: 1fr; gap: 32px; }
-				.private { grid-template-columns: 1fr; gap: 16px; }
-				.private li { grid-template-columns: 1fr; gap: 4px; }
-				.bar nav { display: none; }
-			}
-		</style>
+		<title>Nool: document the work while you make it</title>
+		<meta name="description" content="A free desktop app for designers and creative technologists. Capture your process as you work, keep the works it builds on, and post it as a case study. Everything stays on your computer." />
+		<meta property="og:title" content="Nool" />
+		<meta property="og:description" content="Document the work while you make it. A process log for makers." />
+		<meta property="og:image" content="/media/og.jpg" />
+		<meta name="theme-color" content="#FAFAF8" />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<link rel="stylesheet" href="/style.css" />
 	</head>
 	<body>
-		<div class="wrap">
-			<header class="bar">
-				<a class="mark" href="/">
-					<svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" fill="#2b4bff" /><path d="M10.5 23 V14.5 C10.5 11 12.8 9.5 15.75 9.5 C18.7 9.5 21 11 21 14.5 V20 C21 22.6 22.6 24 25.5 23" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" /></svg>
-					nool
+		<header class="nav">
+			<div class="wrap">
+				<a class="brand" href="/" aria-label="Nool home">
+					<svg class="logo" viewBox="0 0 32 32" aria-hidden="true">
+						<defs><mask id="perf"><rect width="32" height="32" fill="#fff" /><g fill="#000"><circle cx="2" cy="6" r="1.7" /><circle cx="2" cy="10" r="1.7" /><circle cx="2" cy="14" r="1.7" /><circle cx="2" cy="18" r="1.7" /><circle cx="2" cy="22" r="1.7" /><circle cx="2" cy="26" r="1.7" /><circle cx="30" cy="6" r="1.7" /><circle cx="30" cy="10" r="1.7" /><circle cx="30" cy="14" r="1.7" /><circle cx="30" cy="18" r="1.7" /><circle cx="30" cy="22" r="1.7" /><circle cx="30" cy="26" r="1.7" /><circle cx="6" cy="2" r="1.7" /><circle cx="10" cy="2" r="1.7" /><circle cx="14" cy="2" r="1.7" /><circle cx="18" cy="2" r="1.7" /><circle cx="22" cy="2" r="1.7" /><circle cx="26" cy="2" r="1.7" /><circle cx="6" cy="30" r="1.7" /><circle cx="10" cy="30" r="1.7" /><circle cx="14" cy="30" r="1.7" /><circle cx="18" cy="30" r="1.7" /><circle cx="22" cy="30" r="1.7" /><circle cx="26" cy="30" r="1.7" /></g></mask></defs>
+						<rect x="2" y="2" width="28" height="28" fill="#2B4BFF" mask="url(#perf)" />
+						<path class="thread" d="M10.5 23 V14.5 C10.5 11 12.8 9.5 15.75 9.5 C18.7 9.5 21 11 21 14.5 V20 C21 22.6 22.6 24 25.5 23" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+					Nool
 				</a>
-				<nav>
-					<a href="#how">How it works</a>
-					<a href="#private">Private by design</a>
-					<a href="https://github.com/krusin1/nool">Source</a>
-					<a class="open-app" id="open-app" href="nool://open">Open in app</a>
+				<nav class="nav-links" aria-label="Main">
+					<a class="hide-sm" href="#features">Features</a>
+					<a class="hide-sm" href="#friends">Testing</a>
+					<a href="/docs">Docs</a>
+					<a class="hide-sm" href="nool://open" title="Opens Nool if it is installed">Open in app</a>
 				</nav>
-				<p class="open-hint" id="open-hint" role="status" hidden>Nool isn't installed yet. <a href="#download">Download it</a>, then this button opens it.</p>
-			</header>
+				<a class="btn small primary" href="#get">Download</a>
+			</div>
+		</header>
 
-			<main>
-				<div class="hero">
+		<main>
+			<section class="hero" id="get">
+				<div class="wrap">
 					<div>
-						<span class="kicker">For designers and creative technologists</span>
-						<h1>Show what your work builds on.</h1>
-						<p class="dek">
-							Nool is a process log for makers. Document a project while you make it, keep the works it draws on, and
-							post it as a case study with its lineage. Nool is Tamil for thread, and also for book.
+						<span class="badge"><span class="dot"></span>Early build for friends · v0.1</span>
+						<h1>
+							<span class="word" style="animation-delay: 0.05s">Document</span>
+							<span class="word" style="animation-delay: 0.12s">the</span>
+							<span class="word" style="animation-delay: 0.19s">work</span>
+							<span class="word" style="animation-delay: 0.26s">while</span>
+							<span class="word" style="animation-delay: 0.33s">you</span>
+							<span class="word" style="animation-delay: 0.4s"><em>make<svg viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path d="M2 14 C 40 4, 80 18, 120 9 S 180 6, 198 12" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" /></svg></em></span>
+							<span class="word" style="animation-delay: 0.47s"><em>it.</em></span>
+						</h1>
+						<p class="lead">
+							Nool is a process log for designers and creative technologists. Capture notes, images, voice memos and
+							references as you go, keep the works your project builds on, and post it as a case study when you're done.
 						</p>
 						<div class="cta">
-							<a class="btn primary" id="download" href="https://github.com/krusin1/nool/releases/latest">Download Nool</a>
-							<span class="small" id="meta">Free · macOS, Windows, Linux</span>
+							<a id="download" class="btn primary magnet" href="https://github.com/krusin1/nool/releases/latest">
+								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14" /></svg>
+								<span>Download Nool</span>
+							</a>
+							<a class="btn magnet" href="/docs">Read the docs <span class="arrow">→</span></a>
 						</div>
-						<p class="small others" id="others"></p>
+						<p class="meta" id="meta">Free · macOS, Windows, Linux<a href="/docs#install">Installing for the first time?</a></p>
+						<p class="meta" id="others"></p>
 					</div>
-					<div class="stamps" aria-hidden="true" id="stamps"></div>
+					<div class="desk" id="stamp-desk" aria-label="Three example project stamps">
+						<p class="desk-hint">Every project is a stamp. <b>Click one to post it.</b></p>
+					</div>
 				</div>
+			</section>
 
-				<section id="how">
-					<h2>Every project is a stamp</h2>
-					<p class="lead">Mint while you work, postmarked when you post it. Documenting is part of making, not a chore at the end.</p>
-					<div class="grid">
-						<div>
-							<div class="num">01</div>
-							<h3>The desk</h3>
-							<p>Stages you name yourself. Type and press Enter for a note, paste a link, drop an image. Checklists, quotes, palettes and a book-spread moodboard.</p>
+			<section style="padding-top: 24px">
+				<div class="wrap reveal">
+					<div class="film">
+						<video src="/media/nool.mp4" poster="/media/poster.jpg" autoplay muted loop playsinline aria-label="Nool in use: typing a note, work arriving from Claude and Figma, posting a project"></video>
+						<button class="btn small" type="button">Pause</button>
+					</div>
+				</div>
+			</section>
+
+			<section id="features">
+				<div class="wrap">
+					<div class="section-head reveal">
+						<span class="kicker">What it does</span>
+						<h2>Documenting feels like part of making, not an extra step.</h2>
+						<p>Try them. Everything on this page is playable.</p>
+					</div>
+					<div class="features">
+						<article class="card reveal">
+							<div class="demo">
+								<div class="mini-blocks"></div>
+								<form class="mini-input" id="mini-composer">
+									<input aria-label="Try the composer: type a note and press Enter" placeholder="Type a note, press Enter" />
+									<kbd>Enter</kbd>
+								</form>
+							</div>
+							<h3>Capture in one keystroke</h3>
+							<p>Type and press Enter. Paste a link, drop an image, record a voice note. Blocks save as you go and drag to reorder.</p>
+							<a class="more" href="/docs#desk">How the desk works <span>→</span></a>
+						</article>
+
+						<article class="card reveal" style="--d: 0.08s">
+							<div class="demo" id="sources">
+								<div class="sources">
+									<div class="apps">
+										<span class="app" data-app="Figma" style="--c: #a259ff"><i></i>Figma</span>
+										<span class="app" data-app="Claude" style="--c: #d97757"><i></i>Claude</span>
+										<span class="app" data-app="Phone" style="--c: #2f6b4f"><i></i>Your phone</span>
+									</div>
+									<div class="hub" aria-hidden="true">
+										<svg width="42" height="42" viewBox="0 0 32 32"><path d="M10.5 23 V14.5 C10.5 11 12.8 9.5 15.75 9.5 C18.7 9.5 21 11 21 14.5 V20 C21 22.6 22.6 24 25.5 23" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" /></svg>
+									</div>
+								</div>
+							</div>
+							<h3>Work comes in from where it's made</h3>
+							<p>Send frames from Figma, notes from Claude, Cursor or Windsurf, and photos or voice memos from your phone.</p>
+							<a class="more" href="/docs#figma">Connect your apps <span>→</span></a>
+						</article>
+
+						<article class="card reveal" style="--d: 0.16s">
+							<div class="demo">
+								<div class="prec">
+									<div class="pcard kept"><span class="src">MET</span><div>Wave study<small>Hokusai · 1830s</small></div><button class="keep" aria-pressed="true">Kept</button></div>
+									<div class="pcard"><span class="src">arXiv</span><div>Breathing as interface<small>Paper · 2021</small></div><button class="keep" aria-pressed="false">Keep</button></div>
+									<div class="pcard"><span class="src">GH</span><div>FastLED<small>Library · 2013</small></div><button class="keep" aria-pressed="false">Keep</button></div>
+								</div>
+							</div>
+							<h3>Keep what it builds on</h3>
+							<p>Find precedents in museums, papers and code when you ask. The ones you keep become the lineage of your case study.</p>
+							<a class="more" href="/docs#precedents">About precedents <span>→</span></a>
+						</article>
+
+						<article class="card reveal">
+							<div class="demo" id="voice-demo">
+								<div class="voice">
+									<div class="bars"></div>
+									<button class="rec" type="button"><i></i><span>Record</span></button>
+								</div>
+							</div>
+							<h3>Talk it through</h3>
+							<p>Record a voice note right on the desk. Transcribe it when you want, with an AI that does speech.</p>
+							<a class="more" href="/docs#voice">Voice notes <span>→</span></a>
+						</article>
+
+						<article class="card reveal" style="--d: 0.08s">
+							<div class="demo">
+								<div class="env-demo" role="button" tabindex="0" aria-label="Post the envelope">
+									<div class="envelope">
+										<div class="lines"><span></span><span></span></div>
+										<div class="flap"></div>
+										<svg class="pm" viewBox="0 0 160 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="3"><circle cx="40" cy="40" r="30" /><path d="M80 28 q10 -6 20 0 t20 0 t20 0" /><path d="M80 40 q10 -6 20 0 t20 0 t20 0" /><path d="M80 52 q10 -6 20 0 t20 0 t20 0" /></g></svg>
+										<div class="mini-stamp"></div>
+									</div>
+								</div>
+							</div>
+							<h3>Post it as a letter</h3>
+							<p>Your project becomes an editorial case study. Share it as a web page, a website folder or a PDF.</p>
+							<a class="more" href="/docs#share">Posting and sharing <span>→</span></a>
+						</article>
+
+						<article class="card reveal" style="--d: 0.16s">
+							<div class="demo">
+								<div class="vault">
+									<div class="laptop"><div class="files"><span style="--i: 0"></span><span style="--i: 1"></span><span style="--i: 2"></span><span style="--i: 3"></span><span style="--i: 4"></span></div></div>
+									<span class="cloud-x">no cloud account</span>
+								</div>
+							</div>
+							<h3>Your work stays yours</h3>
+							<p>No account, no server. Projects live on your computer. Back up to a file, or to your own Google Drive.</p>
+							<a class="more" href="/docs#backups">Backups <span>→</span></a>
+						</article>
+					</div>
+				</div>
+			</section>
+
+			<section id="friends">
+				<div class="wrap">
+					<div class="section-head reveal">
+						<span class="kicker">For friends testing</span>
+						<h2>Thanks for trying an early build.</h2>
+						<p>It's a first release, so some things will be rough. Here's what would help most.</p>
+					</div>
+					<div class="friends">
+						<div class="panel reveal">
+							<h3>Things to try</h3>
+							<ul class="checks" id="try">
+								<li><span>Install it and get through the welcome steps</span></li>
+								<li><span>Issue a stamp for something you're making right now</span></li>
+								<li><span>Add a note, an image, a link and a voice note</span></li>
+								<li><span>Send something in from Figma, Claude or your phone</span></li>
+								<li><span>Find precedents, keep one, write why</span></li>
+								<li><span>Post it, open the letter, and Share it as a web page</span></li>
+							</ul>
+							<div class="progress" aria-hidden="true"><i></i></div>
+							<p class="meta" id="try-count"></p>
 						</div>
-						<div>
-							<div class="num">02</div>
-							<h3>Precedents</h3>
-							<p>Keep the artworks, papers and code each stage draws on, with a line on why. They become the lineage of your work.</p>
-						</div>
-						<div>
-							<div class="num">03</div>
-							<h3>The letter</h3>
-							<p>Post a project and it becomes an editorial case study: stages as chapters, figures, and the lineage in the margin.</p>
-						</div>
-						<div>
-							<div class="num">04</div>
-							<h3>Figma, straight in</h3>
-							<p>The Send to Nool plugin sends selected frames to the stage you're working on, in one click.</p>
-						</div>
-						<div>
-							<div class="num">05</div>
-							<h3>Claude and MCP apps</h3>
-							<p>A built-in MCP server lets Claude and other AI apps add notes, links and images to your projects.</p>
-						</div>
-						<div>
-							<div class="num">06</div>
-							<h3>Scripts</h3>
-							<p>A small local inbox API, so a Blender script or a phone shortcut can send renders and notes too.</p>
+						<div class="panel reveal" style="--d: 0.08s">
+							<h3>Tell me what happened</h3>
+							<p class="muted">What was confusing, what broke, what you wished it did. Screenshots help. Short and honest is perfect.</p>
+							<div class="cta" style="margin-top: 20px">
+								<a class="btn primary magnet" href="https://github.com/krusin1/nool/issues/new">Report a bug or idea <span class="arrow">→</span></a>
+							</div>
+							<p class="meta">Not on GitHub? Just message me.</p>
+							<div class="tip" style="margin-top: 24px">
+								<strong>First launch on a Mac or Windows?</strong> The app isn't signed yet, so your computer will warn you.
+								<a href="/docs#install">Here's how to open it.</a>
+							</div>
 						</div>
 					</div>
-				</section>
+				</div>
+			</section>
+		</main>
 
-				<section id="private" class="private">
-					<div class="num">→</div>
-					<div>
-						<h2>Your work stays yours</h2>
-						<p class="lead">There is no Nool server and no account. Nool runs on your computer and your projects live in a folder on it.</p>
-						<ul>
-							<li><b>Local first</b><span>Projects, images and notes are stored on your computer, not in the cloud.</span></li>
-							<li><b>Back up your way</b><span>Save a single backup file, or back up to your own Google Drive. Nool can only see the backups it creates.</span></li>
-							<li><b>AI connects, people make</b><span>AI never generates the work. It only helps you document and find what your work is in conversation with.</span></li>
-						</ul>
-					</div>
-				</section>
-			</main>
-
-			<footer>
-				<span>Nool</span>
-				<span><a href="https://github.com/krusin1/nool/releases">All releases</a></span>
-			</footer>
-		</div>
-
-		<script>
-			// Open in app: nool:// is registered by the desktop app. If nothing takes the link, offer the download.
-			(() => {
-				const btn = document.getElementById('open-app'), hint = document.getElementById('open-hint');
-				btn.addEventListener('click', () => {
-					let left = false;
-					const away = () => (left = true);
-					window.addEventListener('blur', away, { once: true });
-					document.addEventListener('visibilitychange', away, { once: true });
-					setTimeout(() => { if (!left) hint.hidden = false; }, 1500);
-				});
-			})();
-
-			// Stamps: same perforation and palettes as the app.
-			(() => {
-				const W = 200, H = 250, r = 5.5, step = 12.5;
-				let holes = '';
-				for (let x = 0; x <= W; x += step) holes += `<circle cx="${x}" cy="0" r="${r}"/><circle cx="${x}" cy="${H}" r="${r}"/>`;
-				for (let y = 0; y <= H; y += step) holes += `<circle cx="0" cy="${y}" r="${r}"/><circle cx="${W}" cy="${y}" r="${r}"/>`;
-				const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><mask id="m"><rect width="${W}" height="${H}" fill="white"/><g fill="black">${holes}</g></mask></defs><rect width="${W}" height="${H}" fill="black" mask="url(#m)"/></svg>`;
-				document.documentElement.style.setProperty('--perf', `url("data:image/svg+xml,${encodeURIComponent(svg)}")`);
-
-				const motifs = {
-					rings: [10, 20, 30, 40, 50, 60].map((r) => `<circle cx="72" cy="30" r="${r}"/>`).join(''),
-					stripes: Array.from({ length: 14 }, (_, i) => `<path d="M${i * 9 - 20} 0 L${i * 9 + 40} 120"/>`).join(''),
-					grid: Array.from({ length: 11 }, (_, i) => `<path d="M${i * 10} 0 V120 M0 ${i * 10} H100"/>`).join('')
-				};
-				const stamps = [
-					{ t: 'Signal Garden', v: '14', paper: '#F3EFE6', ink: '#2B4BFF', m: 'rings', x: '0%', y: '10%', r: -6 },
-					{ t: 'Tidal', v: '22', paper: '#F6E7D8', ink: '#C2410C', m: 'stripes', x: '50%', y: '0%', r: 4 },
-					{ t: 'Soft Machines', v: '07', paper: '#E7EEE4', ink: '#2F6B4F', m: 'grid', x: '26%', y: '38%', r: -2 }
-				];
-				document.getElementById('stamps').innerHTML = stamps
-					.map(
-						(s) => `<div class="stamp" style="--paper:${s.paper};--ink:${s.ink};left:${s.x};top:${s.y};transform:rotate(${s.r}deg)">
-						<div class="face"><svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice" fill="none" stroke="currentColor" stroke-width="1.2">${motifs[s.m]}</svg>
-						<span class="c">NOOL · 2026</span><span class="v">${s.v}</span><span class="t">${s.t}</span></div></div>`
-					)
-					.join('');
-			})();
-
-			// Download: link straight to the installer for this computer from the latest release.
-			(async () => {
-				const ua = navigator.userAgent;
-				const os = /Mac/i.test(ua) ? 'mac' : /Win/i.test(ua) ? 'windows' : /Linux/i.test(ua) ? 'linux' : null;
-				const labels = { mac: 'macOS', windows: 'Windows', linux: 'Linux' };
-				const pick = {
-					mac: (n) => n.endsWith('.dmg'),
-					windows: (n) => n.endsWith('-setup.exe') || n.endsWith('.msi'),
-					linux: (n) => n.endsWith('.AppImage')
-				};
-				try {
-					const res = await fetch('https://api.github.com/repos/krusin1/nool/releases/latest');
-					if (!res.ok) return;
-					const rel = await res.json();
-					const find = (k) => rel.assets.find((a) => pick[k](a.name));
-					if (os && find(os)) {
-						const a = find(os);
-						const btn = document.getElementById('download');
-						btn.href = a.browser_download_url;
-						btn.textContent = `Download for ${labels[os]}`;
-						document.getElementById('meta').textContent = `${rel.tag_name} · ${(a.size / 1048576).toFixed(0)} MB · free`;
-					}
-					document.getElementById('others').innerHTML =
-						'Also for ' +
-						Object.keys(labels)
-							.filter((k) => k !== os && find(k))
-							.map((k) => `<a href="${find(k).browser_download_url}">${labels[k]}</a>`)
-							.join('');
-				} catch {
-					/* keep the link to the releases page */
-				}
-			})();
-		</script>
+		<footer>
+			<div class="wrap">
+				<span>Nool is Tamil for thread, and also for book.</span>
+				<nav aria-label="Footer"><a href="/docs">Docs</a><a href="https://github.com/krusin1/nool/releases">All releases</a><a href="https://github.com/krusin1/nool">Source</a></nav>
+			</div>
+		</footer>
+		<script src="/main.js"></script>
 	</body>
 </html>

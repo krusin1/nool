@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Docs · Nool</title>
+		<meta name="description" content="How to install and use Nool: stamps, the desk, voice notes, precedents, the AI helper, Figma, Claude, phone capture, sharing and backups." />
+		<meta property="og:image" content="/media/og.jpg" />
+		<meta name="theme-color" content="#FAFAF8" />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<link rel="stylesheet" href="/style.css" />
+	</head>
+	<body>
+		<header class="nav">
+			<div class="wrap">
+				<a class="brand" href="/" aria-label="Nool home">
+					<svg class="logo" viewBox="0 0 32 32" aria-hidden="true">
+						<defs><mask id="perf"><rect width="32" height="32" fill="#fff" /><g fill="#000"><circle cx="2" cy="6" r="1.7" /><circle cx="2" cy="10" r="1.7" /><circle cx="2" cy="14" r="1.7" /><circle cx="2" cy="18" r="1.7" /><circle cx="2" cy="22" r="1.7" /><circle cx="2" cy="26" r="1.7" /><circle cx="30" cy="6" r="1.7" /><circle cx="30" cy="10" r="1.7" /><circle cx="30" cy="14" r="1.7" /><circle cx="30" cy="18" r="1.7" /><circle cx="30" cy="22" r="1.7" /><circle cx="30" cy="26" r="1.7" /><circle cx="6" cy="2" r="1.7" /><circle cx="10" cy="2" r="1.7" /><circle cx="14" cy="2" r="1.7" /><circle cx="18" cy="2" r="1.7" /><circle cx="22" cy="2" r="1.7" /><circle cx="26" cy="2" r="1.7" /><circle cx="6" cy="30" r="1.7" /><circle cx="10" cy="30" r="1.7" /><circle cx="14" cy="30" r="1.7" /><circle cx="18" cy="30" r="1.7" /><circle cx="22" cy="30" r="1.7" /><circle cx="26" cy="30" r="1.7" /></g></mask></defs>
+						<rect x="2" y="2" width="28" height="28" fill="#2B4BFF" mask="url(#perf)" />
+						<path class="thread" d="M10.5 23 V14.5 C10.5 11 12.8 9.5 15.75 9.5 C18.7 9.5 21 11 21 14.5 V20 C21 22.6 22.6 24 25.5 23" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+					Nool
+				</a>
+				<nav class="nav-links" aria-label="Main">
+					<a class="hide-sm" href="/#features">Features</a>
+					<a href="/docs" aria-current="page">Docs</a>
+					<a class="hide-sm" href="https://github.com/krusin1/nool">GitHub</a>
+				</nav>
+				<a class="btn small primary" href="/#get">Download</a>
+			</div>
+		</header>
+
+		<div class="wrap docs">
+			<aside class="toc">
+				<input class="doc-search" type="search" placeholder="Search the docs   /" aria-label="Search the docs" />
+				<button class="btn small toc-toggle" type="button" style="display: none">Contents</button>
+				<nav aria-label="Contents">
+					<h4>Start</h4>
+					<a href="#install">Install</a>
+					<a href="#first-launch">First launch</a>
+					<a href="#words">How Nool talks</a>
+					<h4>Making</h4>
+					<a href="#album">Album and stamps</a>
+					<a href="#desk">The desk</a>
+					<a href="#blocks">Block types</a>
+					<a href="#voice">Voice notes</a>
+					<a href="#precedents">Precedents</a>
+					<h4>AI, optional</h4>
+					<a href="#ai">Connect an AI</a>
+					<a href="#summaries">Summaries</a>
+					<a href="#claude-desktop">Using Claude Desktop instead</a>
+					<h4>Bring work in</h4>
+					<a href="#chat-apps">Claude, Cursor, Windsurf</a>
+					<a href="#figma">Figma</a>
+					<a href="#phone">Your phone</a>
+					<a href="#scripts">Scripts and the API</a>
+					<h4>Finish and keep</h4>
+					<a href="#post">Posting and the letter</a>
+					<a href="#share">Sharing</a>
+					<a href="#backups">Backups</a>
+					<a href="#data">Where your data lives</a>
+					<h4>Help</h4>
+					<a href="#faq">Troubleshooting</a>
+					<a href="#feedback">Feedback</a>
+				</nav>
+			</aside>
+
+			<article class="prose">
+				<header>
+					<span class="kicker">Documentation</span>
+					<h1>How to use Nool</h1>
+					<p>Everything Nool does today, and how to do it. Press <kbd>/</kbd> to search.</p>
+				</header>
+
+				<p class="no-results" hidden>Nothing matches that. Try a shorter word, or <a href="#feedback">ask me</a>.</p>
+
+				<section id="install">
+					<h2><a href="#install">Install</a></h2>
+					<p>Download Nool from the <a href="/#get">home page</a>. It picks the right file for your computer. Nool is free, 25 to 50 MB depending on your system, and needs no account.</p>
+					<div class="os-tabs" role="tablist" data-group="install">
+						<button role="tab" data-os="mac">macOS</button><button role="tab" data-os="windows">Windows</button><button role="tab" data-os="linux">Linux</button>
+					</div>
+					<div data-os-panel="mac" data-group="install">
+						<ol>
+							<li>Open the <code>.dmg</code> file and drag <strong>Nool</strong> into <strong>Applications</strong>.</li>
+							<li>Open Nool from Applications. The first time, macOS says it can't check the app, because this early build isn't signed yet.</li>
+							<li>Open <strong>System Settings → Privacy &amp; Security</strong>, scroll down, and press <strong>Open Anyway</strong> next to Nool. Confirm with your password.</li>
+						</ol>
+						<p>If macOS says the app is "damaged", it's the same warning. Run this once in Terminal, then open it again:</p>
+						<div class="code"><pre>xattr -dr com.apple.quarantine /Applications/Nool.app</pre></div>
+						<p>The Mac build is for Apple silicon (M1 and newer).</p>
+					</div>
+					<div data-os-panel="windows" data-group="install" hidden>
+						<ol>
+							<li>Run the <code>-setup.exe</code> file.</li>
+							<li>Windows may show <strong>"Windows protected your PC"</strong>. Press <strong>More info</strong>, then <strong>Run anyway</strong>. This happens because the early build isn't signed yet.</li>
+							<li>Follow the installer, then open Nool from the Start menu.</li>
+						</ol>
+					</div>
+					<div data-os-panel="linux" data-group="install" hidden>
+						<p>Download the <code>.AppImage</code>, make it runnable and open it:</p>
+						<div class="code"><pre>chmod +x Nool_*.AppImage
+./Nool_*.AppImage</pre></div>
+						<p>There are also <code>.deb</code> and <code>.rpm</code> packages on the <a href="https://github.com/krusin1/nool/releases/latest">releases page</a>.</p>
+					</div>
+					<div class="tip">To update, download the new version and install it over the old one. Your projects are kept: they live in a separate folder (see <a href="#data">where your data lives</a>).</div>
+				</section>
+
+				<section id="first-launch">
+					<h2><a href="#first-launch">First launch</a></h2>
+					<p>Nool opens with three short welcome steps: what Nool is, an optional AI connection (you can skip it), and you're in. Your album starts with a few sample stamps to look around. Delete them whenever you like.</p>
+					<p>Already open in another window? Open Nool from a link like the <strong>Open in app</strong> button on this site, and it brings the open window forward.</p>
+				</section>
+
+				<section id="words">
+					<h2><a href="#words">How Nool talks</a></h2>
+					<p>Nool borrows from the post office. The words are small, but they're everywhere.</p>
+					<table>
+						<thead><tr><th>In Nool</th><th>Means</th></tr></thead>
+						<tbody>
+							<tr><td>Album</td><td>Home, with all your projects</td></tr>
+							<tr><td>Stamp</td><td>A project. Its picture is its latest image; its value is how many blocks it has.</td></tr>
+							<tr><td>Issue a stamp</td><td>Start a new project</td></tr>
+							<tr><td>Mint</td><td>In progress</td></tr>
+							<tr><td>Desk</td><td>Where you work on one project</td></tr>
+							<tr><td>Post / Recall</td><td>Publish / unpublish. Posted stamps get a postmark.</td></tr>
+							<tr><td>Letter</td><td>The finished case study</td></tr>
+						</tbody>
+					</table>
+				</section>
+
+				<section id="album">
+					<h2><a href="#album">Album and stamps</a></h2>
+					<p>The album shows every project as a stamp. Switch to <strong>List</strong> at the top right for a compact view. Nool remembers which one you picked.</p>
+					<h3>Issue a stamp</h3>
+					<ol>
+						<li>Press <strong>New stamp</strong>.</li>
+						<li>Give it a title and one line about it. The stamp preview updates as you type.</li>
+						<li>Pick a set of stages: <strong>Studio</strong> (Spark, Moodboard, Research, Experiments, Build, Outcome), <strong>Simple</strong> (Idea, Making, Result) or <strong>Blank</strong>.</li>
+						<li>Press <strong>Issue stamp</strong>. You land on its desk.</li>
+					</ol>
+					<p>Every stamp gets its own colours, tilt and pattern, drawn from the project itself. Once you add images, the latest one becomes its picture.</p>
+				</section>
+
+				<section id="desk">
+					<h2><a href="#desk">The desk</a></h2>
+					<p>The desk has three parts: <strong>stages</strong> on the left, the <strong>blocks</strong> of the stage you're in, and <strong>precedents</strong> on the right. On a narrow window they stack, with Blocks and Precedents tabs.</p>
+					<h3>Stages</h3>
+					<ul>
+						<li>Click a stage to open it. The number beside it is how many blocks it holds.</li>
+						<li>Press <strong>Edit</strong> above the stages to rename, add, reorder or delete them. A project always keeps at least one.</li>
+						<li>Click the big stage name above the blocks to rename it in place.</li>
+					</ul>
+					<h3>Adding</h3>
+					<table>
+						<thead><tr><th>To add</th><th>Do this in the box at the bottom</th></tr></thead>
+						<tbody>
+							<tr><td>A note</td><td>Type, then <kbd>Enter</kbd>. <kbd>Shift</kbd> + <kbd>Enter</kbd> for a new line.</td></tr>
+							<tr><td>A link</td><td>Paste a web address and press <kbd>Enter</kbd></td></tr>
+							<tr><td>An image</td><td>Paste it, drop it anywhere on the box, or press <strong>Image</strong></td></tr>
+							<tr><td>A voice note</td><td>Press <strong>Voice</strong> (see <a href="#voice">voice notes</a>)</td></tr>
+							<tr><td>Anything else</td><td>Press <strong>Quote</strong>, <strong>Checklist</strong>, <strong>Colors</strong> or <strong>Spread</strong></td></tr>
+						</tbody>
+					</table>
+					<h3>Editing</h3>
+					<ul>
+						<li>Everything is edited in place and saves on its own. The top bar says <strong>Saving…</strong> and then <strong>Saved</strong>.</li>
+						<li><strong>Reorder:</strong> hold the dotted handle at a block's top left and drag it, or use the up and down arrows.</li>
+						<li><strong>Move to another stage:</strong> use <strong>Move to…</strong> on the block.</li>
+						<li><strong>Remove:</strong> the bin at the block's top right.</li>
+						<li><strong>Images:</strong> hover and press <strong>Replace</strong>, or drop a new image on it. Clicking an image does nothing, so you won't open a file picker by accident.</li>
+					</ul>
+					<p>Blocks sent from other apps show where they came from, like <strong>via Figma</strong> or <strong>via Phone</strong>.</p>
+				</section>
+
+				<section id="blocks">
+					<h2><a href="#blocks">Block types</a></h2>
+					<table>
+						<thead><tr><th>Block</th><th>For</th></tr></thead>
+						<tbody>
+							<tr><td>Note</td><td>What happened, what you tried, why you changed direction</td></tr>
+							<tr><td>Image</td><td>Sketches, screenshots, renders, photos, with a caption</td></tr>
+							<tr><td>Link</td><td>A web page, with your note on why it matters</td></tr>
+							<tr><td>Quote</td><td>Words from someone else, with who said it</td></tr>
+							<tr><td>Checklist</td><td>Things to try or finish. Tick them as you go.</td></tr>
+							<tr><td>Colors</td><td>A palette. Click a swatch to change it; hover for the × to remove one.</td></tr>
+							<tr><td>Spread</td><td>A moodboard laid out like a book page. Drag pieces anywhere, double-click text to edit.</td></tr>
+							<tr><td>Voice</td><td>A recording, with a caption and an optional transcript</td></tr>
+						</tbody>
+					</table>
+					<p>Empty blocks are left off the letter, so it's fine to leave a few lying around.</p>
+				</section>
+
+				<section id="voice">
+					<h2><a href="#voice">Voice notes</a></h2>
+					<ol>
+						<li>Press <strong>Voice</strong> in the box at the bottom of the desk.</li>
+						<li>The first time, allow Nool to use your microphone.</li>
+						<li>Talk. A timer shows you're recording. Press <strong>Stop and add</strong> when you're done, or <strong>Cancel</strong>.</li>
+					</ol>
+					<p>You can also drop an audio file onto the box. Add a caption so you can find it later.</p>
+					<h3>Transcripts</h3>
+					<p>A <strong>Transcribe</strong> button appears on voice notes when your connected AI can turn speech into text. Right now that's <strong>ChatGPT (OpenAI)</strong>, or an <strong>Other</strong> service that offers speech, such as Groq. Claude, Gemini and Ollama can't transcribe through Nool. The transcript is editable and shows under the recording on your letter.</p>
+				</section>
+
+				<section id="precedents">
+					<h2><a href="#precedents">Precedents</a></h2>
+					<p>Precedents are the works your project builds on: artworks, design objects, papers, code. They sit beside each stage, and the ones you <strong>keep</strong> become the lineage of your letter.</p>
+					<h3>Add your own</h3>
+					<p>Press <strong>Add</strong> in the precedents panel. Give it a title, who made it, the year, a link and a note on why it matters.</p>
+					<h3>Find some</h3>
+					<p>Press <strong>Find precedents</strong>. Nool searches <strong>The Met</strong>, <strong>Semantic Scholar</strong>, <strong>arXiv</strong> and <strong>GitHub</strong>, plus <strong>Cooper Hewitt</strong> if you add its free key under Connections → Museum search.</p>
+					<ul>
+						<li>Without an AI connected, it searches with words from your title and stage.</li>
+						<li>With one, the AI writes better searches from your notes and picks the 8 closest, each with a one-line reason.</li>
+						<li>Press <strong>Keep</strong> on the ones that matter and write a note on why. <strong>Dismiss</strong> the rest.</li>
+						<li><strong>Find again</strong> replaces suggestions you didn't keep. Kept ones and ones you added yourself always stay.</li>
+					</ul>
+					<p>Nothing is searched until you press the button. If a source can't be reached, Nool says which one and shows the rest.</p>
+				</section>
+
+				<section id="ai">
+					<h2><a href="#ai">Connect an AI</a></h2>
+					<p>AI is optional. Nool works fully without it. With it, you get stage summaries and sharper precedent picks. It only runs when you press a button, and it never makes the work for you.</p>
+					<ol>
+						<li>Open <strong>Connections</strong> (top right), section <strong>1. AI helper</strong>.</li>
+						<li>Pick the one you use: <strong>Claude</strong>, <strong>ChatGPT</strong>, <strong>Gemini</strong>, <strong>OpenRouter</strong>, <strong>Ollama</strong>, or <strong>Other</strong> for any OpenAI-compatible service.</li>
+						<li>Press the link to open that provider's key page, sign in, and create a key. Some ask you to add a little credit first; you pay them directly, usually cents per use.</li>
+						<li>Paste the key and press <strong>Connect</strong>. Nool checks it works before saving it.</li>
+					</ol>
+					<div class="tip"><strong>Free and offline:</strong> install <a href="https://ollama.com/download">Ollama</a>, open it, download a model such as <code>llama3.2</code>, then pick Ollama in Nool. No key, and nothing leaves your computer.</div>
+					<p>Your key is stored only on your computer and is only ever sent to the provider you picked. Press <strong>Disconnect</strong> to remove it.</p>
+				</section>
+
+				<section id="summaries">
+					<h2><a href="#summaries">Summaries</a></h2>
+					<p>Press <strong>Summarize</strong> next to a stage's name. Nool writes 3 to 5 sentences from that stage's notes only, and is told never to add facts that aren't there. The summary opens for you to edit. Press <strong>Add as note</strong> to keep it, <strong>Try again</strong>, or <strong>Discard</strong>.</p>
+				</section>
+
+				<section id="claude-desktop">
+					<h2><a href="#claude-desktop">Using Claude Desktop instead</a></h2>
+					<p>Have a Claude plan but no API key? Nool can hand summaries and precedents to the Claude desktop app.</p>
+					<ol>
+						<li>Connect Nool to Claude Desktop once (see <a href="#chat-apps">chat apps</a>).</li>
+						<li>On the desk, press <strong>Summarize</strong> or the precedents panel's <strong>Find with Claude Desktop</strong>.</li>
+						<li>Nool copies a ready-made request and opens Claude. Paste it with <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>V</kbd> and press <kbd>Enter</kbd>.</li>
+						<li>Claude reads the stage and writes the summary or suggestions back into Nool. Switch back to Nool and they appear.</li>
+					</ol>
+				</section>
+
+				<section id="chat-apps">
+					<h2><a href="#chat-apps">Claude, Cursor and Windsurf</a></h2>
+					<p>Connect a chat app and you can say things like <em>"add a note to my Tidal project: the float held for six hours"</em>.</p>
+					<ol>
+						<li>Open <strong>Connections → 2. Chat apps</strong>.</li>
+						<li>Press <strong>Add Nool</strong> next to the app. Nool adds itself to that app's settings and keeps a copy of the original next to it.</li>
+						<li>Quit the app fully and open it again.</li>
+						<li>Keep Nool open while you chat.</li>
+					</ol>
+					<p>What a connected app can do in Nool:</p>
+					<table>
+						<thead><tr><th>Tool</th><th>Does</th></tr></thead>
+						<tbody>
+							<tr><td><code>list_projects</code></td><td>See your projects and stages</td></tr>
+							<tr><td><code>add_note</code>, <code>add_link</code>, <code>add_quote</code>, <code>add_image</code></td><td>Add to a stage. Images can be a file on your computer or a web address.</td></tr>
+							<tr><td><code>read_stage</code></td><td>Read one stage's notes</td></tr>
+							<tr><td><code>add_summary</code></td><td>Add a summary written from those notes</td></tr>
+							<tr><td><code>search_precedents</code>, <code>suggest_precedents</code></td><td>Search sources and put suggestions on the panel for you to keep or dismiss</td></tr>
+						</tbody>
+					</table>
+					<p>Connected apps can't delete or change what's there. They can only read and add.</p>
+				</section>
+
+				<section id="figma">
+					<h2><a href="#figma">Figma</a></h2>
+					<p>The <strong>Send to Nool</strong> plugin sends the frames you select to the project and stage you pick. You set it up once.</p>
+					<ol>
+						<li>Open the <strong>Figma desktop app</strong> (not the website) and any design file.</li>
+						<li>From the menu choose <strong>Plugins → Development → Import plugin from manifest…</strong></li>
+						<li>In Nool, open <strong>Connections → 3. Figma</strong> and press <strong>Show plugin file</strong>. Pick the <code>manifest.json</code> it shows.</li>
+						<li>Run <strong>Plugins → Development → Send to Nool</strong>. Paste the <strong>address</strong> and <strong>token</strong> from that same Connections section and press Connect.</li>
+						<li>Select one or more frames, pick a project and stage, add a caption if you like, and press <strong>Send selection</strong>.</li>
+					</ol>
+				</section>
+
+				<section id="phone">
+					<h2><a href="#phone">Your phone</a></h2>
+					<p>Capture while you're away from your desk: a photo of a sketch, a quick note, a voice memo. It works over your own Wi-Fi; nothing goes through the internet.</p>
+					<ol>
+						<li>Open <strong>Connections → 4. Phone</strong> and turn on <strong>Let my phone send to Nool</strong>.</li>
+						<li>If your computer asks whether Nool may accept connections, allow it on private networks.</li>
+						<li>With your phone on the <strong>same Wi-Fi</strong>, point its camera at the QR code and tap the link.</li>
+						<li>Pick a project and stage. Send notes and links, <strong>Photo</strong> to take or pick pictures, and <strong>Voice</strong> to record with your phone's recorder or pick a recording.</li>
+					</ol>
+					<p>Your phone can only add things, and only with the pairing code inside the QR. Press <strong>Unpair all phones</strong> to make a new code, or turn the switch off.</p>
+				</section>
+
+				<section id="scripts">
+					<h2><a href="#scripts">Scripts and the API</a></h2>
+					<p>Anything that can make a web request can add to Nool while it's open: a Blender script, a shortcut, a build step. Find your token under <strong>Connections → For developers</strong>. Projects and stages can be named instead of using ids; leave the stage out and it goes to the stage you worked in last.</p>
+					<div class="code"><pre>curl -X POST http://localhost:5173/api/inbox/blocks \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"project":"Tidal","stage":"Build","type":"note","data":{"text":"Render 12 done"},"source":"Blender"}'</pre></div>
+					<table>
+						<thead><tr><th>Call</th><th>Does</th></tr></thead>
+						<tbody>
+							<tr><td><code>GET /api/inbox</code></td><td>Lists projects and stages</td></tr>
+							<tr><td><code>POST /api/inbox/uploads</code></td><td>Uploads an image or audio file (form field <code>file</code>) and returns its <code>src</code></td></tr>
+							<tr><td><code>POST /api/inbox/blocks</code></td><td>Adds a block: <code>{ project, stage?, type, data, source? }</code></td></tr>
+						</tbody>
+					</table>
+					<p>Block <code>data</code> by type: note <code>{text}</code>, image <code>{src, caption}</code>, link <code>{url, note}</code>, quote <code>{text, cite}</code>, todo <code>{items:[{text, done}]}</code>, palette <code>{colors}</code>, voice <code>{src, caption, transcript, duration}</code>. If you make a new token, update your scripts and reconnect your apps.</p>
+				</section>
+
+				<section id="post">
+					<h2><a href="#post">Posting and the letter</a></h2>
+					<p>Press <strong>Letter</strong> on the desk at any time to preview the case study. When it's ready, press <strong>Post</strong>: the stamp lands on an envelope and gets its postmark, and the project is marked posted in your album. <strong>Recall</strong> takes it back to mint.</p>
+					<p>The letter is laid out like an editorial feature:</p>
+					<ul>
+						<li>A masthead with the dates you documented, how many blocks and stages, and how many works it builds on</li>
+						<li>Each stage as a numbered section, with images numbered as figures</li>
+						<li>Kept precedents as notes in the margin, numbered to match the <strong>Lineage</strong> list at the end</li>
+					</ul>
+				</section>
+
+				<section id="share">
+					<h2><a href="#share">Sharing</a></h2>
+					<p>On the letter, press <strong>Share</strong> at the top right.</p>
+					<table>
+						<thead><tr><th>Choice</th><th>You get</th><th>Good for</th></tr></thead>
+						<tbody>
+							<tr><td>Web page</td><td>One <code>.html</code> file with the images and fonts inside. Works offline.</td><td>Emailing, attaching, uploading anywhere</td></tr>
+							<tr><td>Website folder</td><td>A <code>.zip</code> with <code>index.html</code>, styles, fonts and an <code>images</code> folder</td><td>Putting it online: drop the unzipped folder on <a href="https://app.netlify.com/drop">Netlify Drop</a>, GitHub Pages or Vercel. The images are full size if you want them for your portfolio.</td></tr>
+							<tr><td>PDF</td><td>A print layout made for paper</td><td>Applications, reviews, printing. Choose <strong>Save as PDF</strong> in the print dialog.</td></tr>
+						</tbody>
+					</table>
+					<p>In the desktop app, the web page and folder are saved to your <strong>Downloads</strong> folder, which then opens. PDF opens the letter in your browser with the print dialog ready.</p>
+				</section>
+
+				<section id="backups">
+					<h2><a href="#backups">Backups</a></h2>
+					<p>Your projects only live on your computer, so back them up. Open <strong>Backups</strong> (top right).</p>
+					<h3>To a file</h3>
+					<p>Press <strong>Save backup file</strong> to download a <code>.nool</code> file with every project and image. Keep it anywhere, or move it to another computer. To bring it back, press <strong>Restore from file</strong> and pick it. Restoring replaces what's in Nool, and Nool saves a safety copy of the current state first.</p>
+					<h3>To Google Drive</h3>
+					<p>Press <strong>Connect Google Drive</strong> and sign in. Nool can only see the files it creates, in a <strong>Nool backups</strong> folder, and nothing else in your Drive. Press <strong>Back up now</strong>, or turn on daily backups while Nool is open. Any backup in the list can be restored. The 10 most recent are kept.</p>
+					<div class="tip">If Backups says Google Drive backup isn't set up in this copy of Nool, use a backup file for now.</div>
+				</section>
+
+				<section id="data">
+					<h2><a href="#data">Where your data lives</a></h2>
+					<p>Everything is in one folder on your computer: a database file and an <code>uploads</code> folder with your images and recordings.</p>
+					<table>
+						<thead><tr><th>System</th><th>Folder</th></tr></thead>
+						<tbody>
+							<tr><td>macOS</td><td><code>~/Library/Application Support/app.nool.desktop</code></td></tr>
+							<tr><td>Windows</td><td><code>%APPDATA%\app.nool.desktop</code></td></tr>
+							<tr><td>Linux</td><td><code>~/.local/share/app.nool.desktop</code></td></tr>
+						</tbody>
+					</table>
+					<p>Uninstalling Nool leaves this folder alone. Delete it yourself if you want everything gone.</p>
+				</section>
+
+				<section id="faq">
+					<h2><a href="#faq">Troubleshooting</a></h2>
+					<details class="faq"><summary>Nool says it can't start, or that something is using its port</summary><div>Nool runs on <code>localhost:5173</code>. Close anything else using that port (often a web project you're developing) and open Nool again.</div></details>
+					<details class="faq"><summary>The Mac or Windows won't open the app</summary><div>This early build isn't signed yet. See <a href="#install">Install</a> for the one-time steps.</div></details>
+					<details class="faq"><summary>Voice says it needs permission</summary><div>Allow the microphone for Nool. On a Mac: System Settings → Privacy &amp; Security → Microphone. On Windows: Settings → Privacy → Microphone. Then try again.</div></details>
+					<details class="faq"><summary>My phone can't reach Nool</summary><div>Check both are on the same Wi-Fi, Nool is open, and phone capture is on. Allow Nool through your firewall on private networks. Guest and office networks often block devices from seeing each other; try a home network or your phone's hotspot.</div></details>
+					<details class="faq"><summary>Claude or Cursor doesn't see Nool</summary><div>Quit the app fully (on Windows, from the system tray too) and open it again after pressing Add Nool. Keep Nool open. If you made a new token, press Add Nool again.</div></details>
+					<details class="faq"><summary>Find precedents shows nothing</summary><div>Add a title, a line about the project and a few notes on the stage, then press Find again. If it says a source couldn't be reached, check your internet connection.</div></details>
+					<details class="faq"><summary>AI says the key didn't work</summary><div>Copy the whole key again, with no spaces. Check you have credit with that provider. You can leave Model as it is.</div></details>
+					<details class="faq"><summary>Is my work sent anywhere?</summary><div>No. Nool has no server and no account. Your work only leaves your computer when you choose to: an AI request to the provider you picked, a precedent search, a Google Drive backup, or a file you share.</div></details>
+				</section>
+
+				<section id="feedback">
+					<h2><a href="#feedback">Feedback</a></h2>
+					<p>This is an early build for friends, so tell me everything: what was confusing, what broke, what you wished it did. <a href="https://github.com/krusin1/nool/issues/new">Open an issue on GitHub</a> or just message me. Screenshots help a lot.</p>
+				</section>
+			</article>
+		</div>
+
+		<footer>
+			<div class="wrap">
+				<span>Nool is Tamil for thread, and also for book.</span>
+				<nav aria-label="Footer"><a href="/">Home</a><a href="https://github.com/krusin1/nool/releases">All releases</a><a href="https://github.com/krusin1/nool">Source</a></nav>
+			</div>
+		</footer>
+		<script src="/main.js"></script>
+	</body>
+</html>
