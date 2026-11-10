@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="Helvetica, Arial, sans-serif">
+  <rect width="800" height="500" fill="#F4F1EA"/>
+  <g fill="none" stroke="#1F3D2B" stroke-width="3" stroke-linecap="round">
+    <path d="M150 420 C140 340 170 300 150 230 C135 180 175 140 160 90"/>
+    <path d="M155 250 C110 230 90 200 85 165"/><path d="M155 250 C200 225 225 190 228 150"/>
+    <path d="M152 330 C110 320 95 295 92 270"/>
+    <ellipse cx="85" cy="160" rx="26" ry="14" transform="rotate(-35 85 160)"/><ellipse cx="230" cy="145" rx="28" ry="14" transform="rotate(30 230 145)"/><ellipse cx="92" cy="266" rx="22" ry="12" transform="rotate(-20 92 266)"/><ellipse cx="160" cy="84" rx="18" ry="11"/>
+    <path d="M95 420 H215 L200 480 H110 Z"/>
+  </g>
+  <g fill="none" stroke="#2B4BFF" stroke-width="2.5">
+    <path d="M150 300 C230 300 260 330 340 330"/><path d="M150 380 C240 390 260 360 340 360"/>
+    <circle cx="150" cy="300" r="7" fill="#2B4BFF"/><circle cx="150" cy="380" r="7" fill="#2B4BFF"/>
+  </g>
+  <rect x="340" y="290" width="200" height="110" rx="6" fill="#fff" stroke="#111" stroke-width="2"/>
+  <text x="440" y="335" text-anchor="middle" font-size="18" font-weight="600" fill="#111">Electrode amp</text>
+  <text x="440" y="362" text-anchor="middle" font-size="14" fill="#555">gain × 1000</text>
+  <path d="M540 345 H600" stroke="#111" stroke-width="2"/>
+  <rect x="600" y="300" width="140" height="90" rx="6" fill="#1F3D2B"/>
+  <text x="670" y="342" text-anchor="middle" font-size="17" font-weight="600" fill="#fff">ESP32</text>
+  <text x="670" y="366" text-anchor="middle" font-size="13" fill="#CFE3D4">MIDI over Wi-Fi</text>
+  <text x="40" y="50" font-size="22" font-weight="600" fill="#111">Pothos, two pads on one leaf</text>
+  <text x="40" y="76" font-size="15" fill="#555">Sketch v2: pads 4 cm apart, shielded cable, shared ground</text>
+</svg>
