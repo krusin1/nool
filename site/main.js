@@ -1,224 +1,80 @@
-// Nool site: small interactions. Everything works without it; motion respects reduced-motion.
+// Nool site. Small, quiet interactions; everything reads fine without them.
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
 
-// Perforated stamp edge, shared by every stamp shape.
+// Perforated edge for every stamp (CSS mask), and the holes in the logo.
 (() => {
-	const W = 200, H = 250, r = 5.5, step = 12.5;
+	const W = 200, H = 250, r = 6, step = 12.5;
 	let holes = '';
 	for (let x = 0; x <= W; x += step) holes += `<circle cx="${x}" cy="0" r="${r}"/><circle cx="${x}" cy="${H}" r="${r}"/>`;
 	for (let y = 0; y <= H; y += step) holes += `<circle cx="0" cy="${y}" r="${r}"/><circle cx="${W}" cy="${y}" r="${r}"/>`;
 	const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><mask id="m"><rect width="${W}" height="${H}" fill="white"/><g fill="black">${holes}</g></mask></defs><rect width="${W}" height="${H}" fill="black" mask="url(#m)"/></svg>`;
 	document.documentElement.style.setProperty('--perf', `url("data:image/svg+xml,${encodeURIComponent(svg)}")`);
+	const g = $('#logo-holes');
+	if (g) for (let i = 6; i <= 26; i += 4) for (const [x, y] of [[i, 2], [i, 30], [2, i], [30, i]]) g.insertAdjacentHTML('beforeend', `<circle cx="${x}" cy="${y}" r="1.7"/>`);
 })();
 
-// Nav border once you scroll.
-addEventListener('scroll', () => $('.nav')?.classList.toggle('scrolled', scrollY > 8), { passive: true });
+// Fade sections in as they arrive.
+const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add('in'), io.unobserve(e.target))), { rootMargin: '0px 0px -8% 0px' });
+const watch = () => $$('.reveal:not(.in)').forEach((el) => io.observe(el));
 
-// Reveal on scroll.
-const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add('in'), io.unobserve(e.target))), { rootMargin: '0px 0px -10% 0px' });
-$$('.reveal').forEach((el) => io.observe(el));
+const POSTMARK = `<svg class="postmark" viewBox="0 0 220 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="52" cy="50" r="40"/><circle cx="52" cy="50" r="31" stroke-width="1.2"/>${[30, 43, 56, 69].map((y) => `<path d="M100 ${y} q12 -7 24 0 t24 0 t24 0 t24 0 t24 0"/>`).join('')}</g><g fill="currentColor" font-family="Hanken Grotesk, sans-serif" font-weight="600" text-anchor="middle"><text x="52" y="46" font-size="10" letter-spacing="1">POSTED</text><text x="52" y="60" font-size="8">${today}</text></g></svg>`;
 
-// Magnetic buttons: drift a little toward the cursor.
-if (!reduce && matchMedia('(hover: hover)').matches)
-	$$('.btn.magnet').forEach((b) => {
-		b.addEventListener('pointermove', (e) => {
-			const r = b.getBoundingClientRect();
-			b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.18}px, ${(e.clientY - r.top - r.height / 2) * 0.3}px)`;
-		});
-		b.addEventListener('pointerleave', () => (b.style.transform = ''));
-	});
-
-const POSTMARK = (date) => `<svg class="postmark" viewBox="0 0 160 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="40" cy="40" r="32"/><circle cx="40" cy="40" r="25" stroke-width="1"/>${[24, 34, 44, 54].map((y) => `<path d="M80 ${y} q10 -6 20 0 t20 0 t20 0 t20 0"/>`).join('')}</g><g fill="currentColor" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="600"><text x="40" y="38" font-size="8.5" letter-spacing=".5">POSTED</text><text x="40" y="49" font-size="7">${date}</text></g></svg>`;
-const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
-
-// ---------- hero: a desk of stamps that tilt toward the cursor; click to post ----------
+// ---------- hero stamp: tap to post, tap again to recall ----------
 (() => {
-	const desk = $('#stamp-desk');
-	if (!desk) return;
-	const motifs = {
-		rings: [10, 20, 30, 40, 50, 60].map((r) => `<circle cx="72" cy="30" r="${r}"/>`).join(''),
-		stripes: Array.from({ length: 14 }, (_, i) => `<path d="M${i * 9 - 20} 0 L${i * 9 + 40} 120"/>`).join(''),
-		grid: Array.from({ length: 11 }, (_, i) => `<path d="M${i * 10} 0 V120 M0 ${i * 10} H100"/>`).join(''),
-		thread: '<path d="M18 108 V58 C18 36 32 26 50 26 C68 26 82 36 82 58 V90 C82 104 92 112 108 108" stroke-width="5"/>'
-	};
-	const stamps = [
-		{ t: 'Signal Garden', v: '14', paper: '#F3EFE6', ink: '#2B4BFF', m: 'rings', x: 4, y: 12, r: -7 },
-		{ t: 'Tidal', v: '22', paper: '#F6E7D8', ink: '#C2410C', m: 'stripes', x: 44, y: 2, r: 5 },
-		{ t: 'Soft Machines', v: '07', paper: '#E7EEE4', ink: '#2F6B4F', m: 'grid', x: 26, y: 42, r: -2 }
+	const s = $('#hero-stamp');
+	if (!s) return;
+	$('#pm-date').textContent = today;
+	const hint = $('.stamp-hint');
+	s.addEventListener('click', () => {
+		const on = s.classList.toggle('posted');
+		s.setAttribute('aria-label', on ? 'Recall this stamp' : 'Post this stamp');
+		if (on && !reduce) {
+			s.classList.remove('thud');
+			void s.offsetWidth;
+			s.classList.add('thud');
+		}
+		if (hint) hint.textContent = on ? 'posted. tap again to recall' : 'tap the stamp to post it';
+	});
+})();
+
+// ---------- the sheet of stamps ----------
+(() => {
+	const sheet = $('#sheet');
+	if (!sheet) return;
+	const icon = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+	const F = [
+		['Capture in one keystroke', 'Type and press Enter. Paste a link, drop an image.', '#2B4BFF', '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>', 'desk'],
+		['Voice notes', 'Talk it through on the desk; transcribe it if you want.', '#1F3D2B', '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>', 'voice'],
+		['Moodboard spreads', 'Collage images, notes and colours like a book page.', '#C2410C', '<rect x="3" y="4" width="18" height="16"/><path d="M12 4v16M6 8h3M6 11h3M15 9h3v5h-3z"/>', 'blocks'],
+		['Precedents', 'Find works in museums, papers and code. Keep what matters.', '#7A4FB8', '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/>', 'precedents'],
+		['Post it as a letter', 'Your project becomes an editorial case study.', '#D93A2B', '<rect x="3" y="6" width="18" height="13"/><path d="M3 7l9 6 9-6"/>', 'post'],
+		['Share anywhere', 'A web page, a website folder, or a PDF.', '#0F766E', '<path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 14v6h14v-6"/>', 'share'],
+		['From Figma, Claude, your phone', 'Work arrives where it belongs, marked with where it came from.', '#2B4BFF', '<path d="M4 12h10M10 6l6 6-6 6"/><path d="M20 4v16"/>', 'figma'],
+		['Yours, on your computer', 'No account, no server. Back up to a file or your Drive.', '#14151A', '<rect x="4" y="11" width="16" height="10"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>', 'data']
 	];
-	desk.insertAdjacentHTML(
-		'afterbegin',
-		stamps
-			.map(
-				(s, i) => `<div class="stamp-holder" style="left:${s.x}%;top:${s.y}%;z-index:${i + 1}" data-r="${s.r}">
-				<button class="stamp" aria-label="Post ${s.t}" style="--paper:${s.paper};--ink:${s.ink};transform:rotate(${s.r}deg)">
-					<div class="face"><svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice" fill="none" stroke="currentColor" stroke-width="1.2">${motifs[s.m]}</svg>
-					<span class="c">NOOL · 2026</span><span class="v">${s.v}</span><span class="t">${s.t}</span></div>
-				</button>${POSTMARK(today)}</div>`
-			)
-			.join('')
-	);
-	const holders = $$('.stamp-holder', desk);
-	let top = holders.length;
-	// Tilt toward the cursor.
-	if (!reduce)
-		desk.addEventListener('pointermove', (e) => {
-			holders.forEach((h) => {
-				const r = h.getBoundingClientRect();
-				const dx = (e.clientX - (r.left + r.width / 2)) / 260;
-				const dy = (e.clientY - (r.top + r.height / 2)) / 260;
-				const s = $('.stamp', h);
-				s.style.transform = `rotate(${h.dataset.r}deg) rotateY(${Math.max(-1, Math.min(1, dx)) * 14}deg) rotateX(${Math.max(-1, Math.min(1, dy)) * -14}deg)`;
-			});
-		});
-	desk.addEventListener('pointerleave', () => holders.forEach((h) => ($('.stamp', h).style.transform = `rotate(${h.dataset.r}deg)`)));
-	// Click: bring to the front, postmark it, shake. Click again to recall.
-	let posted = 0;
-	holders.forEach((h) =>
-		$('.stamp', h).addEventListener('click', () => {
-			h.style.zIndex = ++top;
-			const on = !h.classList.contains('posted');
-			h.classList.toggle('posted', on);
-			posted += on ? 1 : -1;
-			if (on && !reduce) {
-				h.classList.remove('shake');
-				void h.offsetWidth;
-				h.classList.add('shake');
-			}
-			$('.stamp', h).setAttribute('aria-label', `${on ? 'Recall' : 'Post'} ${$('.t', h).textContent}`);
-			const hint = $('.desk-hint', desk);
-			hint.innerHTML =
-				posted === holders.length
-					? '<b>All posted.</b> Every project ends up as a letter.'
-					: posted
-						? `<b>Posted ${posted} of ${holders.length}.</b> Click again to recall.`
-						: 'Every project is a stamp. <b>Click one to post it.</b>';
-		})
-	);
+	const tilt = [-3, 2, -1.5, 3, -2, 1.5, -2.5, 2];
+	sheet.innerHTML = F.map(
+		([t, d, c, svg, link], i) => `<a class="feature reveal" href="/docs#${link}" style="--d:${(i % 4) * 0.06}s;text-decoration:none">
+			<span class="no">no. ${String(i + 1).padStart(2, '0')}</span>
+			<span class="mini" style="--r:${tilt[i]}deg;--tint:${c}"><span class="paper"><span class="face">${icon(svg)}</span></span></span>
+			${POSTMARK}
+			<h3>${t}</h3><p>${d}</p></a>`
+	).join('');
+	watch();
 })();
+watch();
 
-// ---------- demo: the composer, actually typeable ----------
-(() => {
-	const form = $('#mini-composer');
-	if (!form) return;
-	const list = $('.mini-blocks', form.parentElement);
-	const input = $('input', form);
-	const add = (text) => {
-		const url = /^https?:\/\/\S+$/i.test(text);
-		const el = document.createElement('div');
-		el.className = 'mini-block';
-		el.innerHTML = `<span class="tag">${url ? 'Link' : 'Note'}</span>`;
-		el.append(document.createTextNode(url ? new URL(text).hostname : text));
-		list.append(el);
-		while (list.children.length > 3) list.firstElementChild.remove();
-	};
-	form.addEventListener('submit', (e) => {
-		e.preventDefault();
-		const t = input.value.trim();
-		if (t) add(t), (input.value = '');
-		clearTimeout(auto);
-	});
-	// Until someone types, it types to itself.
-	const lines = ['Foam held its shape at 40%.', 'https://www.metmuseum.org', 'Try the slower pump curve.'];
-	let auto, i = 0;
-	const loop = () => {
-		if (document.activeElement === input || reduce) return;
-		const line = lines[i++ % lines.length];
-		let n = 0;
-		const type = () => {
-			if (document.activeElement === input) return (input.value = '');
-			input.value = line.slice(0, ++n);
-			if (n < line.length) auto = setTimeout(type, 38);
-			else auto = setTimeout(() => (add(line), (input.value = ''), (auto = setTimeout(loop, 1400))), 450);
-		};
-		type();
-	};
-	const obs = new IntersectionObserver(([e]) => e.isIntersecting && (obs.disconnect(), loop()));
-	obs.observe(form);
-	input.addEventListener('focus', () => (clearTimeout(auto), (input.value = '')));
-})();
-
-// ---------- demo: apps send work to Nool ----------
-(() => {
-	const box = $('#sources');
-	if (!box) return;
-	const hub = $('.hub', box);
-	const send = (app) => {
-		const a = app.getBoundingClientRect(), h = hub.getBoundingClientRect(), b = box.getBoundingClientRect();
-		const f = document.createElement('span');
-		f.className = 'flyer';
-		f.textContent = `via ${app.dataset.app}`;
-		f.style.left = `${a.right - b.left - 20}px`;
-		f.style.top = `${a.top - b.top + 4}px`;
-		box.append(f);
-		const dx = h.left - a.right + 30, dy = h.top + h.height / 2 - a.top - 14;
-		f.animate(
-			[{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${dx / 2}px, ${dy / 2 - 26}px) scale(1.05)`, opacity: 1, offset: 0.5 }, { transform: `translate(${dx}px, ${dy}px) scale(0.4)`, opacity: 0 }],
-			{ duration: reduce ? 1 : 700, easing: 'cubic-bezier(.4,0,.2,1)' }
-		).onfinish = () => {
-			f.remove();
-			hub.classList.remove('got');
-			void hub.offsetWidth;
-			hub.classList.add('got');
-		};
-	};
-	$$('.app', box).forEach((a) => {
-		a.addEventListener('click', () => send(a));
-		a.addEventListener('pointerenter', () => send(a));
-	});
-	// A gentle idle loop until someone interacts.
-	let k = 0, idle = setInterval(() => send($$('.app', box)[k++ % 3]), 1800);
-	box.addEventListener('pointerenter', () => clearInterval(idle), { once: true });
-})();
-
-// ---------- demo: keep precedents ----------
-$$('.pcard .keep').forEach((b) =>
-	b.addEventListener('click', () => {
-		const c = b.closest('.pcard');
-		const on = c.classList.toggle('kept');
-		b.textContent = on ? 'Kept' : 'Keep';
-		b.setAttribute('aria-pressed', on);
-	})
-);
-
-// ---------- demo: voice bars ----------
-(() => {
-	const v = $('#voice-demo');
-	if (!v) return;
-	const bars = $('.bars', v);
-	bars.innerHTML = '<span></span>'.repeat(22);
-	const spans = $$('span', bars);
-	let t;
-	const tick = () => spans.forEach((s, i) => (s.style.height = `${18 + Math.abs(Math.sin(Date.now() / 180 + i * 0.7)) * 70 * Math.random() + 10}%`));
-	$('.rec', v).addEventListener('click', () => {
-		const on = v.classList.toggle('recording');
-		$('.rec span', v).textContent = on ? 'Stop' : 'Record';
-		clearInterval(t);
-		if (on) t = setInterval(tick, 110);
-		else spans.forEach((s) => (s.style.height = '18%'));
-	});
-})();
-
-// ---------- demo: post the envelope ----------
-$$('.env-demo').forEach((d) => {
-	$('.pm', d)?.insertAdjacentHTML('beforeend', '');
-	d.addEventListener('click', () => {
-		d.classList.remove('sent');
-		void d.offsetWidth;
-		d.classList.add('sent');
-	});
-});
-
-// ---------- film: play/pause ----------
+// ---------- film ----------
 $$('.film').forEach((f) => {
 	const v = $('video', f), b = $('button', f);
 	if (reduce) v.pause(), (b.textContent = 'Play');
 	b.addEventListener('click', () => (v.paused ? (v.play(), (b.textContent = 'Pause')) : (v.pause(), (b.textContent = 'Play'))));
 });
 
-// ---------- friends checklist (remembered on this device) ----------
+// ---------- the friends checklist, remembered on this device ----------
 (() => {
 	const list = $('#try');
 	if (!list) return;
@@ -227,31 +83,26 @@ $$('.film').forEach((f) => {
 	try {
 		saved = JSON.parse(localStorage.getItem('nool-try') || '[]');
 	} catch {}
-	const bar = $('.progress i');
-	const update = () => {
-		const done = items.filter((li) => li.classList.contains('done')).length;
-		bar.style.width = `${(done / items.length) * 100}%`;
-		$('#try-count').textContent = done === items.length ? 'All done. Thank you!' : `${done} of ${items.length} tried`;
+	const tally = () => {
+		const n = items.filter((li) => li.classList.contains('done')).length;
+		$('#tally').textContent = n === items.length ? 'All of them. Thank you, truly.' : n ? `${n} of ${items.length} tried` : '';
 	};
 	items.forEach((li, i) => {
 		li.setAttribute('role', 'checkbox');
 		li.tabIndex = 0;
-		const set = (on) => {
-			li.classList.toggle('done', on);
-			li.setAttribute('aria-checked', on);
-		};
+		const set = (on) => (li.classList.toggle('done', on), li.setAttribute('aria-checked', on));
 		set(saved.includes(i));
 		const flip = () => {
 			set(!li.classList.contains('done'));
 			try {
 				localStorage.setItem('nool-try', JSON.stringify(items.map((x, j) => (x.classList.contains('done') ? j : -1)).filter((j) => j >= 0)));
 			} catch {}
-			update();
+			tally();
 		};
 		li.addEventListener('click', flip);
 		li.addEventListener('keydown', (e) => (e.key === ' ' || e.key === 'Enter') && (e.preventDefault(), flip()));
 	});
-	update();
+	tally();
 })();
 
 // ---------- download: the right installer for this computer ----------
@@ -259,44 +110,47 @@ $$('.film').forEach((f) => {
 	const btn = $('#download');
 	if (!btn) return;
 	const ua = navigator.userAgent;
-	const os = /Mac/i.test(ua) ? 'mac' : /Win/i.test(ua) ? 'windows' : /Linux/i.test(ua) && !/Android/i.test(ua) ? 'linux' : null;
-	const labels = { mac: 'macOS', windows: 'Windows', linux: 'Linux' };
+	const mobile = /Android|iPhone|iPad/i.test(ua);
+	const os = mobile ? null : /Mac/i.test(ua) ? 'mac' : /Win/i.test(ua) ? 'windows' : /Linux/i.test(ua) ? 'linux' : null;
+	const names = { mac: 'Mac', windows: 'Windows', linux: 'Linux' };
 	const pick = { mac: (n) => n.endsWith('.dmg'), windows: (n) => n.endsWith('-setup.exe'), linux: (n) => n.endsWith('.AppImage') };
+	if (mobile) $('#dl-meta').textContent = 'a desktop app. open this page on your computer';
 	try {
 		const res = await fetch('https://api.github.com/repos/krusin1/nool/releases/latest');
 		if (!res.ok) return;
 		const rel = await res.json();
 		const find = (k) => rel.assets.find((a) => pick[k](a.name));
-		const meta = $('#meta');
 		if (os && find(os)) {
 			const a = find(os);
 			btn.href = a.browser_download_url;
-			$('span', btn).textContent = `Download for ${labels[os]}`;
-			meta.firstChild.textContent = `${rel.tag_name} · ${(a.size / 1048576).toFixed(0)} MB · free`;
-		} else if (/Android|iPhone|iPad/i.test(ua)) {
-			meta.firstChild.textContent = 'Nool is a desktop app. Open this page on your computer to download it.';
+			$('#dl-label').textContent = `Download for ${names[os]}`;
+			$('#dl-meta').textContent = `${rel.tag_name}, ${Math.round(a.size / 1048576)} MB, free`;
 		}
-		const others = Object.keys(labels).filter((k) => k !== os && find(k));
-		$('#others').innerHTML = others.length ? 'Also for ' + others.map((k) => `<a href="${find(k).browser_download_url}">${labels[k]}</a>`).join(' · ') : '';
+		const others = Object.keys(names).filter((k) => k !== os && find(k));
+		if (others.length) $('#others').innerHTML = 'Also for ' + others.map((k) => `<a href="${find(k).browser_download_url}">${names[k]}</a>`).join(' and ') + '.';
 	} catch {
-		/* keep the link to the releases page */
+		/* keep the plain link */
 	}
-	// A little stamp when the download starts.
 	btn.addEventListener('click', () => {
-		if (reduce || !btn.href.includes('/download/')) return;
-		const s = $('span', btn), was = s.textContent;
-		s.textContent = 'Posted to your computer';
-		setTimeout(() => (s.textContent = was), 2600);
+		if (!btn.href.includes('/download/')) return;
+		const l = $('#dl-label'), was = l.textContent;
+		l.textContent = 'In the post';
+		setTimeout(() => (l.textContent = was), 2600);
 	});
 })();
 
-// ---------- docs: table of contents, scrollspy, search, copy, OS tabs ----------
+// ---------- docs: contents, scrollspy, search, copy, install tabs ----------
 (() => {
 	const toc = $('.toc');
 	if (!toc) return;
 	$('.toc-toggle', toc)?.addEventListener('click', () => toc.classList.toggle('open'));
 	const links = $$('nav a', toc);
 	const map = new Map(links.map((a) => [a.getAttribute('href').slice(1), a]));
+	const sections = $$('.prose section[id]');
+	sections.forEach((s, i) => {
+		const h = $('h2', s);
+		if (h) h.insertAdjacentHTML('afterbegin', `<span class="no">no. ${String(i + 1).padStart(2, '0')}</span>`);
+	});
 	const spy = new IntersectionObserver(
 		(es) =>
 			es.forEach((e) => {
@@ -304,16 +158,15 @@ $$('.film').forEach((f) => {
 				links.forEach((a) => a.classList.remove('active'));
 				map.get(e.target.id)?.classList.add('active');
 			}),
-		{ rootMargin: '-20% 0px -70% 0px' }
+		{ rootMargin: '-15% 0px -75% 0px' }
 	);
-	$$('.prose section[id]').forEach((s) => spy.observe(s));
+	sections.forEach((s) => spy.observe(s));
 
-	// Filter sections by a search word.
-	const q = $('.doc-search');
+	const q = $('.search', toc);
 	q?.addEventListener('input', () => {
 		const term = q.value.trim().toLowerCase();
 		let shown = 0;
-		$$('.prose section[id]').forEach((s) => {
+		sections.forEach((s) => {
 			const hit = !term || s.textContent.toLowerCase().includes(term);
 			s.classList.toggle('hidden-by-search', !hit);
 			map.get(s.id)?.classList.toggle('hidden-by-search', !hit);
@@ -340,7 +193,6 @@ $$('.film').forEach((f) => {
 		});
 	});
 
-	// Install steps: show this computer's system first.
 	const ua = navigator.userAgent;
 	const mine = /Mac/i.test(ua) ? 'mac' : /Win/i.test(ua) ? 'windows' : 'linux';
 	$$('.os-tabs').forEach((tabs) => {

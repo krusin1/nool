@@ -23,7 +23,7 @@ Documentation should feel like part of making, not an extra step: capture is one
 - `mcp/`: standalone MCP server with its own package.json, so the app stays light. Bundled to one file (`mcp/dist`) for the desktop app.
 - `figma-plugin/`: Send to Nool plugin (plain JS).
 - `src-tauri/`: desktop shell (Tauri 2). Starts the bundled Node runtime (`nool-node` sidecar) running the adapter-node server (`server/start.js`) on 127.0.0.1:5173 with data in the OS app-data folder, then shows it in a window. Links open in the system browser via `/api/open`.
-- `site/`: static download page, deployed on Vercel. Links to the latest GitHub Release. "Open in app" uses the `nool://` link the desktop app registers (tauri-plugin-deep-link; `nool://p/<id>` opens a project).
+- `site/`: static download page and docs, deployed on Vercel. Post office design: one ruled sheet, airmail edge, stamps and postmarks, Instrument Serif italics; nav is only Home and Docs. Links to the latest GitHub Release. "Open in app" uses the `nool://` link the desktop app registers (tauri-plugin-deep-link; `nool://p/<id>` opens a project).
 - `.github/workflows/release.yml`: builds macOS (Apple Silicon), Windows and Linux installers on tag `v*`.
 
 ## Data model
@@ -34,6 +34,7 @@ Documentation should feel like part of making, not an extra step: capture is one
   - types: note `{text}`, image `{src, caption}`, link `{url, note}`, quote `{text, cite}`, todo `{items:[{text,done}]}`, palette `{colors}`, spread `{items: SpreadItem[]}` (book-spread collage), voice `{src, caption, transcript, duration}`
 - `precedents`: id, project_id, stage_id, source, title, creator, year, url, image_url, snippet, kept, note
 - `settings`: key/value (inbox token)
+- Sample project: one, Signal Garden (`seed-data.json`, images and audio in `static/demo/garden`), posted, every stage filled with every block type, blocks marked via Phone, Figma and Claude summary, kept and unkept precedents. Seed blocks may set `source`.
 - Templates for new projects: Studio (Spark, Moodboard with a spread, Research, Experiments, Build, Outcome), Simple, Blank.
 
 ## Screens

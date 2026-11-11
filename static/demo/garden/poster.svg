@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" font-family="Helvetica, Arial, sans-serif">
+  <rect width="600" height="800" fill="#1F3D2B"/>
+  <g fill="none" stroke="#F4F1EA" stroke-width="2" opacity="0.9">
+    <path d="M40 520 C120 470 160 560 240 510 S360 470 420 520 S520 560 560 520"/>
+    <path d="M40 560 C120 510 160 600 240 550 S360 510 420 560 S520 600 560 560" opacity=".6"/>
+    <path d="M40 600 C120 550 160 640 240 590 S360 550 420 600 S520 640 560 600" opacity=".35"/>
+  </g>
+  <g fill="#2B4BFF"><circle cx="420" cy="230" r="120"/></g>
+  <g fill="none" stroke="#F4F1EA" stroke-width="3"><path d="M300 470 C290 400 320 360 300 300 C285 250 320 210 305 160"/><ellipse cx="250" cy="240" rx="40" ry="18" transform="rotate(-30 250 240)"/><ellipse cx="355" cy="200" rx="40" ry="18" transform="rotate(25 355 200)"/><ellipse cx="260" cy="350" rx="34" ry="16" transform="rotate(-20 260 350)"/></g>
+  <text x="40" y="690" font-size="64" font-weight="700" fill="#F4F1EA" letter-spacing="-2">Signal Garden</text>
+  <text x="40" y="730" font-size="20" fill="#F4F1EA">Open studio · Oct 16 and 17 · 6 to 9 pm</text>
+  <text x="40" y="760" font-size="16" fill="#D2462B">Touch a leaf. Listen.</text>
+</svg>

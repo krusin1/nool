@@ -19,9 +19,10 @@
 					{
 						"type": "note",
 						"data": {
-							"text": "Rule for the piece: the plants lead. No sequencer, no loops. Every note has to come from a signal."
+							"text": "Pothos in the café window turned toward the light in about a week. Something that slow should sound slow."
 						},
-						"created_at": "2026-09-20T15:20:00Z"
+						"created_at": "2026-09-20T18:40:00Z",
+						"source": "Phone"
 					},
 					{
 						"type": "quote",
@@ -30,6 +31,26 @@
 							"cite": "Brian Eno, liner notes for Music for Airports, 1978"
 						},
 						"created_at": "2026-09-21T10:00:00Z"
+					},
+					{
+						"type": "todo",
+						"data": {
+							"items": [
+								{
+									"text": "Find out how big a plant's signal actually is",
+									"done": true
+								},
+								{
+									"text": "Ask the studio about a two-night open studio",
+									"done": true
+								},
+								{
+									"text": "Borrow a second pothos",
+									"done": true
+								}
+							]
+						},
+						"created_at": "2026-09-21T10:30:00Z"
 					}
 				]
 			},
@@ -82,7 +103,7 @@
 									"content": "Slow enough to notice you've slowed down.",
 									"caption": "",
 									"x": 53,
-									"y": 10,
+									"y": 8,
 									"w": 34,
 									"rotate": 0,
 									"z": 4,
@@ -94,8 +115,8 @@
 									"content": "/demo/garden/signal.svg",
 									"caption": "What a leaf sounds like",
 									"x": 52,
-									"y": 32,
-									"w": 40,
+									"y": 28,
+									"w": 38,
 									"rotate": 2,
 									"z": 5,
 									"tape": true
@@ -111,10 +132,43 @@
 									"rotate": -1,
 									"z": 6,
 									"tape": false
+								},
+								{
+									"id": "sg-7",
+									"kind": "image",
+									"content": "/demo/garden/poster.svg",
+									"caption": "",
+									"x": 30,
+									"y": 60,
+									"w": 14,
+									"rotate": 4,
+									"z": 7,
+									"tape": false
 								}
 							]
 						},
 						"created_at": "2026-09-23T17:00:00Z"
+					},
+					{
+						"type": "palette",
+						"data": {
+							"colors": [
+								"#1F3D2B",
+								"#F4F1EA",
+								"#2B4BFF",
+								"#D2462B",
+								"#8A7A5C"
+							]
+						},
+						"created_at": "2026-09-23T17:20:00Z"
+					},
+					{
+						"type": "link",
+						"data": {
+							"url": "https://en.wikipedia.org/wiki/Mother_Earth%27s_Plantasia",
+							"note": "The album cover's greens and warm pinks. Soft, a bit funny, never clinical."
+						},
+						"created_at": "2026-09-24T09:00:00Z"
 					}
 				]
 			},
@@ -124,18 +178,18 @@
 					{
 						"type": "link",
 						"data": {
-							"url": "https://en.wikipedia.org/wiki/Mother_Earth%27s_Plantasia",
-							"note": "Mort Garson, 1976: synth music made for plants. I want the reverse."
-						},
-						"created_at": "2026-09-25T13:00:00Z"
-					},
-					{
-						"type": "link",
-						"data": {
 							"url": "https://playground.arduino.cc/Main/CapacitiveSensor/",
 							"note": "Capacitive sensing library. Touch on a leaf shows up cleanly."
 						},
 						"created_at": "2026-09-26T11:00:00Z"
+					},
+					{
+						"type": "link",
+						"data": {
+							"url": "https://tonejs.github.io",
+							"note": "Browser synth library. Lets the sound run on a laptop hidden in the room."
+						},
+						"created_at": "2026-09-26T14:00:00Z"
 					},
 					{
 						"type": "note",
@@ -143,6 +197,22 @@
 							"text": "Two kinds of signal: a slow drift over minutes (light, watering) and quick spikes when someone touches a leaf. The drift sets the key and tempo; spikes trigger notes."
 						},
 						"created_at": "2026-09-27T16:00:00Z"
+					},
+					{
+						"type": "quote",
+						"data": {
+							"text": "Most of what gets marketed as 'plant music' is a touch sensor with a nice synth on it. That's fine. Just be honest about it.",
+							"cite": "Note to self after reading the forums"
+						},
+						"created_at": "2026-09-27T16:30:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Summary: the signal is real but tiny and noisy. Touch is easy to detect; anything subtler needs a good amplifier and a shared ground. The project should be honest that touch drives the notes and the plant's own drift shapes the sound."
+						},
+						"created_at": "2026-09-28T10:00:00Z",
+						"source": "Claude summary"
 					}
 				]
 			},
@@ -191,6 +261,14 @@
 							]
 						},
 						"created_at": "2026-10-05T10:00:00Z"
+					},
+					{
+						"type": "note",
+						"data": {
+							"text": "Pitch from drift sounded like a theremin warming up. Filter from drift sounds like the room breathing. Keeping that."
+						},
+						"created_at": "2026-10-06T21:15:00Z",
+						"source": "Phone"
 					}
 				]
 			},
@@ -200,22 +278,27 @@
 					{
 						"type": "image",
 						"data": {
-							"src": "/demo/garden/plan.svg",
-							"caption": "Gallery plan. Six plants on the loop, four speakers in the corners, entry at the bottom."
+							"src": "/demo/garden/planter.svg",
+							"caption": "Planter cross-section. A small speaker faces down under the soil line, so sound comes from the floor."
 						},
 						"created_at": "2026-10-09T15:00:00Z"
 					},
 					{
-						"type": "palette",
+						"type": "image",
 						"data": {
-							"colors": [
-								"#1F3D2B",
-								"#F4F1EA",
-								"#2B4BFF",
-								"#D2462B"
-							]
+							"src": "/demo/garden/plan.svg",
+							"caption": "Gallery plan. Six plants on the loop, four speakers in the corners, entry at the bottom."
 						},
-						"created_at": "2026-10-10T11:00:00Z"
+						"created_at": "2026-10-09T16:00:00Z"
+					},
+					{
+						"type": "image",
+						"data": {
+							"src": "/demo/garden/poster.svg",
+							"caption": "Open studio poster"
+						},
+						"created_at": "2026-10-10T12:00:00Z",
+						"source": "Figma"
 					},
 					{
 						"type": "note",
@@ -223,6 +306,30 @@
 							"text": "Sound engine in the browser with Tone.js: each plant is one voice, a soft FM pad. Drift moves the filter; touch plays a note from a pentatonic scale so nothing clashes."
 						},
 						"created_at": "2026-10-11T19:00:00Z"
+					},
+					{
+						"type": "todo",
+						"data": {
+							"items": [
+								{
+									"text": "Six plants wired and labelled",
+									"done": true
+								},
+								{
+									"text": "Speakers in four planters",
+									"done": true
+								},
+								{
+									"text": "One-page wall text",
+									"done": true
+								},
+								{
+									"text": "Run it for eight hours without a crash",
+									"done": true
+								}
+							]
+						},
+						"created_at": "2026-10-14T18:00:00Z"
 					}
 				]
 			},
@@ -230,11 +337,30 @@
 				"name": "Outcome",
 				"blocks": [
 					{
+						"type": "voice",
+						"data": {
+							"src": "/demo/garden/room.mp3",
+							"caption": "The room on the first evening, about 7 pm. You can hear two touches near the end.",
+							"transcript": "",
+							"duration": 14
+						},
+						"created_at": "2026-10-16T23:00:00Z",
+						"source": "Phone"
+					},
+					{
 						"type": "note",
 						"data": {
 							"text": "Open studio, two evenings. People slowed down without being told. Most touched a leaf once, heard it answer, then stood and listened."
 						},
 						"created_at": "2026-10-18T19:00:00Z"
+					},
+					{
+						"type": "quote",
+						"data": {
+							"text": "It's the first time I've waited for a plant to say something.",
+							"cite": "A visitor, second evening"
+						},
+						"created_at": "2026-10-18T19:10:00Z"
 					},
 					{
 						"type": "note",
@@ -260,7 +386,7 @@
 				"note": "The tone I want: present, never pushy."
 			},
 			{
-				"stage": "Research",
+				"stage": "Moodboard",
 				"source": "web",
 				"title": "Mother Earth's Plantasia",
 				"creator": "Mort Garson",
@@ -284,305 +410,29 @@
 				"note": ""
 			},
 			{
+				"stage": "Experiments",
+				"source": "github",
+				"title": "PaulStoffregen/CapacitiveSensor",
+				"creator": "Paul Stoffregen",
+				"year": "2014",
+				"url": "https://github.com/PaulStoffregen/CapacitiveSensor",
+				"image_url": null,
+				"snippet": "Arduino library that turns a pin and a resistor into a touch sensor.",
+				"kept": true,
+				"note": "How a leaf becomes a button."
+			},
+			{
 				"stage": "Build",
 				"source": "github",
-				"title": "Tone.js",
+				"title": "Tonejs/Tone.js",
 				"creator": "Yotam Mann",
 				"year": "2014",
-				"url": "https://tonejs.github.io",
+				"url": "https://github.com/Tonejs/Tone.js",
 				"image_url": null,
 				"snippet": "A framework for making interactive music in the browser.",
 				"kept": true,
 				"note": "The sound engine: one synth voice per plant."
 			}
 		]
-	},
-	{
-		"title": "Tidal",
-		"description": "A wall of light that slows its pulse to match the breathing of the people in front of it.",
-		"created_at": "2026-09-08T14:00:00Z",
-		"updated_at": "2026-10-17T10:00:00Z",
-		"posted_at": null,
-		"stages": [
-			{
-				"name": "Spark",
-				"blocks": [
-					{
-						"type": "note",
-						"data": {
-							"text": "Sat on the subway platform at 1am and noticed the whole car exhale at once when the doors opened. What if a room could notice that? Not respond loudly. Just breathe back."
-						},
-						"created_at": "2026-09-08T14:10:00Z"
-					},
-					{
-						"type": "image",
-						"data": {
-							"src": "/demo/sketch-wall.svg",
-							"caption": "First sketch. Wall of light, two people, the waves slow down when they slow down."
-						},
-						"created_at": "2026-09-09T10:30:00Z"
-					}
-				]
-			},
-			{
-				"name": "Moodboard",
-				"blocks": [
-					{
-						"type": "spread",
-						"data": {
-							"items": []
-						},
-						"created_at": "2026-09-08T14:00:00Z"
-					}
-				]
-			},
-			{
-				"name": "Research",
-				"blocks": [
-					{
-						"type": "link",
-						"data": {
-							"url": "https://en.wikipedia.org/wiki/Calm_technology",
-							"note": "Calm technology as a frame: information that lives at the periphery and moves to the centre only when needed."
-						},
-						"created_at": "2026-09-12T16:00:00Z"
-					},
-					{
-						"type": "note",
-						"data": {
-							"text": "Resting breathing rate is roughly 12 to 20 breaths per minute. Slow-paced breathing guides usually target about 6. The wall should never lead faster than the slowest person in the room."
-						},
-						"created_at": "2026-09-14T11:20:00Z"
-					}
-				]
-			},
-			{
-				"name": "Experiments",
-				"blocks": [
-					{
-						"type": "image",
-						"data": {
-							"src": "/demo/breath-graph.svg",
-							"caption": "Chest strap vs. 60GHz mmWave radar at 1.5m. Radar lags by about half a breath but no wearable needed."
-						},
-						"created_at": "2026-09-20T19:45:00Z"
-					},
-					{
-						"type": "note",
-						"data": {
-							"text": "Voice note: tried the webcam approach with pose tracking on shoulders. Works when people stand still, falls apart the second anyone talks or turns. Parking it."
-						},
-						"created_at": "2026-09-22T22:05:00Z"
-					},
-					{
-						"type": "note",
-						"data": {
-							"text": "Easing matters more than accuracy. A linear map from breath rate to wave speed feels mechanical. A 4 second smoothing window makes it feel like it is listening."
-						},
-						"created_at": "2026-09-25T13:00:00Z"
-					}
-				]
-			},
-			{
-				"name": "Build",
-				"blocks": [
-					{
-						"type": "note",
-						"data": {
-							"text": "Final rig: 6 strips of WS2812B behind a frosted acrylic diffuser, ESP32 running FastLED, radar over serial. Teensy was overkill."
-						},
-						"created_at": "2026-10-03T15:30:00Z"
-					},
-					{
-						"type": "link",
-						"data": {
-							"url": "https://github.com/FastLED/FastLED",
-							"note": "FastLED handles the LED timing so the ESP32 can spend its cycles on breath detection."
-						},
-						"created_at": "2026-10-04T09:10:00Z"
-					}
-				]
-			},
-			{
-				"name": "Outcome",
-				"blocks": [
-					{
-						"type": "image",
-						"data": {
-							"src": "/demo/installation.svg",
-							"caption": "Installed at the thesis show. People stayed longer than I expected. A few closed their eyes."
-						},
-						"created_at": "2026-10-15T20:00:00Z"
-					},
-					{
-						"type": "note",
-						"data": {
-							"text": "What I would change: the wall cannot tell two people apart, so it averages them. Next version should hold two rhythms at once and let them drift together."
-						},
-						"created_at": "2026-10-17T10:00:00Z"
-					}
-				]
-			}
-		],
-		"precedents": [
-			{
-				"stage": "Spark",
-				"source": "met",
-				"title": "Under the Wave off Kanagawa (Kanagawa oki nami ura)",
-				"creator": "Katsushika Hokusai",
-				"year": "ca. 1830–32",
-				"url": "https://www.metmuseum.org/art/collection/search?q=Hokusai+Great+Wave",
-				"image_url": null,
-				"snippet": "A single held moment of a rhythmic force, close to your idea of a pulse the viewer can feel but not control.",
-				"kept": true,
-				"note": "The suspended crest is the feeling I want at the top of each breath."
-			},
-			{
-				"stage": "Spark",
-				"source": "semanticscholar",
-				"title": "Ambient Displays: Turning Architectural Space into an Interface between People and Digital Information",
-				"creator": "Wisneski, Ishii, Dahley, Gorbet, Brave, Ullmer, Yarin",
-				"year": "1998",
-				"url": "https://www.semanticscholar.org/search?q=Ambient%20Displays%20Turning%20Architectural%20Space",
-				"image_url": null,
-				"snippet": "Treats walls and light as quiet information surfaces, the same register as a room that breathes back.",
-				"kept": false,
-				"note": ""
-			},
-			{
-				"stage": "Research",
-				"source": "semanticscholar",
-				"title": "Designing Calm Technology",
-				"creator": "Mark Weiser, John Seely Brown",
-				"year": "1996",
-				"url": "https://www.semanticscholar.org/search?q=Designing%20Calm%20Technology",
-				"image_url": null,
-				"snippet": "The source text for the periphery-to-centre idea in your calm technology note.",
-				"kept": true,
-				"note": "Core framing for the wall staying in the periphery."
-			},
-			{
-				"stage": "Research",
-				"source": "semanticscholar",
-				"title": "Tangible Bits: Towards Seamless Interfaces between People, Bits and Atoms",
-				"creator": "Hiroshi Ishii, Brygg Ullmer",
-				"year": "1997",
-				"url": "https://www.semanticscholar.org/search?q=Tangible%20Bits%20Ishii%20Ullmer",
-				"image_url": null,
-				"snippet": "Introduces ambient media as background awareness, relevant to light that responds without asking for attention.",
-				"kept": false,
-				"note": ""
-			},
-			{
-				"stage": "Experiments",
-				"source": "arxiv",
-				"title": "MediaPipe: A Framework for Building Perception Pipelines",
-				"creator": "Lugaresi et al.",
-				"year": "2019",
-				"url": "https://arxiv.org/search/?query=MediaPipe+Framework+Perception+Pipelines&searchtype=all",
-				"image_url": null,
-				"snippet": "The pose-tracking stack behind your parked webcam test; useful if you revisit camera-based sensing.",
-				"kept": false,
-				"note": ""
-			},
-			{
-				"stage": "Experiments",
-				"source": "github",
-				"title": "google-ai-edge/mediapipe",
-				"creator": "Google AI Edge",
-				"year": "2019",
-				"url": "https://github.com/google-ai-edge/mediapipe",
-				"image_url": null,
-				"snippet": "Reference implementation for shoulder and torso landmarks used in breath estimation from video.",
-				"kept": false,
-				"note": ""
-			},
-			{
-				"stage": "Build",
-				"source": "github",
-				"title": "FastLED/FastLED",
-				"creator": "FastLED",
-				"year": "2013",
-				"url": "https://github.com/FastLED/FastLED",
-				"image_url": null,
-				"snippet": "The LED library in your rig. Its built-in easing and blending helpers can replace hand-rolled smoothing.",
-				"kept": true,
-				"note": "Used for all LED output."
-			},
-			{
-				"stage": "Build",
-				"source": "github",
-				"title": "processing/p5.js",
-				"creator": "Processing Foundation",
-				"year": "2014",
-				"url": "https://github.com/processing/p5.js",
-				"image_url": null,
-				"snippet": "Quick way to prototype wave behaviour on screen before flashing changes to the ESP32.",
-				"kept": false,
-				"note": ""
-			},
-			{
-				"stage": "Outcome",
-				"source": "semanticscholar",
-				"title": "Ambient Displays: Turning Architectural Space into an Interface between People and Digital Information",
-				"creator": "Wisneski et al.",
-				"year": "1998",
-				"url": "https://www.semanticscholar.org/search?q=Ambient%20Displays%20Turning%20Architectural%20Space",
-				"image_url": null,
-				"snippet": "Closest academic precedent for positioning: architectural light as ambient, bodily information.",
-				"kept": false,
-				"note": ""
-			}
-		]
-	},
-	{
-		"title": "Soft Machines",
-		"description": "Knitted sensors that notice how they are being held.",
-		"created_at": "2026-10-19T12:00:00Z",
-		"updated_at": "2026-10-19T12:10:00Z",
-		"posted_at": null,
-		"stages": [
-			{
-				"name": "Spark",
-				"blocks": [
-					{
-						"type": "note",
-						"data": {
-							"text": "Conductive yarn changes resistance when stretched. What if a scarf could tell a hug from a tug?"
-						},
-						"created_at": "2026-10-19T12:10:00Z"
-					}
-				]
-			},
-			{
-				"name": "Moodboard",
-				"blocks": [
-					{
-						"type": "spread",
-						"data": {
-							"items": []
-						},
-						"created_at": "2026-10-19T12:00:00Z"
-					}
-				]
-			},
-			{
-				"name": "Research",
-				"blocks": []
-			},
-			{
-				"name": "Experiments",
-				"blocks": []
-			},
-			{
-				"name": "Build",
-				"blocks": []
-			},
-			{
-				"name": "Outcome",
-				"blocks": []
-			}
-		],
-		"precedents": []
 	}
 ]

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="Helvetica, Arial, sans-serif">
+  <rect width="800" height="500" fill="#FBFAF6"/>
+  <path d="M250 220 H550 L520 460 H280 Z" fill="#EDE6D8" stroke="#111" stroke-width="2.5"/>
+  <path d="M262 250 H538" stroke="#8A7A5C" stroke-width="2" stroke-dasharray="4 6"/>
+  <rect x="330" y="330" width="140" height="90" rx="6" fill="#fff" stroke="#2B4BFF" stroke-width="2.5"/>
+  <circle cx="400" cy="375" r="30" fill="none" stroke="#2B4BFF" stroke-width="2.5"/><circle cx="400" cy="375" r="10" fill="#2B4BFF"/>
+  <g fill="none" stroke="#2B4BFF" stroke-width="2" opacity=".6"><path d="M300 470 a110 40 0 0 0 200 0"/><path d="M270 488 a140 50 0 0 0 260 0"/></g>
+  <g fill="none" stroke="#1F3D2B" stroke-width="3"><path d="M400 220 C390 160 420 120 400 60"/><ellipse cx="350" cy="130" rx="40" ry="16" transform="rotate(-30 350 130)"/><ellipse cx="455" cy="100" rx="40" ry="16" transform="rotate(25 455 100)"/></g>
+  <path d="M470 375 H640" stroke="#111" stroke-width="1.5"/><text x="650" y="380" font-size="16" fill="#111">5 cm speaker,</text><text x="650" y="400" font-size="16" fill="#111">facing down</text>
+  <path d="M540 250 H640" stroke="#111" stroke-width="1.5"/><text x="650" y="255" font-size="16" fill="#111">soil line</text>
+  <text x="40" y="44" font-size="22" font-weight="600" fill="#111">Planter, cross-section</text>
+  <text x="40" y="70" font-size="15" fill="#555">Sound comes out of the floor, not the plant</text>
+</svg>
