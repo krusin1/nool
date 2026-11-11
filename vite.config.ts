@@ -29,6 +29,9 @@ export default defineConfig(({ mode }) => {
 				// Force runes mode for the project, except for libraries. Can be removed in svelte 6.
 				runes: ({ filename }) => (filename.split(/[/\\]/).includes('node_modules') ? undefined : true)
 			},
+			// Nool checks origins itself (hooks.server.ts): desk API writes must be same-origin, and the
+			// inbox takes any origin with its token, so scripts and plugins can upload files.
+			csrf: { trustedOrigins: ['*'] },
 			adapter: web ? adapterStatic({ pages: 'build-web', assets: 'build-web', fallback: 'index.html' }) : adapterNode(),
 			...(web ? { files: { routes: 'src/routes-web', hooks: { client: 'src/web/hooks.client.ts', server: 'src/web/hooks.server.ts' } } } : {})
 		})
