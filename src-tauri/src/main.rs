@@ -75,7 +75,25 @@ fn start_server(app: &tauri::App) -> Result<CommandChild, Box<dyn std::error::Er
         cmd = cmd.env("GOOGLE_CLIENT_SECRET", secret);
     }
 
-    let (_events, child) = cmd.spawn()?;
+    let (mut events, child) = cmd.spawn()?;
+    // Keep the server's output in the data folder, so a failed start can be diagnosed.
+    let log = data.join("server.log");
+    tauri::async_runtime::spawn(async move {
+        use std::io::Write;
+        use tauri_plugin_shell::process::CommandEvent;
+        let mut f = std::fs::File::create(&log).ok();
+        while let Some(e) = events.recv().await {
+            let line = match e {
+                CommandEvent::Stdout(b) | CommandEvent::Stderr(b) => String::from_utf8_lossy(&b).to_string(),
+                CommandEvent::Error(m) => format!("error: {m}\n"),
+                CommandEvent::Terminated(t) => format!("exited: {:?}\n", t.code),
+                _ => continue,
+            };
+            if let Some(f) = f.as_mut() {
+                let _ = f.write_all(line.as_bytes());
+            }
+        }
+    });
     Ok(child)
 }
 
@@ -116,7 +134,7 @@ fn main() {
 
             std::thread::spawn(move || {
                 if !blocked {
-                    for _ in 0..300 {
+                    for _ in 0..1200 {
                         if nool_running() {
                             let url = Url::parse(&format!("http://localhost:{PORT}/")).unwrap();
                             let _ = window.navigate(url);

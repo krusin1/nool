@@ -1,7 +1,7 @@
 {
 	"$schema": "https://schema.tauri.app/config/2",
 	"productName": "Nool",
-	"version": "0.1.4",
+	"version": "0.1.5",
 	"identifier": "app.nool.desktop",
 	"build": {
 		"frontendDist": "../desktop/loading"
