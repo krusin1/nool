@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Postmark from './Postmark.svelte';
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	import Mail from '@lucide/svelte/icons/mail';
 	import Trash from '@lucide/svelte/icons/trash';
@@ -35,6 +36,7 @@
 		<button class="btn btn-ghost icon" onclick={ondelete} aria-label="Delete project" title="Delete project"><Trash size={16} strokeWidth={1.5} /></button>
 		<a class="btn btn-ghost" href="/view/{project.id}"><Mail size={16} strokeWidth={1.5} /> <span class="hide-sm">Letter</span></a>
 		{#if project.posted_at}
+			<Postmark date={project.posted_at} inline />
 			<button class="btn" onclick={onrecall} title="Take the letter back and keep working">Recall</button>
 		{:else}
 			<button class="btn btn-primary" onclick={onpost}>Post</button>

@@ -490,7 +490,7 @@ a.go:hover .arrow {
 
 .film video {
 	width: 100%;
-	aspect-ratio: 16 / 9;
+	aspect-ratio: 16 / 6.75; /* the recording has white margins top and bottom */
 	object-fit: cover;
 }
 
@@ -1285,3 +1285,19 @@ details.faq > div {
 		transform: none;
 	}
 }
+
+/* Polish: sentence-case labels; the serif italic is kept for the headline word and handwriting on the postcards */
+.small, .tabs a, .address .lines span:first-child, .film button, .back .to .lines span:first-child,
+.foot a, .toc h4, .prose th, .copy, .os-tabs button, .toc-toggle {
+	text-transform: none;
+	letter-spacing: 0;
+	font-size: 13px;
+	font-weight: 500;
+}
+.stamp-hint, .head p, .feature .no, .feature p, .back .note h3, .tally, .toc .search, .prose h2 .no, .no-results {
+	font-family: var(--ui);
+	font-style: normal;
+}
+.head p, .feature p, .tally, .stamp-hint, .no-results { color: var(--soft); }
+.back .to .box { display: none; }
+.film button { top: 0; bottom: auto; border-top: 0; border-bottom: 1px solid var(--rule); }

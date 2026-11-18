@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { postmarkDate } from '#lib/format.ts';
 
-	let { date }: { date: string } = $props();
+	let { date, inline = false }: { date: string; inline?: boolean } = $props();
 
 	const label = $derived(postmarkDate(date));
 </script>
 
-<svg class="postmark" viewBox="0 0 160 80" aria-label="Posted {label}" role="img">
+<svg class="postmark" class:inline viewBox="0 0 160 80" aria-label="Posted {label}" role="img">
 	<g fill="none" stroke="currentColor" stroke-width="2">
 		<circle cx="40" cy="40" r="32" />
 		<circle cx="40" cy="40" r="25" stroke-width="1" />
@@ -31,5 +31,15 @@
 		transform: rotate(-12deg);
 		pointer-events: none;
 		mix-blend-mode: multiply;
+	}
+	/* A small postmark in a header, in place of a "Posted" label */
+	.inline {
+		position: static;
+		width: 88px;
+		margin: -8px 0;
+		color: var(--accent);
+		opacity: 0.9;
+		transform: rotate(-8deg);
+		mix-blend-mode: normal;
 	}
 </style>

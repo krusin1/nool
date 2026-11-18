@@ -7,7 +7,7 @@
   </g>
   <g fill="#2B4BFF"><circle cx="420" cy="230" r="120"/></g>
   <g fill="none" stroke="#F4F1EA" stroke-width="3"><path d="M300 470 C290 400 320 360 300 300 C285 250 320 210 305 160"/><ellipse cx="250" cy="240" rx="40" ry="18" transform="rotate(-30 250 240)"/><ellipse cx="355" cy="200" rx="40" ry="18" transform="rotate(25 355 200)"/><ellipse cx="260" cy="350" rx="34" ry="16" transform="rotate(-20 260 350)"/></g>
-  <text x="40" y="690" font-size="64" font-weight="700" fill="#F4F1EA" letter-spacing="-2">Signal Garden</text>
+  <text x="40" y="690" font-size="64" font-weight="600" fill="#F4F1EA" letter-spacing="-2">Listen closely</text>
   <text x="40" y="730" font-size="20" fill="#F4F1EA">Open studio · Oct 16 and 17 · 6 to 9 pm</text>
   <text x="40" y="760" font-size="16" fill="#D2462B">Touch a leaf. Listen.</text>
 </svg>

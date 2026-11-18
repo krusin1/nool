@@ -4,9 +4,10 @@
 	import LetterStage from '#lib/components/LetterStage.svelte';
 	import LineageItem from '#lib/components/LineageItem.svelte';
 	import Logo from '#lib/components/Logo.svelte';
+	import Postmark from '#lib/components/Postmark.svelte';
 	import ShareLetter from '#lib/components/ShareLetter.svelte';
 	import { onMount } from 'svelte';
-	import { formatDate, postmarkDate } from '#lib/format.ts';
+	import { formatDate } from '#lib/format.ts';
 	import { hasContent } from '#lib/blocks.ts';
 	import type { PageProps } from './$types';
 
@@ -60,9 +61,11 @@
 	<a class="back label" href="/p/{data.project.id}"><ArrowLeft size={14} strokeWidth={1.5} /> Desk</a>
 	<a class="mark" href="/" aria-label="Nool"><Logo size={22} /><span class="display">nool</span></a>
 	<div class="right">
-		<span class="label status" class:posted={data.project.posted_at}>
-			{data.project.posted_at ? `Posted ${postmarkDate(data.project.posted_at)}` : 'Draft · not posted yet'}
-		</span>
+		{#if data.project.posted_at}
+			<Postmark date={data.project.posted_at} inline />
+		{:else}
+			<span class="label status">Draft · not posted yet</span>
+		{/if}
 		<ShareLetter id={data.project.id} desktop={data.desktop} />
 	</div>
 </div>
@@ -133,10 +136,6 @@
 		gap: var(--s2);
 	}
 
-	.status.posted {
-		color: var(--accent);
-	}
-
 	.mark {
 		display: inline-flex;
 		align-items: center;
@@ -184,8 +183,6 @@
 	}
 
 	.kicker {
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
 		color: var(--accent);
 	}
 

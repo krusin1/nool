@@ -10,14 +10,14 @@ export interface StampLook {
 	motif: 'rings' | 'stripes' | 'sun' | 'grid';
 }
 
+// Same inks as the stamps on the download site, so the app and the site read as one set.
 const PALETTES = [
 	{ paper: '#F3EFE6', ink: '#2B4BFF' },
 	{ paper: '#F6E7D8', ink: '#C2410C' },
-	{ paper: '#E7EEE4', ink: '#2F6B4F' },
-	{ paper: '#EFE8F3', ink: '#6B3FA0' },
-	{ paper: '#F5EFD6', ink: '#8A6400' },
-	{ paper: '#E4ECF2', ink: '#1F5F8B' },
-	{ paper: '#F4E4E4', ink: '#A3243B' }
+	{ paper: '#E7EEE4', ink: '#1F3A2B' },
+	{ paper: '#F4E4E2', ink: '#D93A2B' },
+	{ paper: '#E3EFEC', ink: '#0F7A6B' },
+	{ paper: '#ECEBE6', ink: '#14151A' }
 ];
 
 const MOTIFS: StampLook['motif'][] = ['rings', 'stripes', 'sun', 'grid'];

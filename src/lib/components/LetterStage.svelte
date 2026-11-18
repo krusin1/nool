@@ -68,11 +68,6 @@
 		margin-bottom: var(--s2);
 	}
 
-	.kicker {
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-	}
-
 	h2 {
 		margin-top: var(--s1);
 		font-size: var(--fs-xl);
@@ -108,8 +103,6 @@
 
 	.margin > .label {
 		padding-bottom: var(--s1);
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
 	}
 
 	@media (max-width: 1100px) {

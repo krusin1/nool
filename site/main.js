@@ -57,7 +57,7 @@ const POSTMARK = `<svg class="postmark" viewBox="0 0 220 100" aria-hidden="true"
 	];
 	const tilt = [-3, 2, -1.5, 3, -2, 1.5, -2.5, 2];
 	sheet.innerHTML = F.map(
-		([t, d, c, svg, link], i) => `<a class="feature reveal" href="/docs#${link}" style="--d:${(i % 4) * 0.06}s;text-decoration:none">
+		([t, d, c, svg, link], i) => `<a class="feature" href="/docs#${link}" style="--d:${(i % 4) * 0.06}s;text-decoration:none">
 			<span class="no">no. ${String(i + 1).padStart(2, '0')}</span>
 			<span class="mini" style="--r:${tilt[i]}deg;--tint:${c}"><span class="paper"><span class="face">${icon(svg)}</span></span></span>
 			${POSTMARK}

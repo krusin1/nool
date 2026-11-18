@@ -56,8 +56,6 @@
 	}
 
 	.kicker {
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
 		color: var(--accent);
 	}
 
